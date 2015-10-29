@@ -1,0 +1,28 @@
+language: ruby
+sudo: false
+script: bundle exec rake test
+matrix:
+  fast_finish: true
+  include:
+    - rvm: 1.8.7
+      gemfile: gemfiles/Gemfile.1.9.2-
+    - rvm: 1.9.3
+      gemfile: gemfiles/Gemfile.1.9.2+
+    - rvm: 2.0.0
+      gemfile: Gemfile
+    - rvm: 2.1.0
+      gemfile: Gemfile
+    - rvm: 2.1.1
+      gemfile: Gemfile
+    - rvm: 2.2.0
+      gemfile: Gemfile
+    - rvm: jruby-18mode
+      gemfile: gemfiles/Gemfile.1.9.2-
+    - rvm: jruby-19mode
+      gemfile: gemfiles/Gemfile.1.9.2+
+    - rvm: jruby-head
+      gemfile: Gemfile
+    allow_failures:
+    - rvm: jruby-head
+notifications:
+  email: false
