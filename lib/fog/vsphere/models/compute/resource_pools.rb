@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/resource_pool'
-
 module Fog
   module Compute
     class Vsphere
       class ResourcePools < Fog::Collection
+        autoload :ResourcePool, File.expand_path('../resource_pool', __FILE__)
+
         model Fog::Compute::Vsphere::ResourcePool
         attr_accessor :datacenter, :cluster
 

@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/datacenter'
-
 module Fog
   module Compute
     class Vsphere
       class Datacenters < Fog::Collection
+        autoload :Datacenter, File.expand_path('../datacenter', __FILE__)
+
         model Fog::Compute::Vsphere::Datacenter
 
         def all(filters = {})

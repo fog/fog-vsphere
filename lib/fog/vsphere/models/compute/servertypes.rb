@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/servertype'
-
 module Fog
   module Compute
     class Vsphere
       class Servertypes < Fog::Collection
+        autoload :Servertype, File.expand_path('../servertype', __FILE__)
+
         model Fog::Compute::Vsphere::Servertype
         attr_accessor :datacenter, :id, :fullname
 

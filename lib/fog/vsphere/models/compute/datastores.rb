@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/datastore'
-
 module Fog
   module Compute
     class Vsphere
       class Datastores < Fog::Collection
+        autoload :Datastore, File.expand_path('../datastore', __FILE__)
+
         model Fog::Compute::Vsphere::Datastore
         attr_accessor :datacenter
 

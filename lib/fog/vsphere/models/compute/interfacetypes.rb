@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/interfacetype'
-
 module Fog
   module Compute
     class Vsphere
       class Interfacetypes < Fog::Collection
+        autoload :Interfacetype, File.expand_path('../interfacetype', __FILE__)
+
         model Fog::Compute::Vsphere::Interfacetype
         attr_accessor :datacenter
         attr_accessor :servertype

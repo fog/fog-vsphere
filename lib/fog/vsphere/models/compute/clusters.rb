@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/cluster'
-
 module Fog
   module Compute
     class Vsphere
       class Clusters < Fog::Collection
+        autoload :Cluster, File.expand_path('../cluster', __FILE__)
+
         model Fog::Compute::Vsphere::Cluster
         attr_accessor :datacenter
 

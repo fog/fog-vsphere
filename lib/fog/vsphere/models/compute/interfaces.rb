@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/interface'
-
 module Fog
   module Compute
     class Vsphere
       class Interfaces < Fog::Collection
+        autoload :Interface, File.expand_path('../interface', __FILE__)
+
         model Fog::Compute::Vsphere::Interface
 
         attribute :server_id

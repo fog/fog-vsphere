@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/volume'
-
 module Fog
   module Compute
     class Vsphere
       class Volumes < Fog::Collection
+        autoload :Volume, File.expand_path('../volume', __FILE__)
+
         attribute :server_id
 
         model Fog::Compute::Vsphere::Volume

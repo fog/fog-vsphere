@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/network'
-
 module Fog
   module Compute
     class Vsphere
       class Networks < Fog::Collection
+        autoload :Network, File.expand_path('../network', __FILE__)
+
         model Fog::Compute::Vsphere::Network
         attr_accessor :datacenter
 

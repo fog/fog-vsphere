@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/customvalue'
-
 module Fog
   module Compute
     class Vsphere
       class Customvalues < Fog::Collection
+        autoload :Customvalue, File.expand_path('../customvalue', __FILE__)
+
         model Fog::Compute::Vsphere::Customvalue
 
         attr_accessor :vm

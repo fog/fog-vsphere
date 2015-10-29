@@ -1,10 +1,9 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/customfield'
-
 module Fog
   module Compute
     class Vsphere
       class Customfields < Fog::Collection
+        autoload :Customfield, File.expand_path('../customfield', __FILE__)
+
         model Fog::Compute::Vsphere::Customfield
 
         attr_accessor :vm
