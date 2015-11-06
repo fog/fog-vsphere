@@ -1,6 +1,6 @@
 # Fog::Vsphere
 
-[![Gem Version](https://badge.fury.io/rb/fog-vsphere.svg)](http://badge.fury.io/rb/fog-vsphere) [![Build Status](https://travis-ci.org/fog/fog-vsphere.svg?branch=master)](https://travis-ci.org/fog/fog-vsphere) [![Dependency Status](https://gemnasium.com/fog/fog-vsphere.svg)](https://gemnasium.com/fog/fog-vsphere) [![Coverage Status](https://img.shields.io/coveralls/fog/fog-vsphere.svg)](https://coveralls.io/r/fog/fog-vsphere) [![Code Climate](https://codeclimate.com/github/fog/fog-vsphere.png)](https://codeclimate.com/github/fog/fog-vsphere) [![Stories in Ready](https://badge.waffle.io/fog/fog-vsphere.png?label=ready&title=Ready)](https://waffle.io/fog/fog-vsphere)
+[![Gem Version](https://badge.fury.io/rb/fog-vsphere.svg)](http://badge.fury.io/rb/fog-vsphere) [![Build Status](https://travis-ci.org/fog/fog-vsphere.svg?branch=master)](https://travis-ci.org/fog/fog-vsphere) [![Dependency Status](https://gemnasium.com/fog/fog-vsphere.svg)](https://gemnasium.com/fog/fog-vsphere) [![Coverage Status](https://coveralls.io/repos/fog/fog-vsphere/badge.svg?branch=master&service=github)](https://coveralls.io/github/fog/fog-vsphere?branch=master) [![Code Climate](https://codeclimate.com/github/fog/fog-vsphere.png)](https://codeclimate.com/github/fog/fog-vsphere) [![Stories in Ready](https://badge.waffle.io/fog/fog-vsphere.png?label=ready&title=Ready)](https://waffle.io/fog/fog-vsphere)
 
 TODO: Write a gem description
 
