@@ -1,14 +1,8 @@
-if ENV['COVERAGE'] == 'true'
-  require 'coveralls'
-  require 'simplecov'
-  SimpleCov.command_name "shindo:#{Process.pid.to_s}"
-  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-    SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
-  ]
-  SimpleCov.merge_timeout 3600
-
-  Coveralls.wear!
+begin
+  require 'codeclimate-test-reporter'
+  CodeClimate::TestReporter.start
+rescue LoadError => e
+  $stderr.puts "not recording test coverage: #{e.inspect}"
 end
 
 require File.expand_path('../../lib/fog/vsphere', __FILE__)
