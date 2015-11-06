@@ -18,7 +18,6 @@ matrix:
       gemfile: Gemfile
     - rvm: 2.2.0
       gemfile: Gemfile
-      env: COVERAGE=true
     - rvm: jruby-18mode
       gemfile: gemfiles/Gemfile.1.9.2-
     - rvm: jruby-19mode
@@ -27,4 +26,7 @@ matrix:
       gemfile: Gemfile
 notifications:
   email: false
+addons:
+  code_climate:
+    repo_token: 44bcd04b60228fc94f2be3a5e0346441b5ea156e94e89a17fc24c5d3de483721
 
