@@ -7,10 +7,10 @@ module Fog
           raise ArgumentError, "name is a required parameter" unless options.key? 'name'
           vm = get_vm_ref(options['instance_uuid'])
           task = vm.CreateSnapshot_Task(
-            name: options['name'],
-            description: options['description'] || '',
-            memory: options['memory'] || true,
-            quiesce: options['quiesce'] || false
+            :name => options['name'],
+            :description => options['description'] || '',
+            :memory => options['memory'] || true,
+            :quiesce => options['quiesce'] || false
           )
 
           task.wait_for_completion
