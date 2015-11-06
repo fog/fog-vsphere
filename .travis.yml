@@ -1,6 +1,5 @@
 language: ruby
 sudo: false
-script: bundle exec rake test
 matrix:
   fast_finish: true
   include:
