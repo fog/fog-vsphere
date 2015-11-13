@@ -6,5 +6,6 @@ gem 'nokogiri', '~> 1.5.11'
 gem 'rainbow', '~> 1.99'
 gem 'rest-client', '~> 1.6.8'
 gem 'rubocop', '~> 0.5.0'
+gem 'tins', '~> 1.6.0'
 
 gemspec :path => '..'
