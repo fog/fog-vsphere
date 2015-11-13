@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['jrg@vmware.com']
 
   spec.summary       = "Module for the 'fog' gem to support VMware vSphere."
-  spec.description   = 'This library can be used as a module for `fog` or as standalone provider to use the XENSERVER in applications.'
+  spec.description   = 'This library can be used as a module for `fog` or as standalone provider to use vSphere in applications.'
   spec.homepage      = 'https://github.com/fog/fog-vsphere'
   spec.license       = 'MIT'
 
@@ -18,6 +18,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^tests\/})
 
   spec.require_paths = ['lib']
+
+  spec.required_ruby_version = '>= 1.8.7'
 
   spec.add_runtime_dependency 'fog-core', '~> 1.32'
   spec.add_runtime_dependency 'rbvmomi', '~> 1.8'
