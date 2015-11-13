@@ -12,7 +12,7 @@ module Fog
           )
 
           p_manager = @connection.serviceContent.guestOperationsManager.processManager
-          processes = p_manager.ListProcessesInGuest(vm: vm, auth: auth)
+          processes = p_manager.ListProcessesInGuest(:vm => vm, :auth => auth)
           processes.map do |pi|
             Process.new(
               :cmd_line => pi.cmdLine,
