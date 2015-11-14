@@ -1,4 +1,4 @@
-module Vsphere
+class Vsphere < Fog::Bin
   class << self
     def class_for(key)
       case key
