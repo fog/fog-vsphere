@@ -417,7 +417,7 @@ module Fog
           # Negotiate the API revision
           if not revision
             rev = @connection.serviceContent.about.apiVersion
-            @connection.rev = [ rev, ENV['FOG_VSPHERE_REV'] || '4.1' ].min
+            @connection.rev = [ rev, ENV['FOG_VSPHERE_REV'] || '4.1' ].max
           end
 
           @vsphere_is_vcenter = @connection.serviceContent.about.apiType == "VirtualCenter"
