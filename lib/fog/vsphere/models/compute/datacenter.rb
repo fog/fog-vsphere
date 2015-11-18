@@ -19,6 +19,10 @@ module Fog
           service.datastores({ :datacenter => path.join("/") }.merge(filters))
         end
 
+        def storage_pods filters = { }
+          service.storage_pods({ :datacenter => path.join("/") }.merge(filters))
+        end
+
         def vm_folders filters = { }
           service.folders({ :datacenter => path.join("/"), :type => :vm }.merge(filters))
         end

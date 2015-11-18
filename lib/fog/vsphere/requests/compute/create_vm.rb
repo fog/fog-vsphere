@@ -26,7 +26,13 @@ module Fog
                             get_raw_cluster(attributes[:cluster], attributes[:datacenter]).resourcePool
                           end
           vmFolder      = get_raw_vmfolder(attributes[:path], attributes[:datacenter])
-          vm            = vmFolder.CreateVM_Task(:config => vm_cfg, :pool => resource_pool).wait_for_completion
+          # if any volume has a storage_pod set, we deploy the vm on a storage pod instead of the defined datastores
+          pod = get_storage_pod(attributes)
+          if pod
+            vm = create_vm_on_storage_pod(pod, vm_cfg, vmFolder, resource_pool, attributes[:datacenter])
+          else
+            vm = create_vm_on_datastore(vm_cfg, vmFolder, resource_pool)
+          end
           vm.config.instanceUuid
         rescue => e
           raise e, "failed to create vm: #{e}"
@@ -34,9 +40,47 @@ module Fog
 
         private
 
+        def create_vm_on_datastore(vm_cfg, vmFolder, resource_pool)
+          vm = vmFolder.CreateVM_Task(:config => vm_cfg, :pool => resource_pool).wait_for_completion
+        end
+
+        def create_vm_on_storage_pod(storage_pod, vm_cfg, vmFolder, resource_pool, datacenter)
+          pod_spec     = RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
+            :storagePod => get_raw_storage_pod(storage_pod, datacenter),
+          )
+          storage_spec = RbVmomi::VIM::StoragePlacementSpec.new(
+            :type => 'create',
+            :folder => vmFolder,
+            :resourcePool => resource_pool,
+            :podSelectionSpec => pod_spec,
+            :configSpec => vm_cfg,
+          )
+          srm = @connection.serviceContent.storageResourceManager
+          result = srm.RecommendDatastores(:storageSpec => storage_spec)
+
+          # if result array contains recommendation, we can apply it
+          if key = result.recommendations.first.key
+            result = srm.ApplyStorageDrsRecommendation_Task(:key => [key]).wait_for_completion
+            vm = result.vm
+          else
+            raise "Could not create vm on storage pod, did not get a storage recommendation"
+          end
+          vm
+        end
+
+        # check if a storage pool is set on any of the volumes and return the first result found or nil
+        # return early if vsphere revision is lower than 5 as this is not supported
+        def get_storage_pod attributes
+          return unless @vsphere_rev.to_f >= 5
+          volume = attributes[:volumes].detect {|volume| !( volume.storage_pod.nil? || volume.storage_pod.empty? ) }
+          volume.storage_pod if volume
+        end
+
         # this methods defines where the vm config files would be located,
         # by default we prefer to keep it at the same place the (first) vmdk is located
+        # if we deploy the vm on a storage pool, we have to return an empty string
         def vm_path_name attributes
+          return '' if get_storage_pod(attributes)
           datastore = attributes[:volumes].first.datastore unless attributes[:volumes].empty?
           datastore ||= 'datastore1'
           "[#{datastore}]"
@@ -50,7 +94,7 @@ module Fog
 
           if (disks = attributes[:volumes])
             devices << create_controller(attributes[:scsi_controller]||attributes["scsi_controller"]||{})
-            devices << disks.map { |disk| create_disk(disk, disks.index(disk)) }
+            devices << disks.map { |disk| create_disk(disk, disks.index(disk), :add, 1000, get_storage_pod(attributes)) }
           end
           devices.flatten
         end
@@ -180,11 +224,17 @@ module Fog
           end
         end
 
-        def create_disk disk, index = 0, operation = :add, controller_key = 1000
+        def create_disk disk, index = 0, operation = :add, controller_key = 1000, storage_pod = nil
           if (index > 6) then
             _index = index + 1
           else
             _index = index
+          end
+          # If we deploy the vm on a storage pod, datastore has to be an empty string
+          if storage_pod
+            datastore ''
+          else
+            datastore = "[#{disk.datastore}]"
           end
           payload = {
             :operation     => operation,
@@ -192,7 +242,7 @@ module Fog
             :device        => RbVmomi::VIM.VirtualDisk(
               :key           => disk.key || _index,
               :backing       => RbVmomi::VIM.VirtualDiskFlatVer2BackingInfo(
-                :fileName        => "[#{disk.datastore}]",
+                :fileName        => datastore,
                 :diskMode        => disk.mode.to_sym,
                 :thinProvisioned => disk.thin
               ),

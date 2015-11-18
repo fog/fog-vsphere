@@ -33,6 +33,8 @@ module Fog
       collection :networks
       model :datastore
       collection :datastores
+      model :storage_pod
+      collection :storage_pods
       model :folder
       collection :folders
       model :customvalue
@@ -63,6 +65,8 @@ module Fog
       request :get_network
       request :list_datastores
       request :get_datastore
+      request :list_storage_pods
+      request :get_storage_pod
       request :list_compute_resources
       request :get_compute_resource
       request :list_templates

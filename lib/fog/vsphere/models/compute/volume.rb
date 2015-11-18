@@ -6,6 +6,7 @@ module Fog
         identity :id
 
         attribute :datastore
+        attribute :storage_pod
         attribute :mode
         attribute :size
         attribute :thin
