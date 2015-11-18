@@ -3,7 +3,11 @@ module Fog
     class Vsphere
       class Real
         def list_vm_snapshots(vm_id, opts = {})
-          root_snapshots = get_vm_ref(vm_id).snapshot.rootSnapshotList.map do |snap|
+          vm_snapshot_info = get_vm_ref(vm_id).snapshot
+
+          return [] unless vm_snapshot_info
+
+          root_snapshots = vm_snapshot_info.rootSnapshotList.map do |snap|
             item = snapshot_info(snap, vm_id)
             [
               item,
