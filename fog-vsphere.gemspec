@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 1.8.7'
 
-  spec.add_runtime_dependency 'fog-core', '~> 1.32'
+  spec.add_runtime_dependency 'fog-core'
   spec.add_runtime_dependency 'rbvmomi', '~> 1.8'
 
   spec.add_development_dependency 'bundler', '~> 1.10'
