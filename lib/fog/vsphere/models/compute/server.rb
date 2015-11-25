@@ -237,6 +237,14 @@ module Fog
           end
         end
 
+        def cdroms(opts = {})
+          service.cdroms(:instance_uuid => self.id).all(opts)
+        end
+
+        def cdrom(key)
+          cdroms.get(key)
+        end
+
         def guest_processes(opts = {})
           fail 'VM tools must be running' unless tools_running?
           service.list_processes(self.id, opts)
