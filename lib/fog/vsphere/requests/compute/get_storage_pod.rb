@@ -23,6 +23,7 @@ module Fog
 
       class Mock
         def get_storage_pod(name, datacenter_name)
+          list_storage_pods({datacenter: datacenter_name}).select{|h| h[:name] == name }.first
         end
       end
     end

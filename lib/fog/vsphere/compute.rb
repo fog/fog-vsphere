@@ -322,8 +322,16 @@ module Fog
                 }
               },
               :datacenters => {
-                "Solutions" => {:name => "Solutions", :status => "grey"}
+                "Solutions" => {:name => "Solutions", :status => "grey", :path => ['Solutions']}
               },
+              :storage_pods =>
+                [{:id => "group-p123456",
+                  :name => "Datastore Cluster 1",
+                  :freespace => "4856891834368",
+                  :capacity => "7132061630464",
+                  :datacenter => "Solutions",
+                 },
+                ],
               :clusters =>
                 [{:id => "1d4d9a3f-e4e8-4c40-b7fc-263850068fa4",
                   :name => "Solutionscluster",
