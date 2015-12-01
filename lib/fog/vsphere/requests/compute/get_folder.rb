@@ -41,7 +41,7 @@ module Fog
             # VIM::Folder#inventory since that returns _all_ managed objects of
             # a certain type _and_ their properties.
             sub = last_returned_folder.find(sub_folder, RbVmomi::VIM::Folder)
-            raise ArgumentError, "Could not descend into #{sub_folder}.  Please check your path. #{path}" unless sub
+            raise Fog::Compute::Vsphere::NotFound, "Could not descend into #{sub_folder}.  Please check your path. #{path}" unless sub
             sub
           end
         end
@@ -66,7 +66,9 @@ module Fog
       end
 
       class Mock
-        def get_folder(path, filters = { })
+        def get_folder(path, datacenter_name, type = nil)
+          self.data[:folders].values.find {|f| f['datacenter'] == datacenter_name and f['path'].end_with? path} or
+            raise Fog::Compute::Vsphere::NotFound        
         end
       end
     end

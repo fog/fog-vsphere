@@ -291,6 +291,20 @@ module Fog
 
       class Mock
         def create_vm attributes = { }
+          id = SecureRandom.uuid
+          vm = {
+            'id'                => id,
+            'uuid'              => id,
+            'instance_uuid'     => id,
+            'mo_ref'            => "vm-#{rand 99999}",
+            'datacenter'        => attributes[:datacenter],
+            'name'              => attributes[:name],
+            'interfaces'        => attributes[:interfaces].map {{
+              'mac' => Faker::Internet.mac_address
+            }}
+          }
+          self.data[:servers][id] = vm
+          id
         end
 
         def create_cdrom cdrom, index = 0, operation = :add, controller_key = 200

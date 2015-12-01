@@ -65,13 +65,16 @@ module Fog
         end
 
         def list_virtual_machines(options = { })
-          if options['instance_uuid'].nil? and options['mo_ref'].nil?
-            self.data[:servers].values
-          elsif !options['instance_uuid'].nil?
+          if options['instance_uuid']
             server = self.data[:servers][options['instance_uuid']]
             server.nil? ? [] : [server]
-          else
+          elsif options['mo_ref']
             self.data[:servers].values.select{|vm| vm['mo_ref'] == options['mo_ref']}
+          elsif options[:folder] and options[:datacenter]
+            self.data[:servers].values.select {|vm| vm['path'] == options[:folder] && vm['datacenter'] == options[:datacenter]}
+          else
+            options.delete('datacenter') # real code iterates if this is missing
+            self.data[:servers].values.select {|vm| options.all? {|k,v| vm[k.to_s] == v.to_s }}
           end
         end
       end

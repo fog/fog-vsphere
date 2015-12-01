@@ -17,6 +17,16 @@ module Fog
           end
         end
       end
+      class Mock
+        def create_folder(datacenter, path, name)
+          self.data[:folders][name] = {
+            'name'       => name,
+            'datacenter' => datacenter,
+            'path'       => "#{path}/#{name}",
+            'type'       => 'vm'
+          }
+        end
+      end
     end
   end
 end

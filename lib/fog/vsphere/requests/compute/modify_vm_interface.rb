@@ -53,6 +53,13 @@ module Fog
           raise ArgumentError, "interface is a required parameter" unless options and options[:interface]
           true
         end
+        
+        def update_vm_interface(vmid, options = {})
+          if options[:interface]
+            options[:interface].network = options[:network]
+            options[:interface].type    = options[:type]
+          end
+        end
       end
     end
   end
