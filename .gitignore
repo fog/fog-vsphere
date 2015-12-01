@@ -21,3 +21,5 @@ tmp
 *.a
 mkmf.log
 gemfiles/*.lock
+*.ruby-*
+*.idea

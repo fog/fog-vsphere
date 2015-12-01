@@ -17,46 +17,47 @@ module Fog
         # In particular:
         #   GuestInfo: information about the guest operating system
         #   VirtualMachineConfigInfo: Access to the VMX file and configuration
-
-        attribute :name
-        # UUID may be the same from VM to VM if the user does not select (I copied it)
-        attribute :uuid
-        attribute :hostname
-        attribute :operatingsystem
-        attribute :public_ip_address, :aliases => 'ipaddress'
-        attribute :power_state,   :aliases => 'power'
-        attribute :tools_state,   :aliases => 'tools'
-        attribute :tools_version
-        attribute :mac_addresses, :aliases => 'macs'
-        attribute :hypervisor,    :aliases => 'host'
-        attribute :connection_state
-        attribute :mo_ref
-        attribute :path
-        attribute :memory_mb
-        attribute :cpus
-        attribute :corespersocket
-        attribute :interfaces
-        attribute :volumes
-        attribute :customvalues
-        attribute :overall_status, :aliases => 'status'
         attribute :cluster
+        attribute :connection_state
+        attribute :corespersocket
+        attribute :cpuHotAddEnabled
+        attribute :cpus
+        attribute :customvalues
         attribute :datacenter
-        attribute :resource_pool
-        attribute :instance_uuid # move this --> id
+        attribute :firmware
         attribute :guest_id
         attribute :hardware_version
-        attribute :scsi_controller # this is the first scsi controller. Right now no more of them can be used.
-        attribute :cpuHotAddEnabled
+        attribute :hostname
+        attribute :hypervisor,    :aliases => 'host'
+        attribute :instance_uuid # move this --> id
+        attribute :interfaces
+        attribute :mac_addresses, :aliases => 'macs'
+        attribute :memory_mb
         attribute :memoryHotAddEnabled
-        attribute :firmware
+        attribute :mo_ref
+        attribute :name
+        attribute :operatingsystem
+        attribute :overall_status, :aliases => 'status'
+        attribute :path
+        attribute :power_state,   :aliases => 'power'
+        attribute :public_ip_address, :aliases => 'ipaddress'
+        attribute :resource_pool
+        attribute :scsi_controller # this is the first scsi controller. Right now no more of them can be used.
+        attribute :summary # VirtualMachineSummary
+        attribute :tools_state,   :aliases => 'tools'
+        attribute :tools_version
+        # UUID may be the same from VM to VM if the user does not select (I copied it)
+        attribute :uuid
+        attribute :volumes
 
         def initialize(attributes={} )
           super defaults.merge(attributes)
-          self.instance_uuid ||= id # TODO: remvoe instance_uuid as it can be replaced with simple id
+          self.instance_uuid ||= id # TODO: remove instance_uuid as it can be replaced with simple id
           initialize_interfaces
           initialize_volumes
           initialize_customvalues
           initialize_scsi_controller
+          initialize_virtual_machine_summary
         end
 
         # Lazy Loaded Attributes
@@ -319,6 +320,13 @@ module Fog
             Fog::Compute::Vsphere::SCSIController.new(self.attributes[:scsi_controller])
           end
         end
+
+        def initialize_virtual_machine_summary
+          if attributes[:summary] && attributes[:summary].props
+            self.attributes[:summary] = Fog::Compute::Vsphere::VirtualMachineSummary.new(self.attributes[:summary].props)
+          end
+        end
+
       end
     end
   end

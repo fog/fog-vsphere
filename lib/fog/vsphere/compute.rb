@@ -43,6 +43,9 @@ module Fog
       collection :customfields
       model :scsicontroller
       model :process
+      model :virtual_machine_storage_summary
+      model :virtual_machine_summary
+      model :virtual_machine_config_summary
 
       request_path 'fog/vsphere/requests/compute'
       request :current_time
@@ -129,6 +132,7 @@ module Fog
           :cpuHotAddEnabled => 'config.cpuHotAddEnabled',
           :memoryHotAddEnabled => 'config.memoryHotAddEnabled',
           :firmware => 'config.firmware',
+          :summary => 'summary'
         }
 
         def convert_vm_view_to_attr_hash(vms)
