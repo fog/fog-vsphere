@@ -32,8 +32,12 @@ module Fog
         end
       end
       class Mock
-        def list_storage_pods(datacenter_name)
-          []
+        def list_storage_pods(filters = {})
+          if filters.key?(:datacenter)
+            self.data[:storage_pods].select{|h| h[:datacenter] == filters[:datacenter] }
+          else
+            self.data[:storage_pods]
+          end
         end
       end
     end
