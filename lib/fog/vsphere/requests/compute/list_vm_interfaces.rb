@@ -29,31 +29,49 @@ module Fog
   #unitNumber: 7,
   #
         def list_vm_interfaces(vm_id, datacenter = nil)
-          get_vm_ref(vm_id, datacenter).config.hardware.device.grep(RbVmomi::VIM::VirtualEthernetCard).map do |nic|
-            {
-              :name    => nic.deviceInfo.label,
-              :mac     => nic.macAddress,
-              :network => nic.backing.respond_to?("network") ? nic.backing.network.name : nic.backing.port.portgroupKey,
-              :status  => nic.connectable.status,
-              :summary => nic.deviceInfo.summary,
-              :type    => nic.class,
-              :key     => nic.key,
-            }
-          end
+          get_raw_interfaces(vm_id, datacenter).map {|nic| raw_to_hash nic}
         end
 
         def get_vm_interface(vm_id, options={})
+          if raw = get_raw_interface(vm_id, options)
+            raw_to_hash(raw)
+          else
+            nil
+          end
+        end
+        
+        def get_raw_interfaces(vm_id, datacenter = nil)
+          get_vm_ref(vm_id, datacenter).config.hardware.device.grep(RbVmomi::VIM::VirtualEthernetCard)
+        end
+        
+        def get_raw_interface(vm_id, options={})
           raise ArgumentError, "instance id is a required parameter" unless vm_id
           if options.is_a? Fog::Compute::Vsphere::Interface
             options
           else
             raise ArgumentError, "Either key or name is a required parameter. options: #{options}" unless options.key? :key or options.key? :mac or options.key? :name
-            list_vm_interfaces(vm_id).find do | nic |
-              (options.key? :key and nic[:key]==options[:key].to_i) or (options.key? :mac and nic[:mac]==options[:mac]) or (options.key? :name and nic[:name]==options[:name])
+            get_raw_interfaces(vm_id).find do |nic|
+              (options.key? :key and nic.key==options[:key].to_i) or (options.key? :mac and nic.macAddress==options[:mac]) or (options.key? :name and nic.deviceInfo.label==options[:name])
             end
           end
         end
+        
+        private
+        
+        def raw_to_hash(nic)
+          {
+            :name    => nic.deviceInfo.label,
+            :mac     => nic.macAddress,
+            :network => nic.backing.respond_to?("network") ? nic.backing.network.name : nic.backing.port.portgroupKey,
+            :status  => nic.connectable.status,
+            :summary => nic.deviceInfo.summary,
+            :type    => nic.class,
+            :key     => nic.key,
+          }
+        end
+        
       end
+      
       class Mock
         def list_vm_interfaces(vm_id)
         end

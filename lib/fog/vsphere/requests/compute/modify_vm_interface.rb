@@ -19,11 +19,22 @@ module Fog
         def update_vm_interface(vmid, options = {})
           raise ArgumentError, "instance id is a required parameter" unless vmid
 
-          interface = get_interface_from_options(vmid, options.merge(:server_id => vmid))
-          vm_reconfig_hardware('instance_uuid' => vmid, 'hardware_spec' => {'deviceChange'=>[create_interface(interface, interface.key, :edit)]})
+          interface = get_interface_from_options(vmid, options)
+          raw_interface = get_raw_interface(vmid, key: interface.key)
+          if options[:network]
+              interface.network = options[:network]
+              backing = create_nic_backing(interface, {})
+              raw_interface.backing = backing
+          end
+          spec = {
+              operation: :edit,
+              device: raw_interface
+          }          
+          vm_reconfig_hardware('instance_uuid' => vmid, 'hardware_spec' => {'deviceChange'=>[spec]})
         end
 
         private
+        
         def get_interface_from_options(vmid, options)
           if options and options[:interface]
             options[:interface]
