@@ -74,6 +74,7 @@ module Fog
             self.data[:servers].values.select {|vm| vm['path'] == options[:folder] && vm['datacenter'] == options[:datacenter]}
           else
             options.delete('datacenter') # real code iterates if this is missing
+            options.reject! {|k,v| v.nil? } # ignore options with nil value
             self.data[:servers].values.select {|vm| options.all? {|k,v| vm[k.to_s] == v.to_s }}
           end
         end
