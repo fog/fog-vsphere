@@ -7,6 +7,7 @@ module Fog
 
           vm_cfg        = {
             :name         => attributes[:name],
+            :annotation   => attributes[:annotation],
             :guestId      => attributes[:guest_id],
             :version      => attributes[:hardware_version],
             :files        => { :vmPathName => vm_path_name(attributes) },
@@ -260,12 +261,8 @@ module Fog
         end
 
         def extra_config attributes
-          [
-            {
-              :key   => 'bios.bootOrder',
-              :value => 'ethernet0'
-            }
-          ]
+          extra_config = attributes[:extra_config] || {'bios.bootOrder' => 'ethernet0'}
+          extra_config.map {|k,v| {:key => k, :value => v.to_s} }
         end
       end
 
