@@ -18,6 +18,10 @@ module Fog
         def to_s
           name
         end
+        
+        def destroy
+          service.folder_destroy(path, datacenter)
+        end
       end
     end
   end
