@@ -103,10 +103,18 @@ module Fog
         def boot_options attributes
           # NOTE: you must be using vsphere_rev 5.0 or greater to set boot_order
           # e.g. Fog::Compute.new(provider: "vsphere", vsphere_rev: "5.5", etc)
-          return unless @vsphere_rev.to_f >= 5
-          RbVmomi::VIM::VirtualMachineBootOptions.new(
-            :bootOrder => boot_order(attributes)
-          )
+          options = {}
+          if @vsphere_rev.to_f >= 5
+            options[:bootOrder] = boot_order(attributes)
+          end
+          
+          # Set attributes[:boot_retry] to a delay in miliseconds to enable boot retries
+          if attributes[:boot_retry]
+            options[:bootRetryEnabled] = true
+            options[:bootRetryDelay]   = attributes[:boot_retry]
+          end
+                   
+          options.empty? ? nil : RbVmomi::VIM::VirtualMachineBootOptions.new(options)
         end
 
         def boot_order attributes
