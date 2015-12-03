@@ -97,6 +97,10 @@ module Fog
             devices << create_controller(attributes[:scsi_controller]||attributes["scsi_controller"]||{})
             devices << disks.map { |disk| create_disk(disk, disks.index(disk), :add, 1000, get_storage_pod(attributes)) }
           end
+
+          if (cdroms = attributes[:cdroms])
+            devices << cdroms.map { |cdrom| create_cdrom(cdrom, cdroms.index(cdrom)) }
+          end
           devices.flatten
         end
 
@@ -268,6 +272,22 @@ module Fog
           payload
         end
 
+        def create_cdrom cdrom, index = 0, operation = :add, controller_key = 200
+          {
+            :operation     => operation,
+            :device        => RbVmomi::VIM.VirtualCdrom(
+              :key           => cdrom.key || index,
+              :backing       => RbVmomi::VIM::VirtualCdromRemoteAtapiBackingInfo(deviceName: ''),
+              :controllerKey => controller_key,
+              connectable: RbVmomi::VIM::VirtualDeviceConnectInfo(
+                startConnected: false,
+                connected: false,
+                allowGuestControl: true,
+              ),
+            )
+          }
+        end
+
         def extra_config attributes
           extra_config = attributes[:extra_config] || {'bios.bootOrder' => 'ethernet0'}
           extra_config.map {|k,v| {:key => k, :value => v.to_s} }
@@ -276,6 +296,22 @@ module Fog
 
       class Mock
         def create_vm attributes = { }
+        end
+
+        def create_cdrom cdrom, index = 0, operation = :add, controller_key = 200
+          {
+            :operation     => operation,
+            :device        => {
+              :key           => cdrom.key || index,
+              :backing       => { deviceName: '' },
+              :controllerKey => controller_key,
+              connectable: {
+                startConnected: false,
+                connected: false,
+                allowGuestControl: true,
+              },
+            }
+          }
         end
       end
     end

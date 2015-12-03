@@ -13,7 +13,7 @@ module Fog
 
       class Mock
         def add_vm_volume(volume)
-          true
+          vm_reconfig_hardware('instance_uuid' => volume.server_id, 'hardware_spec' => {'deviceChange'=>[create_cdrom(volume, volume.unit_number, :add)]})
         end
 
         def destroy_vm_volume(volume)
