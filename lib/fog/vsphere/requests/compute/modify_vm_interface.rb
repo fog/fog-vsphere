@@ -22,13 +22,13 @@ module Fog
           interface = get_interface_from_options(vmid, options)
           raw_interface = get_raw_interface(vmid, key: interface.key)
           if options[:network]
-              interface.network = options[:network]
-              backing = create_nic_backing(interface, {})
-              raw_interface.backing = backing
+            interface.network = options[:network]
+            backing = create_nic_backing(interface, {})
+            raw_interface.backing = backing
           end
           spec = {
-              operation: :edit,
-              device: raw_interface
+            operation: :edit,
+            device: raw_interface
           }          
           vm_reconfig_hardware('instance_uuid' => vmid, 'hardware_spec' => {'deviceChange'=>[spec]})
         end

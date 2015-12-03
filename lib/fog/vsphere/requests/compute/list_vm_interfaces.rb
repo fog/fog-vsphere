@@ -51,7 +51,9 @@ module Fog
           else
             raise ArgumentError, "Either key or name is a required parameter. options: #{options}" unless options.key? :key or options.key? :mac or options.key? :name
             get_raw_interfaces(vm_id).find do |nic|
-              (options.key? :key and nic.key==options[:key].to_i) or (options.key? :mac and nic.macAddress==options[:mac]) or (options.key? :name and nic.deviceInfo.label==options[:name])
+              (options.key? :key and nic.key==options[:key].to_i) or
+              (options.key? :mac and nic.macAddress==options[:mac]) or
+              (options.key? :name and nic.deviceInfo.label==options[:name])
             end
           end
         end
