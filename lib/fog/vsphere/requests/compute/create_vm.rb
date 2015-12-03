@@ -20,7 +20,7 @@ module Fog
           vm_cfg[:cpuHotAddEnabled] = attributes[:cpuHotAddEnabled] if attributes.key?(:cpuHotAddEnabled)
           vm_cfg[:memoryHotAddEnabled] = attributes[:memoryHotAddEnabled] if attributes.key?(:memoryHotAddEnabled)
           vm_cfg[:firmware] = attributes[:firmware] if attributes.key?(:firmware)
-          vm_cfg[:bootOptions] = boot_options(attributes) if attributes.key?(:boot_order)
+          vm_cfg[:bootOptions] = boot_options(attributes) if attributes.key?(:boot_order) || attributes.key?(:boot_retry)
           resource_pool = if attributes[:resource_pool]
                             get_raw_resource_pool(attributes[:resource_pool], attributes[:cluster], attributes[:datacenter])
                           else
@@ -104,10 +104,10 @@ module Fog
           # NOTE: you must be using vsphere_rev 5.0 or greater to set boot_order
           # e.g. Fog::Compute.new(provider: "vsphere", vsphere_rev: "5.5", etc)
           options = {}
-          if @vsphere_rev.to_f >= 5
+          if @vsphere_rev.to_f >= 5 and attributes[:boot_order]
             options[:bootOrder] = boot_order(attributes)
           end
-          
+
           # Set attributes[:boot_retry] to a delay in miliseconds to enable boot retries
           if attributes[:boot_retry]
             options[:bootRetryEnabled] = true
