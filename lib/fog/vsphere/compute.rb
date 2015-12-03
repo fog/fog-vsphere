@@ -103,6 +103,7 @@ module Fog
       request :revert_to_snapshot
       request :list_processes
       request :upload_iso
+      request :folder_destroy
 
       module Shared
         attr_reader :vsphere_is_vcenter
@@ -330,7 +331,7 @@ module Fog
                  "tools_state"      => "toolsOk",
                  "name"             => "jefftest",
                  "operatingsystem"  => "Red Hat Enterprise Linux 6 (64-bit)",
-                 "path"             => "/",
+                 "path"             => "/Solutions/wibble",
                  "tools_version"    => "guestToolsUnmanaged",
                  "ipaddress"        => "192.168.100.187",
                  "uuid"             => "42329da7-e8ab-29ec-1892-d6a4a964912a",
@@ -341,6 +342,20 @@ module Fog
               },
               :datacenters => {
                 "Solutions" => {:name => "Solutions", :status => "grey", :path => ['Solutions']}
+              },
+              :folders => {
+                'wibble' => {
+                  'name' => 'wibble',
+                  'datacenter' => 'Solutions',
+                  'path' => '/Solutions/wibble',
+                  'type' => 'vm'
+                },
+                'empty' => {
+                  'name' => 'empty',
+                  'datacenter' => 'Solutions',
+                  'path' => '/Solutions/empty',
+                  'type' => 'vm'
+                }
               },
               :storage_pods =>
                 [{:id => "group-p123456",

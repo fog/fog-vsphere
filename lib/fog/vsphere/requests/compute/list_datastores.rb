@@ -32,7 +32,8 @@ module Fog
       end
       class Mock
         def list_datastores(datacenter_name)
-          []
+          self.data[:datastores].values.select {|d| d['datacenter'] == datacenter_name[:datacenter]} or
+            raise Fog::Compute::Vsphere::NotFound
         end
       end
     end
