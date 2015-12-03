@@ -4,17 +4,12 @@ module Fog
       class Real
         def folder_destroy(path, datacenter_name)
           folder = get_raw_vmfolder(path, datacenter_name)
-          if folder
-            if folder.childEntity.size > 0
-              raise Fog::Vsphere::Errors::ServiceError, "Folder #{path} is not empty"
-            else
-              task = folder.Destroy_Task
-              task.wait_for_completion
-              { 'task_state' => task.info.state }
-            end
-          else
-            raise Fog::Vsphere::Errors::NotFound, "No such folder #{path}"
-          end
+          raise Fog::Vsphere::Errors::NotFound, "No such folder #{path}" unless folder
+          raise Fog::Vsphere::Errors::ServiceError, "Folder #{path} is not empty" if folder.childEntity.size > 0
+          
+          task = folder.Destroy_Task
+          task.wait_for_completion
+          { 'task_state' => task.info.state }
         end
       end
       class Mock

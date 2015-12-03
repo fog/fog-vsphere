@@ -55,10 +55,9 @@ module Fog
         end
         
         def update_vm_interface(vmid, options = {})
-          if options[:interface]
-            options[:interface].network = options[:network]
-            options[:interface].type    = options[:type]
-          end
+          return unless options[:interface]
+          options[:interface].network = options[:network]
+          options[:interface].type    = options[:type]
         end
       end
     end
