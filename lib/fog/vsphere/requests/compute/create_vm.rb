@@ -300,7 +300,7 @@ module Fog
             'datacenter'        => attributes[:datacenter],
             'name'              => attributes[:name],
             'interfaces'        => attributes[:interfaces].map {{
-              'mac' => Faker::Internet.mac_address
+              'mac' => 'f2:b5:46:b5:d8:d7'
             }}
           }
           self.data[:servers][id] = vm
