@@ -43,6 +43,8 @@ module Fog
       collection :customfields
       model :scsicontroller
       model :process
+      model :cdrom
+      collection :cdroms
 
       request_path 'fog/vsphere/requests/compute'
       request :current_time
@@ -77,11 +79,14 @@ module Fog
       request :list_vm_interfaces
       request :modify_vm_interface
       request :modify_vm_volume
+      request :modify_vm_cdrom
       request :list_vm_volumes
+      request :list_vm_cdroms
       request :get_virtual_machine
       request :vm_reconfig_hardware
       request :vm_reconfig_memory
       request :vm_reconfig_cpus
+      request :vm_reconfig_cdrom
       request :vm_config_vnc
       request :create_folder
       request :list_server_types
@@ -97,6 +102,7 @@ module Fog
       request :list_child_snapshots
       request :revert_to_snapshot
       request :list_processes
+      request :upload_iso
 
       module Shared
         attr_reader :vsphere_is_vcenter
@@ -240,6 +246,17 @@ module Fog
                       "name"    => "Network adapter 1",
                       "status"  => "ok",
                       "summary" => "VM Network",
+                     }],
+                 "cdroms" =>
+                    [{
+                      "name"                => "CD-/DVD-Drive 1",
+                      "filename"            => nil,
+                      "key"                 => 3000,
+                      "controller_key"      => 200,
+                      "unit_number"         => 0,
+                      "start_connected"     => false,
+                      "allow_guest_control" => true,
+                      "connected"           => false,
                      }],
                  "hypervisor"       => "gunab.puppetlabs.lan",
                  "guest_id"         => "rhel6_64Guest",
