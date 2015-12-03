@@ -33,7 +33,8 @@ module Fog
         end
 
         def get_vm_interface(vm_id, options={})
-          if raw = get_raw_interface(vm_id, options)
+          raw = get_raw_interface(vm_id, options)
+          if raw
             raw_to_hash(raw)
           else
             nil
