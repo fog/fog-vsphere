@@ -45,6 +45,8 @@ module Fog
       model :process
       model :cdrom
       collection :cdroms
+      model :rule
+      collection :rules
 
       request_path 'fog/vsphere/requests/compute'
       request :current_time
@@ -104,6 +106,9 @@ module Fog
       request :list_processes
       request :upload_iso
       request :folder_destroy
+      request :create_rule
+      request :list_rules
+      request :destroy_rule
 
       module Shared
         attr_reader :vsphere_is_vcenter
@@ -400,7 +405,18 @@ module Fog
                                   :klass => "RbVmomi::VIM::ComputeResource"}
                    ]
                  }
-                ]
+               ],
+               :rules => {
+                 'anti-affinity-foo' => {
+                   :datacenter => 'Solutions',
+                   :cluster => 'Solutionscluster',
+                   :key => 4242,
+                   :name => 'anti-affinity-foo',
+                   :enabled => true,
+                   :type => RbVmomi::VIM::ClusterAntiAffinityRuleSpec,
+                   :vm_ids => ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']
+                 }
+               }
             }
           end
         end
@@ -481,6 +497,29 @@ module Fog
                                              :ssl  => @vsphere_ssl,
                                              :insecure => bad_cert,
                                              :debug => @vsphere_debug
+              
+              # Create a shadow class to change the behaviour of @connection.obj2xml
+              # so that xsd:any types are converted to xsd:int (and not xsd:long).
+              #
+              # This is a known issue with RbVmomi.
+              #
+              # See https://communities.vmware.com/message/2505334 for discussion
+              # and https://github.com/rlane/rbvmomi/pull/30 for an unmerged
+              # pull request that fixes it in RbVmomi.
+              #
+              class <<@connection
+                def obj2xml xml, name, type, is_array, o, attrs={}
+                  case o
+                  when Integer
+                    attrs['xsi:type'] = 'xsd:int' if type(type) == RbVmomi::BasicTypes::AnyType
+                    xml.tag! name, o.to_s, attrs
+                    xml
+                  else
+                    super xml, name, type, is_array, o, attrs
+                  end
+                end
+              end
+                                             
               break
             rescue OpenSSL::SSL::SSLError
               raise if bad_cert

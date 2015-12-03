@@ -18,6 +18,10 @@ module Fog
                                                                                           :datacenter => datacenter
                                                                                         }.merge(filters))
         end
+        
+        def rules
+          service.rules(:datacenter => datacenter, :cluster => name)
+        end
 
         def to_s
           name
