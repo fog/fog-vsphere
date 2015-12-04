@@ -49,6 +49,7 @@ module Fog
         attribute :cpuHotAddEnabled
         attribute :memoryHotAddEnabled
         attribute :firmware
+        attribute :annotation
 
         def initialize(attributes={} )
           super defaults.merge(attributes)

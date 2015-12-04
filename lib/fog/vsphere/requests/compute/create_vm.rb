@@ -7,6 +7,7 @@ module Fog
 
           vm_cfg        = {
             :name         => attributes[:name],
+            :annotation   => attributes[:annotation],
             :guestId      => attributes[:guest_id],
             :version      => attributes[:hardware_version],
             :files        => { :vmPathName => vm_path_name(attributes) },
@@ -19,7 +20,7 @@ module Fog
           vm_cfg[:cpuHotAddEnabled] = attributes[:cpuHotAddEnabled] if attributes.key?(:cpuHotAddEnabled)
           vm_cfg[:memoryHotAddEnabled] = attributes[:memoryHotAddEnabled] if attributes.key?(:memoryHotAddEnabled)
           vm_cfg[:firmware] = attributes[:firmware] if attributes.key?(:firmware)
-          vm_cfg[:bootOptions] = boot_options(attributes) if attributes.key?(:boot_order)
+          vm_cfg[:bootOptions] = boot_options(attributes) if attributes.key?(:boot_order) || attributes.key?(:boot_retry)
           resource_pool = if attributes[:resource_pool]
                             get_raw_resource_pool(attributes[:resource_pool], attributes[:cluster], attributes[:datacenter])
                           else
@@ -106,10 +107,18 @@ module Fog
         def boot_options attributes
           # NOTE: you must be using vsphere_rev 5.0 or greater to set boot_order
           # e.g. Fog::Compute.new(provider: "vsphere", vsphere_rev: "5.5", etc)
-          return unless @vsphere_rev.to_f >= 5
-          RbVmomi::VIM::VirtualMachineBootOptions.new(
-            :bootOrder => boot_order(attributes)
-          )
+          options = {}
+          if @vsphere_rev.to_f >= 5 and attributes[:boot_order]
+            options[:bootOrder] = boot_order(attributes)
+          end
+
+          # Set attributes[:boot_retry] to a delay in miliseconds to enable boot retries
+          if attributes[:boot_retry]
+            options[:bootRetryEnabled] = true
+            options[:bootRetryDelay]   = attributes[:boot_retry]
+          end
+                   
+          options.empty? ? nil : RbVmomi::VIM::VirtualMachineBootOptions.new(options)
         end
 
         def boot_order attributes
@@ -280,12 +289,8 @@ module Fog
         end
 
         def extra_config attributes
-          [
-            {
-              :key   => 'bios.bootOrder',
-              :value => 'ethernet0'
-            }
-          ]
+          extra_config = attributes[:extra_config] || {'bios.bootOrder' => 'ethernet0'}
+          extra_config.map {|k,v| {:key => k, :value => v.to_s} }
         end
       end
 
