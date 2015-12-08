@@ -10,6 +10,7 @@ module Fog
         attr_accessor :cluster
         attr_accessor :resource_pool
         attr_accessor :folder
+        attr_accessor :recursive
 
         # 'folder' => '/Datacenters/vm/Jeff/Templates' will be MUCH faster.
         # than simply listing everything.
@@ -19,14 +20,15 @@ module Fog
             :cluster       => cluster,
             :network       => network,
             :resource_pool => resource_pool,
-            :folder        => folder
+            :folder        => folder,
+            :recursive     => recursive,
           }.merge(filters)
 
           load service.list_virtual_machines(f)
         end
 
         def get(id, datacenter = nil)
-          new service.get_virtual_machine id, datacenter
+          new service.get_virtual_machine id, datacenter, folder, recursive
         rescue Fog::Compute::Vsphere::NotFound
           nil
         end

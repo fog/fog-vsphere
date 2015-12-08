@@ -11,7 +11,7 @@ module Fog
           if options['instance_uuid'] then
             [get_virtual_machine(options['instance_uuid'])]
           elsif options[:folder] && options[:datacenter] then
-            list_all_virtual_machines_in_folder(options[:folder], options[:datacenter])
+            list_all_virtual_machines_in_folder(options[:folder], options[:datacenter], options[:recursive])
           else
             list_all_virtual_machines(options)
           end
@@ -20,15 +20,24 @@ module Fog
 
         private
 
-        def list_all_virtual_machines_in_folder(path, datacenter_name)
-          folder = get_raw_vmfolder(path, datacenter_name)
-
-          vms = folder.children.grep(RbVmomi::VIM::VirtualMachine)
+        def list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
+          vms = raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
           # remove all template based virtual machines
           vms.delete_if { |v| v.config.nil? or v.config.template }
           vms.map(&method(:convert_vm_mob_ref_to_attr_hash))
         end
-
+        
+        def raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
+          folder = get_raw_vmfolder(path, datacenter_name)
+          vms = folder.children.grep(RbVmomi::VIM::VirtualMachine)
+          if recursive
+            vms += folder.children.grep(RbVmomi::VIM::Folder).map do |child_folder|
+              raw_list_all_virtual_machines_in_folder(folder_path(child_folder), datacenter_name, recursive)
+            end.flatten
+          end
+          vms
+        end
+        
         def list_all_virtual_machines(options = { })
           raw_vms = raw_list_all_virtual_machines(options[:datacenter])
           vms = convert_vm_view_to_attr_hash(raw_vms)
