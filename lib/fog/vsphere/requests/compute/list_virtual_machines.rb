@@ -21,7 +21,7 @@ module Fog
         private
 
         def list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
-          vms = raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
+          vms = raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive).to_a
           # remove all template based virtual machines
           vms.delete_if { |v| v.config.nil? or v.config.template }
           vms.map(&method(:convert_vm_mob_ref_to_attr_hash))
@@ -29,13 +29,22 @@ module Fog
         
         def raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
           folder = get_raw_vmfolder(path, datacenter_name)
-          vms = folder.children.grep(RbVmomi::VIM::VirtualMachine)
-          if recursive
-            vms += folder.children.grep(RbVmomi::VIM::Folder).map do |child_folder|
-              raw_list_all_virtual_machines_in_folder(folder_path(child_folder), datacenter_name, recursive)
-            end.flatten
+          folder_enumerator(folder, recursive)
+        end
+        
+        # An enumerator for a folder. Enumerates all the VMs in the folder, recursively if
+        # passed recursive=true
+        def folder_enumerator(raw_folder, recursive)
+          Enumerator.new do |yielder|
+            raw_folder.children.each do |child|
+              case child
+              when RbVmomi::VIM::Folder
+                folder_enumerator(child, true).each {|item| yielder.yield item} if recursive
+              when RbVmomi::VIM::VirtualMachine
+                yielder.yield child
+              end
+            end
           end
-          vms
         end
         
         def list_all_virtual_machines(options = { })

@@ -30,6 +30,8 @@ module Fog
 
         def get_vm_by_name(name, dc, folder, recursive)
           if folder
+            # This returns an Enumerator, which when called with .find will
+            # search only until it finds the VM we're looking for
             vms = raw_list_all_virtual_machines_in_folder(folder, dc, recursive)
           else
             vms = raw_list_all_virtual_machines(dc)
@@ -38,11 +40,11 @@ module Fog
           if name.include?('/')
             folder = File.dirname(name)
             basename = File.basename(name)
-            vms.keep_if { |v| v["name"] == basename && v.parent.pretty_path.include?(folder) }.first
+            vms.find { |v| v["name"] == basename && v.parent.pretty_path.include?(folder) }
           else
-            vms.keep_if { |v| v["name"] == name }.first
+            vms.find { |v| v["name"] == name }
           end
-        end
+        end        
         
       end
 
