@@ -32,6 +32,17 @@ module Fog
         rescue Fog::Compute::Vsphere::NotFound
           nil
         end
+        
+        # Pass attributes we know about down to any VM we're creating
+        def new(attributes = {})
+          super({
+            :datacenter    => datacenter,
+            :path          => folder,
+            :cluster       => cluster,
+            :resource_pool => resource_pool,
+          }.merge(attributes))
+        end
+        
       end
     end
   end
