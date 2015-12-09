@@ -1,9 +1,8 @@
 require 'fog/core'
+require 'fog/vsphere/compute'
 
 module Fog
   module Vsphere
-    autoload :Compute, File.expand_path('../vsphere/compute', __FILE__)
-
     extend Fog::Provider
 
     module Errors
