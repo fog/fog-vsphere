@@ -21,7 +21,7 @@ module Fog
           vm_cfg[:memoryHotAddEnabled] = attributes[:memoryHotAddEnabled] if attributes.key?(:memoryHotAddEnabled)
           vm_cfg[:firmware] = attributes[:firmware] if attributes.key?(:firmware)
           vm_cfg[:bootOptions] = boot_options(attributes) if attributes.key?(:boot_order) || attributes.key?(:boot_retry)
-          resource_pool = if attributes[:resource_pool]
+          resource_pool = if attributes[:resource_pool] && attributes[:resource_pool] != 'Resources'
                             get_raw_resource_pool(attributes[:resource_pool], attributes[:cluster], attributes[:datacenter])
                           else
                             get_raw_cluster(attributes[:cluster], attributes[:datacenter]).resourcePool
