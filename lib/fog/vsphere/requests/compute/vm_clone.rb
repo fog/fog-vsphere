@@ -108,7 +108,7 @@ module Fog
 
           # Options['resource_pool']<~Array>
           # Now find _a_ resource pool to use for the clone if one is not specified
-          if ( options.key?('resource_pool') && options['resource_pool'].is_a?(Array) && options['resource_pool'].length == 2 )
+          if ( options.key?('resource_pool') && options['resource_pool'].is_a?(Array) && options['resource_pool'].length == 2 && options['resource_pool'][1] != 'Resources')
             cluster_name = options['resource_pool'][0]
             pool_name = options['resource_pool'][1]
             resource_pool = get_raw_resource_pool(pool_name, cluster_name, options['datacenter'])
