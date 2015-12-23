@@ -11,7 +11,7 @@ module Fog
           if options['instance_uuid'] then
             [get_virtual_machine(options['instance_uuid'])]
           elsif options[:folder] && options[:datacenter] then
-            list_all_virtual_machines_in_folder(options[:folder], options[:datacenter])
+            list_all_virtual_machines_in_folder(options[:folder], options[:datacenter], options[:recursive])
           else
             list_all_virtual_machines(options)
           end
@@ -20,15 +20,33 @@ module Fog
 
         private
 
-        def list_all_virtual_machines_in_folder(path, datacenter_name)
-          folder = get_raw_vmfolder(path, datacenter_name)
-
-          vms = folder.children.grep(RbVmomi::VIM::VirtualMachine)
+        def list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
+          vms = raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive).to_a
           # remove all template based virtual machines
           vms.delete_if { |v| v.config.nil? or v.config.template }
           vms.map(&method(:convert_vm_mob_ref_to_attr_hash))
         end
-
+        
+        def raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
+          folder = get_raw_vmfolder(path, datacenter_name)
+          folder_enumerator(folder, recursive)
+        end
+        
+        # An enumerator for a folder. Enumerates all the VMs in the folder, recursively if
+        # passed recursive=true
+        def folder_enumerator(raw_folder, recursive)
+          Enumerator.new do |yielder|
+            raw_folder.children.each do |child|
+              case child
+              when RbVmomi::VIM::Folder
+                folder_enumerator(child, true).each {|item| yielder.yield item} if recursive
+              when RbVmomi::VIM::VirtualMachine
+                yielder.yield child
+              end
+            end
+          end
+        end
+        
         def list_all_virtual_machines(options = { })
           raw_vms = raw_list_all_virtual_machines(options[:datacenter])
           vms = convert_vm_view_to_attr_hash(raw_vms)

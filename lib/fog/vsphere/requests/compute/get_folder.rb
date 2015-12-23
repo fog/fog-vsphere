@@ -53,8 +53,12 @@ module Fog
             :parent     => folder.parent.name,
             :datacenter => datacenter_name,
             :type       => folder_type(folder),
-            :path       => "/"+folder.path.map(&:last).join('/'),
+            :path       => folder_path(folder),
           }
+        end
+        
+        def folder_path(folder)
+            "/"+folder.path.map(&:last).join('/')
         end
 
         def folder_type(folder)
