@@ -245,7 +245,7 @@ module Fog
           end
           # If we deploy the vm on a storage pod, datastore has to be an empty string
           if storage_pod
-            datastore ''
+            datastore = ''
           else
             datastore = "[#{disk.datastore}]"
           end
