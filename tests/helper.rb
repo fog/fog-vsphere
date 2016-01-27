@@ -5,4 +5,6 @@ rescue LoadError => e
   $stderr.puts "not recording test coverage: #{e.inspect}"
 end
 
+require 'minitest/autorun'
+
 require File.expand_path('../../lib/fog/vsphere', __FILE__)

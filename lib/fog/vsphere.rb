@@ -17,27 +17,12 @@ module Fog
     service(:compute, 'Compute')
 
     # This helper was originally added as Fog.class_as_string and moved to core but only used here
-    def self.class_from_string classname, defaultpath=""
-      if classname and classname.is_a? String then
-        chain = classname.split("::")
-        klass = Kernel
-        chain.each do |klass_string|
-          klass = klass.const_get klass_string
-        end
-        if klass.is_a? Class then
-          klass
-        elsif defaultpath != nil then
-          class_from_string((defaultpath.split("::")+chain).join("::"), nil)
-        else
-          nil
-        end
-      elsif classname and classname.is_a? Class then
-        classname
-      else
-        nil
-      end
+    def self.class_from_string(name, default_path = '')
+      const = default_path.empty? ? name.to_s : "#{default_path}::#{name}"
+      klass = const.split('::').inject(Object) { |m, c| m.const_get(c) }
+      return klass unless klass == Object
     rescue NameError
-      defaultpath != nil ? class_from_string((defaultpath.split("::")+chain).join("::"), nil) : nil
+      nil
     end
   end
 end
