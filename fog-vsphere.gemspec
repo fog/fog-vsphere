@@ -27,6 +27,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.10'
   spec.add_development_dependency 'pry', '~> 0.10'
   spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'minitest', '~> 5.8'
   spec.add_development_dependency 'rubocop', '~> 0.34'
   spec.add_development_dependency 'shindo', '~> 0.3'
 end
