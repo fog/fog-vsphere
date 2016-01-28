@@ -1,3 +1,8 @@
+#  v0.6.0 1/28/2016
+
+* Improvements to upload_iso method
+* Minor refactoring of unnecessarily complex code
+
 ## v0.5.0 1/18/2016
 
 * Fix wrong string assignment in storage pods
