@@ -1,8 +1,8 @@
-# Fog::Vsphere
+# Fog for vSphere
 
-[![Gem Version](https://badge.fury.io/rb/fog-vsphere.svg)](http://badge.fury.io/rb/fog-vsphere) [![Build Status](https://travis-ci.org/fog/fog-vsphere.svg?branch=master)](https://travis-ci.org/fog/fog-vsphere) [![Dependency Status](https://gemnasium.com/fog/fog-vsphere.svg)](https://gemnasium.com/fog/fog-vsphere) [![Test Coverage](https://codeclimate.com/github/fog/fog-vsphere/badges/coverage.svg)](https://codeclimate.com/github/fog/fog-vsphere/coverage) [![Code Climate](https://codeclimate.com/github/fog/fog-vsphere.png)](https://codeclimate.com/github/fog/fog-vsphere) [![Stories in Ready](https://badge.waffle.io/fog/fog-vsphere.png?label=ready&title=Ready)](https://waffle.io/fog/fog-vsphere)
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/fog/fog-vsphere?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Gem Version](https://badge.fury.io/rb/fog-vsphere.svg)](http://badge.fury.io/rb/fog-vsphere) [![Build Status](https://travis-ci.org/fog/fog-vsphere.svg?branch=master)](https://travis-ci.org/fog/fog-vsphere) [![Dependency Status](https://gemnasium.com/fog/fog-vsphere.svg)](https://gemnasium.com/fog/fog-vsphere) [![Test Coverage](https://codeclimate.com/github/fog/fog-vsphere/badges/coverage.svg)](https://codeclimate.com/github/fog/fog-vsphere/coverage) [![Code Climate](https://codeclimate.com/github/fog/fog-vsphere.png)](https://codeclimate.com/github/fog/fog-vsphere) [![Stories in Ready](https://badge.waffle.io/fog/fog-vsphere.png?label=ready&title=Ready)](https://waffle.io/fog/fog-vsphere)
 
-TODO: Write a gem description
+[Fog](http://fog.io) cloud services library support for VMware's vSphere
 
 ## Installation
 
