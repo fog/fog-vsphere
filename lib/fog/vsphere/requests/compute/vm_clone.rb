@@ -20,7 +20,9 @@ module Fog
           end
           raise Fog::Compute::Vsphere::NotFound, "Datacenter #{options["datacenter"]} Doesn't Exist!" unless get_datacenter(options["datacenter"])
           raise Fog::Compute::Vsphere::NotFound, "Template #{options["template_path"]} Doesn't Exist!" unless get_virtual_machine(options["template_path"], options["datacenter"])
-          raise Fog::Compute::Vsphere::NotFound, "Storage Pod #{options["storage_pod"]} Doesn't Exist!" if options.key?('storage_pod') and ! get_storage_pod(options['storage_pod'], options['datacenter'])
+          if options.key?('storage_pod') && !options['storage_pod'].nil? && !get_raw_storage_pod(options['storage_pod'], options['datacenter'])
+            raise Fog::Compute::Vsphere::NotFound, "Storage Pod #{options["storage_pod"]} Doesn't Exist!"
+          end
           options
         end
       end
@@ -590,7 +592,7 @@ module Fog
 
           # Perform the actual Clone Task
           # Clone VM on a storage pod
-          if options.key?('storage_pod')
+          if options.key?('storage_pod') and !options['storage_pod'].nil?
             raise ArgumentError, "need to use at least vsphere revision 5.0 or greater to use storage pods" unless @vsphere_rev.to_f >= 5
             pod_spec     = RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
               :storagePod => get_raw_storage_pod(options['storage_pod'], options['datacenter']),
