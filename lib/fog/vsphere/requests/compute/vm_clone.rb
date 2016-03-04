@@ -61,6 +61,7 @@ module Fog
         #   * 'storage_pod'<~String> - The storage pod / datastore cluster you'd like to use.
         #   * 'transform'<~String> - Not documented - see http://www.vmware.com/support/developer/vc-sdk/visdk41pubs/ApiReference/vim.vm.RelocateSpec.html
         #   * 'numCPUs'<~Integer> - the number of Virtual CPUs of the Destination VM
+        #   * 'numCoresPerSocket'<~Integer> - the number of cores per socket of the Destination VM
         #   * 'memoryMB'<~Integer> - the size of memory of the Destination VM in MB
         #   * customization_spec<~Hash>: Options are marked as required if you
         #     use this customization_spec. 
@@ -156,6 +157,7 @@ module Fog
           # http://www.vmware.com/support/developer/vc-sdk/visdk41pubs/ApiReference/vim.vm.ConfigSpec.html
           # FIXME: pad this out with the rest of the useful things in VirtualMachineConfigSpec
           virtual_machine_config_spec.numCPUs = options['numCPUs'] if  ( options.key?('numCPUs') )
+          virtual_machine_config_spec.numCoresPerSocket = options['numCoresPerSocket'] if options.key?('numCoresPerSocket')
           virtual_machine_config_spec.memoryMB = options['memoryMB'] if ( options.key?('memoryMB') )
           virtual_machine_config_spec.cpuHotAddEnabled = options['cpuHotAddEnabled'] if ( options.key?('cpuHotAddEnabled') )
           virtual_machine_config_spec.memoryHotAddEnabled = options['memoryHotAddEnabled'] if ( options.key?('memoryHotAddEnabled') )
