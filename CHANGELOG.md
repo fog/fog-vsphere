@@ -1,4 +1,8 @@
-#  v0.6.0 1/28/2016
+## v0.6.1 3/4/2016
+
+* Refactor storage pod handling
+
+##  v0.6.0 1/28/2016
 
 * Improvements to upload_iso method
 * Minor refactoring of unnecessarily complex code
