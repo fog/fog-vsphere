@@ -159,7 +159,8 @@ module Fog
         end
 
         def tools_installed?
-          tools_state != "toolsNotInstalled"
+          tools_state != 'toolsNotInstalled' ||
+            tools_version != 'guestToolsNotInstalled'
         end
 
         def tools_running?
