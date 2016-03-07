@@ -1,3 +1,8 @@
+## v0.6.2 3/7/2016
+
+* Return tools_installed? correctly
+* Expose numCoresPerSocket in vm_clone
+
 ## v0.6.1 3/4/2016
 
 * Refactor storage pod handling
