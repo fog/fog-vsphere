@@ -1,3 +1,11 @@
+## v0.6.4 4/20/2016
+
+* Allow 'extraConfig' options when cloning VMs
+
+## v0.6.3 3/7/2016
+
+* Fix 'tools_installed?' modification
+
 ## v0.6.2 3/7/2016
 
 * Return tools_installed? correctly

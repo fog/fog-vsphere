@@ -24,6 +24,7 @@
 * Justin Pratt <jpratt@liveramp.com>
 * Karan Misra <karan@erodov.com>
 * Kelsey Hightower <kelsey@puppetlabs.com>
+* Kevin Burk <xavierholt@gmail.com>
 * Kevin Menard <kevin@nirvdrum.com>
 * Kevin Menard <nirvdrum@gmail.com>
 * Lance Ivy <lance@cainlevy.net>
