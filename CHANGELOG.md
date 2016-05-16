@@ -1,3 +1,7 @@
+## v0.7.0 5/16/2016
+
+* Optionally process runcmd when creating customspec from cloudinit
+
 ## v0.6.4 4/20/2016
 
 * Allow 'extraConfig' options when cloning VMs

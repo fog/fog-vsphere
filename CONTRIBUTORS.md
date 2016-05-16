@@ -62,5 +62,6 @@
 * endzyme <nick.huanca@gmail.com>
 * geemus <geemus@gmail.com>
 * karmab <karimboumedhel@gmail.com>
+* karimb <karimboumedhel@gmail.com>
 * slivik <jakub.sliva@gmail.com>
 * tipt0e <topo-2@charter.net>
