@@ -4,16 +4,21 @@ module Fog
       class Real
         def list_datastores(filters = { })
           datacenter_name = filters[:datacenter]
+          cluster_name = filters.fetch(:cluster, nil)
           # default to show all datastores
           only_active = filters[:accessible] || false
-          raw_datastores(datacenter_name).map do |datastore|
+          raw_datastores(datacenter_name, cluster_name).map do |datastore|
             next if only_active and !datastore.summary.accessible
             datastore_attributes(datastore, datacenter_name)
           end.compact
         end
 
-        def raw_datastores(datacenter_name)
-          find_raw_datacenter(datacenter_name).datastore
+        def raw_datastores(datacenter_name, cluster = nil)
+          if cluster.nil?
+            find_raw_datacenter(datacenter_name).datastore
+          else
+            get_raw_cluster(cluster, datacenter_name).datastore
+          end
         end
         protected
 
@@ -31,9 +36,16 @@ module Fog
         end
       end
       class Mock
-        def list_datastores(datacenter_name)
-          self.data[:datastores].values.select {|d| d['datacenter'] == datacenter_name[:datacenter]} or
-            raise Fog::Compute::Vsphere::NotFound
+        def list_datastores(filters)
+          datacenter_name = filters[:datacenter]
+          cluster_name = filters.fetch(:cluster, nil)
+          if cluster_name.nil?
+            self.data[:datastores].values.select { |d| d['datacenter'] == datacenter_name } or
+              raise Fog::Compute::Vsphere::NotFound
+          else
+            self.data[:datastores].values.select { |d| d['datacenter'] == datacenter_name && d['cluster'].include?(cluster_name) } or
+              raise Fog::Compute::Vsphere::NotFound
+          end
         end
       end
     end
