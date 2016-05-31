@@ -18,7 +18,23 @@ module Fog
                                                                                           :datacenter => datacenter
                                                                                         }.merge(filters))
         end
-        
+
+        def datastores(filters = { })
+          self.attributes[:datastores] ||= id.nil? ? [] : service.datastores({
+                                                                                          :service => service,
+                                                                                          :cluster    => name,
+                                                                                          :datacenter => datacenter
+                                                                                        }.merge(filters))
+        end
+
+        def networks(filters = { })
+          self.attributes[:networks] ||= id.nil? ? [] : service.networks({
+                                                                                          :service => service,
+                                                                                          :cluster    => name,
+                                                                                          :datacenter => datacenter
+                                                                                        }.merge(filters))
+        end
+
         def rules
           service.rules(:datacenter => datacenter, :cluster => name)
         end

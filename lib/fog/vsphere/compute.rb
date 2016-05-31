@@ -348,6 +348,48 @@ module Fog
               :datacenters => {
                 "Solutions" => {:name => "Solutions", :status => "grey", :path => ['Solutions']}
               },
+              :datastores => {
+                'Storage1' => {
+                  'id' => 'datastore-123456',
+                  'name' => 'Storage1',
+                  'datacenter' => 'Solutions',
+                  'type' => 'VMFS',
+                  'freespace' => 697471860736,
+                  'accessible' => true,
+                  'capacity' => 1099243192320,
+                  'uncommitted' => 977158537741,
+                  'cluster' => [],
+                },
+                'datastore1' => {
+                  'id' => 'datastore-789123',
+                  'name' => 'datastore1',
+                  'datacenter' => 'Solutions',
+                  'type' => 'VMFS',
+                  'freespace' => 697471860736,
+                  'accessible' => true,
+                  'capacity' => 1099243192320,
+                  'uncommitted' => 977158537741,
+                  'cluster' => ['Solutionscluster'],
+                },
+              },
+              :networks => {
+                'network1' => {
+                  'id' => 'dvportgroup-123456',
+                  'name' => 'network1',
+                  'datacenter' => 'Solutions',
+                  'accessible' => true,
+                  'virtualswitch' => nil,
+                  'cluster' => ['Solutionscluster'],
+                },
+                'network2' => {
+                  'id' => 'dvportgroup-789123',
+                  'name' => 'network2',
+                  'datacenter' => 'Solutions',
+                  'accessible' => true,
+                  'virtualswitch' => nil,
+                  'cluster' => [],
+                },
+              },
               :folders => {
                 'wibble' => {
                   'name' => 'wibble',
@@ -498,7 +540,7 @@ module Fog
                                              :ssl  => @vsphere_ssl,
                                              :insecure => bad_cert,
                                              :debug => @vsphere_debug
-              
+
               # Create a shadow class to change the behaviour of @connection.obj2xml
               # so that xsd:any types are converted to xsd:int (and not xsd:long).
               #
@@ -520,7 +562,7 @@ module Fog
                   end
                 end
               end
-                                             
+
               break
             rescue OpenSSL::SSL::SSLError
               raise if bad_cert
