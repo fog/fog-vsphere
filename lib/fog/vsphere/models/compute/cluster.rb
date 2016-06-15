@@ -39,6 +39,10 @@ module Fog
           service.rules(:datacenter => datacenter, :cluster => name)
         end
 
+        def hosts
+          service.hosts(:datacenter => datacenter, :cluster => name)
+        end
+
         def to_s
           name
         end

@@ -27,12 +27,17 @@ module Fog
                             get_raw_cluster(attributes[:cluster], attributes[:datacenter]).resourcePool
                           end
           vmFolder      = get_raw_vmfolder(attributes[:path], attributes[:datacenter])
+          if attributes.key?(:host)
+            host = get_raw_host(attributes[:host], attributes[:cluster], attributes[:datacenter])
+          else
+            host = nil
+          end
           # if any volume has a storage_pod set, we deploy the vm on a storage pod instead of the defined datastores
           pod = get_storage_pod(attributes)
           if pod
-            vm = create_vm_on_storage_pod(pod, vm_cfg, vmFolder, resource_pool, attributes[:datacenter])
+            vm = create_vm_on_storage_pod(pod, vm_cfg, vmFolder, resource_pool, attributes[:datacenter], host)
           else
-            vm = create_vm_on_datastore(vm_cfg, vmFolder, resource_pool)
+            vm = create_vm_on_datastore(vm_cfg, vmFolder, resource_pool, host)
           end
           vm.config.instanceUuid
         rescue => e
@@ -41,11 +46,11 @@ module Fog
 
         private
 
-        def create_vm_on_datastore(vm_cfg, vmFolder, resource_pool)
-          vm = vmFolder.CreateVM_Task(:config => vm_cfg, :pool => resource_pool).wait_for_completion
+        def create_vm_on_datastore(vm_cfg, vmFolder, resource_pool, host = nil)
+          vm = vmFolder.CreateVM_Task(:config => vm_cfg, :pool => resource_pool, :host => host).wait_for_completion
         end
 
-        def create_vm_on_storage_pod(storage_pod, vm_cfg, vmFolder, resource_pool, datacenter)
+        def create_vm_on_storage_pod(storage_pod, vm_cfg, vmFolder, resource_pool, datacenter, host = nil)
           pod_spec     = RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
             :storagePod => get_raw_storage_pod(storage_pod, datacenter),
           )
@@ -55,6 +60,7 @@ module Fog
             :resourcePool => resource_pool,
             :podSelectionSpec => pod_spec,
             :configSpec => vm_cfg,
+            :host => host,
           )
           srm = @connection.serviceContent.storageResourceManager
           result = srm.RecommendDatastores(:storageSpec => storage_spec)
