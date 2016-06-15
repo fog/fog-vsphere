@@ -1,3 +1,8 @@
+## v0.8.0 6/15/2016
+
+* List hosts in a cluster
+* Deploy VM on a specific cluster
+
 ## v0.7.0 5/16/2016
 
 * Optionally process runcmd when creating customspec from cloudinit
