@@ -47,6 +47,8 @@ module Fog
       collection :cdroms
       model :rule
       collection :rules
+      model :host
+      collection :hosts
 
       request_path 'fog/vsphere/requests/compute'
       request :current_time
@@ -109,6 +111,7 @@ module Fog
       request :create_rule
       request :list_rules
       request :destroy_rule
+      request :list_hosts
 
       module Shared
         attr_reader :vsphere_is_vcenter
@@ -457,6 +460,14 @@ module Fog
                    :name => 'anti-affinity-foo',
                    :enabled => true,
                    :type => RbVmomi::VIM::ClusterAntiAffinityRuleSpec,
+                   :vm_ids => ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']
+                 }
+               },
+               :hosts => {
+                 'Host1' => {
+                   :datacenter => 'Solutions',
+                   :cluster => 'Solutionscluster',
+                   :name => 'host1.example.com',
                    :vm_ids => ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']
                  }
                }

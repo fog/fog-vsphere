@@ -121,6 +121,7 @@ module Fog
             esx_host = vm_mob_ref.collect!('runtime.host')['runtime.host']
             # The parent of the ESX host itself is a ComputeResource which has a resourcePool
             resource_pool = esx_host.parent.resourcePool
+            cluster_name = nil
           end
           # If the vm given did return a valid resource pool, default to using it for the clone.
           # Even if specific pools aren't implemented in this environment, we will still get back
@@ -128,6 +129,14 @@ module Fog
           # This catches if resource_pool option is set but comes back nil and if resourcePool is
           # already set.
           resource_pool ||= vm_mob_ref.resourcePool.nil? ? esx_host.parent.resourcePool : vm_mob_ref.resourcePool
+
+          # Options['host']<~String>
+          # The target host for the virtual machine. Optional.
+          if options.key?('host') && !options['host'].empty? && !cluster_name.nil?
+            host = get_raw_host(options['host'], attributes[:cluster], options['datacenter'])
+          else
+            host = nil
+          end
 
           # Options['datastore']<~String>
           # Grab the datastore object if option is set
@@ -578,9 +587,11 @@ module Fog
             # Next, create a Relocation Spec instance
             relocation_spec = RbVmomi::VIM.VirtualMachineRelocateSpec(:datastore => datastore_obj,
                                                                       :pool => resource_pool,
+                                                                      :host => host,
                                                                       :diskMoveType => :moveChildMostDiskBacking)
           else
             relocation_spec = RbVmomi::VIM.VirtualMachineRelocateSpec(:pool => resource_pool,
+                                                                      :host => host,
                                                                       :transform => options['transform'] || 'sparse')
             unless options.key?('storage_pod') and datastore_obj.nil?
               relocation_spec[:datastore] = datastore_obj
