@@ -2,6 +2,7 @@
 
 * List hosts in a cluster
 * Deploy VM on a specific cluster
+* Add cluster storage and network filter
 
 ## v0.7.0 5/16/2016
 
