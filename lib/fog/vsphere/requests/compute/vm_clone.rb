@@ -268,21 +268,20 @@ module Fog
                 custom_spec['globalIPSettings']=Hash.new unless custom_spec.key?('globalIPSettings')
                 custom_spec['globalIPSettings']['dnsServerList'] = custom_spec['ipsettings']['dnsServerList'] if custom_spec['ipsettings'].key?('dnsServerList')
                 custom_spec['globalIPSettings']['dnsSuffixList'] = custom_spec['dnsSuffixList'] || [custom_spec['domain']] if ( custom_spec['dnsSuffixList'] || custom_spec['domain'])
+                if (custom_spec['ipsettings'].key?('ip') or custom_spec['ipsettings'].key?('gateway') or custom_spec['ipsettings'].key?('subnetMask') or custom_spec['ipsettings'].key?('domain') or custom_spec['ipsettings'].key?('dnsServerList'))
+                    if custom_spec['ipsettings'].key?('ip') and !custom_spec["ipsettings"].key?("subnetMask")
+                      raise ArgumentError, "subnetMask is required for static ip"
+                    end
+                    custom_spec['nicSettingMap']=Array.new unless custom_spec.key?('nicSettingMap')
+                    custom_spec['nicSettingMap'][0]=Hash.new unless custom_spec['nicSettingMap'].length > 0
+                    custom_spec['nicSettingMap'][0]['adapter']=Hash.new unless custom_spec['nicSettingMap'][0].key?('adapter')
+                    custom_spec['nicSettingMap'][0]['adapter']['ip'] = custom_spec['ipsettings']['ip'] if custom_spec['ipsettings'].key?('ip')
+                    custom_spec['nicSettingMap'][0]['adapter']['gateway'] = custom_spec['ipsettings']['gateway'] if custom_spec['ipsettings'].key?('gateway')
+                    custom_spec['nicSettingMap'][0]['adapter']['subnetMask'] = custom_spec['ipsettings']['subnetMask'] if custom_spec['ipsettings'].key?('subnetMask')
+                    custom_spec['nicSettingMap'][0]['adapter']['dnsDomain'] = custom_spec['ipsettings']['domain'] if custom_spec['ipsettings'].key?('domain')
+                    custom_spec['nicSettingMap'][0]['adapter']['dnsServerList'] = custom_spec['ipsettings']['dnsServerList'] if custom_spec['ipsettings'].key?('dnsServerList')
+                end       
               end
-        
-              if (custom_spec['ipsettings'].key?('ip') or custom_spec['ipsettings'].key?('gateway') or custom_spec['ipsettings'].key?('subnetMask') or custom_spec['ipsettings'].key?('domain') or custom_spec['ipsettings'].key?('dnsServerList'))
-                if custom_spec['ipsettings'].key?('ip') 
-                  raise ArgumentError, "subnetMask is required for static ip" unless custom_spec["ipsettings"].key?("subnetMask")
-                end
-                custom_spec['nicSettingMap']=Array.new unless custom_spec.key?('nicSettingMap')
-                custom_spec['nicSettingMap'][0]=Hash.new unless custom_spec['nicSettingMap'].length > 0
-                custom_spec['nicSettingMap'][0]['adapter']=Hash.new unless custom_spec['nicSettingMap'][0].key?('adapter')
-                custom_spec['nicSettingMap'][0]['adapter']['ip'] = custom_spec['ipsettings']['ip'] if custom_spec['ipsettings'].key?('ip')
-                custom_spec['nicSettingMap'][0]['adapter']['gateway'] = custom_spec['ipsettings']['gateway'] if custom_spec['ipsettings'].key?('gateway')
-                custom_spec['nicSettingMap'][0]['adapter']['subnetMask'] = custom_spec['ipsettings']['subnetMask'] if custom_spec['ipsettings'].key?('subnetMask')
-                custom_spec['nicSettingMap'][0]['adapter']['dnsDomain'] = custom_spec['ipsettings']['domain'] if custom_spec['ipsettings'].key?('domain')
-                custom_spec['nicSettingMap'][0]['adapter']['dnsServerList'] = custom_spec['ipsettings']['dnsServerList'] if custom_spec['ipsettings'].key?('dnsServerList')
-              end       
             end
             ### End of backwards compatability 
 
