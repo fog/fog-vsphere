@@ -1,3 +1,7 @@
+## v0.8.1 7/28/2016
+
+* Fixed bug with errant hash access for customspec
+
 ## v0.8.0 6/15/2016
 
 * List hosts in a cluster

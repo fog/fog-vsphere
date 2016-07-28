@@ -18,6 +18,7 @@
 * J.R. Garcia <jr@garciaole.com>
 * J.R. Garcia <jrg@vmware.com>
 * James Herdman <james.herdman@me.com>
+* Jason Berry <jason.berry@csgi.com>
 * Jeff McCune <jeff@puppetlabs.com>
 * Justin Clayton <justin.clayton@gettyimages.com>
 * Justin Pratt <github@justinpratt.me>
