@@ -1,3 +1,7 @@
+## v1.0.0 7/28/2016
+
+* No changes, just releasing v1.0.0
+
 ## v0.8.1 7/28/2016
 
 * Fixed bug with errant hash access for customspec
