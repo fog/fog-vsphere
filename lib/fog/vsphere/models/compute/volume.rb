@@ -48,8 +48,12 @@ module Fog
           raise Fog::Errors::Error.new('Resaving an existing object may create a duplicate') if persisted?
           requires :server_id, :size, :datastore
 
+          # When adding volumes to vsphere, if our unit_number is 7 or higher, vsphere will increment the unit_number
+          # This is due to SCSI ID 7 being reserved for the pvscsi controller
+          # When referring to a volume that already added using a unit_id of 7 or higher, we must refer to the actual SCSI ID
           if unit_number.nil?
-            used_unit_numbers = server.volumes.map { |volume| volume.unit_number }
+            # Vsphere maps unit_numbers 7 and greater to a higher SCSI ID since the pvscsi driver reserves SCSI ID 7
+            used_unit_numbers = server.volumes.map { |volume| volume.unit_number < 7 ? volume.unit_number : volume.unit_number - 1 }
             max_unit_number = used_unit_numbers.max
 
             if max_unit_number > server.volumes.size
@@ -67,6 +71,10 @@ module Fog
           data = service.add_vm_volume(self)
 
           if data['task_state'] == 'success'
+            if self.unit_number >= 7
+              self.unit_number += 1
+            end
+
             # We have to query vSphere to get the volume attributes since the task handle doesn't include that info.
             created = server.volumes.all.find { |volume| volume.unit_number == self.unit_number }
 

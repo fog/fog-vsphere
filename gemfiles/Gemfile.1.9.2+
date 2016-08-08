@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'codeclimate-test-reporter', group: :test, require: nil
 
 gem 'net-ssh', '~> 2.9'
-gem 'rubocop', '~> 0.34'
+gem 'rubocop', '~> 0.41.0'
+gem 'json',    '~> 1.8.0'
 
 gemspec :path => '..'
