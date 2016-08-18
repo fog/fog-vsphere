@@ -13,7 +13,7 @@ module Fog
             # new path will be path/name, example: "Production/Pool1"
             new_folder.path.reject { |a| a.first.class == "Folder" }.map { |a| a.first.name }.join("/").sub(/^\/?Datacenters\/#{datacenter}\/vm\/?/, '')
           rescue => e
-            raise e, "failed to create folder: #{e}"
+            raise e, "failed to create folder: #{e}", e.backtrace
           end
         end
       end

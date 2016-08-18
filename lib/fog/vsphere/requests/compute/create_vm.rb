@@ -41,7 +41,7 @@ module Fog
           end
           vm.config.instanceUuid
         rescue => e
-          raise e, "failed to create vm: #{e}"
+          raise e, "failed to create vm: #{e}", e.backtrace
         end
 
         private
