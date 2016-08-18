@@ -40,8 +40,6 @@ module Fog
             vm = create_vm_on_datastore(vm_cfg, vmFolder, resource_pool, host)
           end
           vm.config.instanceUuid
-        rescue => e
-          raise e, "failed to create vm: #{e}"
         end
 
         private
