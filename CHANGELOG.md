@@ -1,3 +1,7 @@
+## v1.0.1 8/23/2016
+
+* Update fog-vsphere.gemspec to pin RbVmomi for Ruby 1.8.x versions
+
 ## v1.0.0 7/28/2016
 
 * No changes, just releasing v1.0.0

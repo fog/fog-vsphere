@@ -1,5 +1,6 @@
 * Ahmed Elsabbahy <aelsabbahy@promnetwork.com>
 * Alan Sebastian <asebastian2@gmail.com>
+* Ben Talbot - btalbot <ben_t48@hotmail.com>
 * Carl Caum <carl@carlcaum.com>
 * Carlos Sanchez <csanchez@maestrodev.com>
 * Chris Thompson <chris.thompson@govdelivery.com>
