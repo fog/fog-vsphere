@@ -12,6 +12,7 @@ module Fog
         # Type should be a class - either
         #  - RbVmomi::VIM::ClusterAntiAffinityRuleSpec
         #  - RbVmomi::VIM::ClusterAffinityRuleSpec
+        #  - RbVmomi::VIM::ClusterVmHostRuleInfo
         attribute :type
         attribute :vm_ids
         
