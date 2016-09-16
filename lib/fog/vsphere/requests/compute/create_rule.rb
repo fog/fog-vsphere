@@ -3,28 +3,12 @@ module Fog
     class Vsphere
       class Real
         def create_rule(attributes={})
-          raise ArgumentError, 'type attribute is required' if attributes[:type].nil?
           cluster = get_raw_cluster(attributes[:cluster], attributes[:datacenter])
           rule = cluster.configurationEx.rule.find {|n| n[:name] == attributes[:name]}
           if rule
             raise ArgumentError, "Rule #{attributes[:name]} already exists!"
           end
-          if (attributes[:type].to_s == 'ClusterAntiAffinityRuleSpec' || attributes[:type].to_s == 'ClusterAffinityRuleSpec')
-            vms = attributes[:vm_ids].to_a.map {|id| get_vm_ref(id, attributes[:datacenter])}
-            spec = attributes[:type].new(
-                name: attributes[:name],
-                enabled: attributes[:enabled],
-                vm: vms
-            )
-          elsif attributes[:type].to_s == 'ClusterVmHostRuleInfo'
-            spec = attributes[:type].new(
-                name: attributes[:name],
-                enabled: attributes[:enabled],
-                mandatory: attributes[:mandatory],
-                vmGroupName: attributes[:vmGroupName],
-                affineHostGroupName: attributes[:affineHostGroupName]
-            )
-          end
+          spec = get_spec attributes
           # Now, attach it to the cluster
           cluster_spec = RbVmomi::VIM.ClusterConfigSpecEx(rulesSpec: [
               RbVmomi::VIM.ClusterRuleSpec(
@@ -41,7 +25,28 @@ module Fog
           end
         end
 
+        private
+
+        def get_spec(attributes={})
+          if (attributes[:type].to_s == 'ClusterAntiAffinityRuleSpec' || attributes[:type].to_s == 'ClusterAffinityRuleSpec')
+            vms = attributes[:vm_ids].to_a.map {|id| get_vm_ref(id, attributes[:datacenter])}
+            attributes[:type].new(
+              name: attributes[:name],
+              enabled: attributes[:enabled],
+              vm: vms
+            )
+          elsif attributes[:type].to_s == 'ClusterVmHostRuleInfo'
+            attributes[:type].new(
+              name: attributes[:name],
+              enabled: attributes[:enabled],
+              mandatory: attributes[:mandatory],
+              vmGroupName: attributes[:vmGroupName],
+              affineHostGroupName: attributes[:affineHostGroupName]
+            )
+          end
+        end
       end
+
       class Mock
         def create_rule(attributes={})
           attributes[:key] = rand(9999)
