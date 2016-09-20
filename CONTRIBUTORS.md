@@ -61,6 +61,7 @@
 * Wesley Beary <geemus@gmail.com>
 * Xavier Fontrodona <xavier.fontrodona@safelayer.com>
 * alan <asebastian2@gmail.com>
+* c0puga <c0puga@walmart.com>
 * endzyme <nick.huanca@gmail.com>
 * geemus <geemus@gmail.com>
 * karmab <karimboumedhel@gmail.com>
