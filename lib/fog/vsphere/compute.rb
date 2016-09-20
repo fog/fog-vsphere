@@ -112,6 +112,10 @@ module Fog
       request :list_rules
       request :destroy_rule
       request :list_hosts
+      request :create_group
+      request :list_groups
+      request :destroy_group
+      request :get_host
 
       module Shared
         attr_reader :vsphere_is_vcenter

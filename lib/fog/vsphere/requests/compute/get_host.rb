@@ -3,6 +3,10 @@ module Fog
     class Vsphere
       class Real
 
+        def get_host(name, cluster_name, datacenter_name)
+          get_raw_host(name, cluster_name, datacenter_name)
+        end
+
         protected
 
         def get_raw_host(name, cluster_name, datacenter_name)
