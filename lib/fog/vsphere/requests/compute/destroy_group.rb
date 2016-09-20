@@ -4,7 +4,7 @@ module Fog
       class Real
         def destroy_group(attributes = {})
           cluster = get_raw_cluster(attributes[:cluster], attributes[:datacenter])
-          group   = cluster.configurationEx.group.find {|group| group.name == attributes[:name]}
+          group   = cluster.configurationEx.group.find {|g| g.name == attributes[:name]}
           raise Fog::Vsphere::Error::NotFound, "group #{attributes[:name]} not found" unless group
           delete_spec = RbVmomi::VIM.ClusterConfigSpecEx(groupSpec: [
             RbVmomi::VIM.ClusterGroupSpec(

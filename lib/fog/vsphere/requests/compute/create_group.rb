@@ -15,7 +15,7 @@ module Fog
                   info: spec
               )
           ])
-          ret = cluster.ReconfigureComputeResource_Task(spec: cluster_spec, modify: true).wait_for_completion
+          cluster.ReconfigureComputeResource_Task(spec: cluster_spec, modify: true).wait_for_completion
           group = cluster.configurationEx.group.find {|n| n[:name] == attributes[:name]}
           if group
             return group[:name]
