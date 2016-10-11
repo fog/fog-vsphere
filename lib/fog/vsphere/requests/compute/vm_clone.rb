@@ -509,15 +509,14 @@ module Fog
                 custom_adapter.primaryWINS = nic['adapter']['primaryWINS'] if nic['adapter'].key?('primaryWINS')
                 custom_adapter.secondaryWINS = nic['adapter']['secondaryWINS'] if nic['adapter'].key?('secondaryWINS')
                 custom_adapter.subnetMask = nic['adapter']['subnetMask'] if nic['adapter'].key?('subnetMask')
-                
+
                 custom_adapter_mapping = RbVmomi::VIM::CustomizationAdapterMapping(:adapter => custom_adapter)
                 custom_adapter_mapping.macAddress = nic['macAddress'] if nic.key?('macAddress')
                 
-                # build the adapters array, creates it if not already created, otherwise appends to it
-                custom_nicSettingMap << custom_adapter_mapping 
+                # build the adapters array
+                custom_nicSettingMap << custom_adapter_mapping
               end
             end  
-            custom_nicSettingMap = nil if custom_nicSettingMap.length < 1
                       
             if custom_spec.key?("options") 
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Options.html
