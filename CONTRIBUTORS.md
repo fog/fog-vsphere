@@ -45,6 +45,7 @@
 * Nick Huanuca <nhuanca@pingidentity.com>
 * Ohad Levy <ohadlevy@gmail.com>
 * Ohad Levy <ohadlevy@redhat.com>
+* Ondrej Prazak <oprazak@redhat.com>
 * Oscar Elfving <sofam84@gmail.com>
 * Paul Thornthwaite <paul@brightbox.co.uk>
 * Paul Thornthwaite <tokengeek@gmail.com>
