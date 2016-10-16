@@ -21,6 +21,7 @@
 * James Herdman <james.herdman@me.com>
 * Jason Berry <jason.berry@csgi.com>
 * Jeff McCune <jeff@puppetlabs.com>
+* Jethro Carr <jethro.carr@jethrocarr.com>
 * Justin Clayton <justin.clayton@gettyimages.com>
 * Justin Pratt <github@justinpratt.me>
 * Justin Pratt <jpratt@liveramp.com>
