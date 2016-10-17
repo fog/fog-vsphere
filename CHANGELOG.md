@@ -1,3 +1,23 @@
+## v1.3.0
+
+* Add the add_vm_controller method
+
+## v1.2.2
+
+* Upgrade rbvmomi depenency to latest stable series (1.9.x)
+
+## v1.2.1
+
+* Do not fail on 'undefined method' when nicSettingMap not present
+
+## v1.2.0
+
+* Add functionality for creating, listing, and destroying groups
+
+## v1.1.0
+
+* Add ability to list ClusterVmHostRuleInfo type rules
+
 ## v1.0.1 8/23/2016
 
 * Update fog-vsphere.gemspec to pin RbVmomi for Ruby 1.8.x versions
