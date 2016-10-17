@@ -6,6 +6,7 @@ module Fog
         attribute :type
         attribute :unit_number
         attribute :key
+        attribute :server_id
 
         def to_s
           "#{type} ##{key}: shared: #{shared_bus}, unit_number: #{unit_number}"
