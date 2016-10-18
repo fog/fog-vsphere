@@ -5,6 +5,7 @@ module Fog
         DISK_SIZE_TO_GB = 1048576
         identity :id
 
+        has_one :server, Server
         attribute :datastore
         attribute :storage_pod
         attribute :mode
@@ -16,12 +17,9 @@ module Fog
         attribute :size_gb
         attribute :key
         attribute :unit_number
-        attribute :server_id
+        attribute :controller_key, :type => :integer, :default => 1000
 
-        def initialize(attributes={} )
-          # Assign server first to prevent race condition with persisted?
-          self.server_id = attributes.delete(:server_id)
-
+        def initialize(attributes={})
           super defaults.merge(attributes)
         end
 
@@ -48,25 +46,7 @@ module Fog
           raise Fog::Errors::Error.new('Resaving an existing object may create a duplicate') if persisted?
           requires :server_id, :size, :datastore
 
-          # When adding volumes to vsphere, if our unit_number is 7 or higher, vsphere will increment the unit_number
-          # This is due to SCSI ID 7 being reserved for the pvscsi controller
-          # When referring to a volume that already added using a unit_id of 7 or higher, we must refer to the actual SCSI ID
-          if unit_number.nil?
-            # Vsphere maps unit_numbers 7 and greater to a higher SCSI ID since the pvscsi driver reserves SCSI ID 7
-            used_unit_numbers = server.volumes.map { |volume| volume.unit_number < 7 ? volume.unit_number : volume.unit_number - 1 }
-            max_unit_number = used_unit_numbers.max
-
-            if max_unit_number > server.volumes.size
-              # If the max ID exceeds the number of volumes, there must be a hole in the range. Find a hole and use it.
-              self.unit_number = max_unit_number.times.to_a.find { |i| used_unit_numbers.exclude?(i) }
-            else
-              self.unit_number = max_unit_number + 1
-            end
-          else
-            if server.volumes.any? { |volume| volume.unit_number == self.unit_number && volume.id != self.id }
-              raise "A volume already exists with that unit_number, so we can't save the new volume"
-            end
-          end
+          set_unit_number
 
           data = service.add_vm_volume(self)
 
@@ -80,6 +60,7 @@ module Fog
 
             self.id = created.id
             self.key = created.key
+            self.controller_key = created.controllerKey
             self.filename = created.filename
 
             true
@@ -88,9 +69,22 @@ module Fog
           end
         end
 
-        def server
-          requires :server_id
-          service.servers.get(server_id)
+        def server_id
+          requires :server
+          server.id
+        end
+
+        def set_unit_number
+          # When adding volumes to vsphere, if our unit_number is 7 or higher, vsphere will increment the unit_number
+          # This is due to SCSI ID 7 being reserved for the pvscsi controller
+          # When referring to a volume that already added using a unit_id of 7 or higher, we must refer to the actual SCSI ID
+          if unit_number.nil?
+            self.unit_number = calculate_free_unit_number
+          else
+            if server.volumes.select { |vol| vol.controller_key == controller_key }.any? { |volume| volume.unit_number == self.unit_number && volume.id != self.id }
+              raise "A volume already exists with that unit_number, so we can't save the new volume"
+            end
+          end
         end
 
         private
@@ -101,6 +95,17 @@ module Fog
             :name => "Hard disk",
             :mode => "persistent"
           }
+        end
+
+        def calculate_free_unit_number
+          requires :controller_key
+
+          # Vsphere maps unit_numbers 7 and greater to a higher SCSI ID since the pvscsi driver reserves SCSI ID 7
+          used_unit_numbers = server.volumes
+            .select { |vol| vol.unit_number && vol.controller_key == controller_key }.map(&:unit_number) + [7]
+          free_unit_numbers = (0..15).to_a - used_unit_numbers
+
+          free_unit_numbers.first
         end
       end
     end

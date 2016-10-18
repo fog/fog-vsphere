@@ -100,6 +100,7 @@ module Fog
       request :list_vm_customvalues
       request :list_customfields
       request :get_vm_first_scsi_controller
+      request :list_vm_scsi_controllers
       request :set_vm_customvalue
       request :vm_take_snapshot
       request :list_vm_snapshots

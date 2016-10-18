@@ -20,7 +20,7 @@ module Fog
           vm_cfg[:cpuHotAddEnabled] = attributes[:cpuHotAddEnabled] if attributes.key?(:cpuHotAddEnabled)
           vm_cfg[:memoryHotAddEnabled] = attributes[:memoryHotAddEnabled] if attributes.key?(:memoryHotAddEnabled)
           vm_cfg[:firmware] = attributes[:firmware] if attributes.key?(:firmware)
-          vm_cfg[:bootOptions] = boot_options(attributes) if attributes.key?(:boot_order) || attributes.key?(:boot_retry)
+          vm_cfg[:bootOptions] = boot_options(attributes, vm_cfg) if attributes.key?(:boot_order) || attributes.key?(:boot_retry)
           resource_pool = if attributes[:resource_pool] && attributes[:resource_pool] != 'Resources'
                             get_raw_resource_pool(attributes[:resource_pool], attributes[:cluster], attributes[:datacenter])
                           else
@@ -97,9 +97,12 @@ module Fog
             devices << nics.map { |nic| create_interface(nic, nics.index(nic), :add, attributes) }
           end
 
+          if (scsi_controllers = (attributes[:scsi_controllers] || attributes["scsi_controller"]))
+            devices << scsi_controllers.each_with_index.map { |controller, index| create_controller(controller, index) }
+          end
+
           if (disks = attributes[:volumes])
-            devices << create_controller(attributes[:scsi_controller]||attributes["scsi_controller"]||{})
-            devices << disks.map { |disk| create_disk(disk, disks.index(disk), :add, 1000, get_storage_pod(attributes)) }
+            devices << disks.map { |disk| create_disk(disk, :add, get_storage_pod(attributes)) }
           end
 
           if (cdroms = attributes[:cdroms])
@@ -108,12 +111,12 @@ module Fog
           devices.flatten
         end
 
-        def boot_options attributes
+        def boot_options(attributes, vm_cfg)
           # NOTE: you must be using vsphere_rev 5.0 or greater to set boot_order
           # e.g. Fog::Compute.new(provider: "vsphere", vsphere_rev: "5.5", etc)
           options = {}
           if @vsphere_rev.to_f >= 5 and attributes[:boot_order]
-            options[:bootOrder] = boot_order(attributes)
+            options[:bootOrder] = boot_order(attributes, vm_cfg)
           end
 
           # Set attributes[:boot_retry] to a delay in miliseconds to enable boot retries
@@ -121,11 +124,11 @@ module Fog
             options[:bootRetryEnabled] = true
             options[:bootRetryDelay]   = attributes[:boot_retry]
           end
-                   
+
           options.empty? ? nil : RbVmomi::VIM::VirtualMachineBootOptions.new(options)
         end
 
-        def boot_order attributes
+        def boot_order(attributes, vm_cfg)
           # attributes[:boot_order] may be an array like this ['network', 'disk']
           # stating, that we want to prefer network boots over disk boots
           boot_order = []
@@ -142,18 +145,17 @@ module Fog
                 end
               end
             when 'disk'
-              if disks = attributes[:volumes]
-                disks.each do |disk|
-                  # we allow booting from all harddisks, the first disk has the highest priority
-                  boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice.new(
-                    :deviceKey => disk.key || get_disk_device_key(disks.index(disk)),
-                  )
-                end
+              disks = vm_cfg[:deviceChange].map {|dev| dev[:device]}.select { |dev| dev.is_a? RbVmomi::VIM::VirtualDisk }
+              disks.each do |disk|
+                # we allow booting from all harddisks, the first disk has the highest priority
+                boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice.new(
+                  :deviceKey => get_disk_device_key(disk.controllerKey, disk.unitNumber)
+                )
               end
             when 'cdrom'
-              boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableCdromDevice.new()
+              boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableCdromDevice.new
             when 'floppy'
-              boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableFloppyDevice.new()
+              boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableFloppyDevice.new
             else
               raise "failed to create boot device because \"#{boot_device}\" is unknown"
             end
@@ -161,17 +163,11 @@ module Fog
           boot_order
         end
 
-        def get_disk_device_key(index)
+        def get_disk_device_key(controller_key, unit_number)
+          # controller key is based on 1000 + controller bus
           # disk key is based on 2000 + the SCSI ID + the controller bus * 16
-          # the scsi host adapter appears as SCSI ID 7, so we have to skip that
-          # host adapter key is based on 1000 + bus id
-          # fog assumes that there is only a single scsi controller, see device_change()
-          if (index > 6) then
-            _index = index + 1
-          else
-            _index = index
-          end
-          2000 + _index
+          controller_bus = controller_key - 1000
+          2000 + (controller_bus * 16) + unit_number
         end
 
         def create_nic_backing nic, attributes
@@ -204,9 +200,9 @@ module Fog
           }
         end
 
-        def create_controller options=nil
-          options=if options
-                    controller_default_options.merge(Hash[options.map{|k,v| [k.to_sym,v] }])
+        def create_controller(controller=nil, index = 0)
+          options=if controller
+                    controller_default_options.merge(controller.attributes)
                   else
                     controller_default_options
                   end
@@ -218,15 +214,15 @@ module Fog
           {
             :operation => options[:operation],
             :device    => controller_class.new({
-              :key       => options[:key],
-              :busNumber => options[:bus_id],
+              :key       => options[:key] || (1000 + index),
+              :busNumber => options[:bus_id] || index,
               :sharedBus => controller_get_shared_from_options(options),
             })
           }
         end
 
         def controller_default_options
-          {:operation => "add", :type => RbVmomi::VIM.VirtualLsiLogicController.class, :key => 1000, :bus_id => 0, :shared => false }
+          {:operation => :add, :type => RbVmomi::VIM.VirtualLsiLogicController.class, :shared => false }
         end
 
         def controller_get_shared_from_options options
@@ -241,30 +237,28 @@ module Fog
           end
         end
 
-        def create_disk disk, index = 0, operation = :add, controller_key = 1000, storage_pod = nil
-          if (index > 6) then
-            _index = index + 1
-          else
-            _index = index
-          end
+        def create_disk(disk, operation = :add, storage_pod = nil)
           # If we deploy the vm on a storage pod, datastore has to be an empty string
           if storage_pod
             datastore = ''
           else
             datastore = "[#{disk.datastore}]"
           end
+
+          disk.set_unit_number
+
           payload = {
             :operation     => operation,
             :fileOperation => operation == :add ? :create : :destroy,
             :device        => RbVmomi::VIM.VirtualDisk(
-              :key           => disk.key || _index,
+              :key           => -1,
               :backing       => RbVmomi::VIM.VirtualDiskFlatVer2BackingInfo(
                 :fileName        => datastore,
                 :diskMode        => disk.mode.to_sym,
                 :thinProvisioned => disk.thin
               ),
-              :controllerKey => controller_key,
-              :unitNumber    => _index,
+              :controllerKey => disk.controller_key,
+              :unitNumber    => disk.unit_number,
               :capacityInKB  => disk.size
             )
           }

@@ -20,7 +20,7 @@ module Fog
               raise 'volumes should have vm or template'
             end
 
-          self.each { |volume| volume.server_id = server.id }
+          self.each { |volume| volume.server = server }
           self
         end
 

@@ -6,6 +6,7 @@ module Fog
       class Server < Fog::Compute::Server
         extend Fog::Deprecation
         deprecate(:ipaddress, :public_ip_address)
+        deprecate(:scsi_controller, :scsi_controllers)
 
         # This will be the instance uuid which is globally unique across
         # a vSphere deployment.
@@ -45,7 +46,7 @@ module Fog
         attribute :instance_uuid # move this --> id
         attribute :guest_id
         attribute :hardware_version
-        attribute :scsi_controller # this is the first scsi controller. Right now no more of them can be used.
+        attribute :scsi_controllers, :type => :array
         attribute :cpuHotAddEnabled
         attribute :memoryHotAddEnabled
         attribute :firmware
@@ -57,7 +58,7 @@ module Fog
           initialize_interfaces
           initialize_volumes
           initialize_customvalues
-          initialize_scsi_controller
+          initialize_scsi_controllers
         end
 
         # Lazy Loaded Attributes
@@ -255,8 +256,12 @@ module Fog
           attributes[:customvalues] ||= id.nil? ? [] : service.customvalues( :vm => self )
         end
 
+        def scsi_controllers
+          self.attributes[:scsi_controllers] ||= service.list_vm_scsi_controllers(id)
+        end
+
         def scsi_controller
-          self.attributes[:scsi_controller] ||= service.get_vm_first_scsi_controller(id)
+          scsi_controllers.first
         end
 
         def folder
@@ -313,7 +318,7 @@ module Fog
 
         def initialize_volumes
           if attributes[:volumes] and attributes[:volumes].is_a?(Array)
-            self.attributes[:volumes].map! { |vol| vol.is_a?(Hash) ? service.volumes.new(vol) : vol }
+            self.attributes[:volumes].map! { |vol| vol.is_a?(Hash) ? service.volumes.new({:server => self}.merge(vol)) : vol }
           end
         end
 
@@ -323,9 +328,20 @@ module Fog
           end
         end
 
-        def initialize_scsi_controller
-          if attributes[:scsi_controller] and attributes[:scsi_controller].is_a?(Hash)
-            Fog::Compute::Vsphere::SCSIController.new(self.attributes[:scsi_controller])
+        def initialize_scsi_controllers
+          if attributes[:scsi_controllers] && attributes[:scsi_controllers].is_a?(Array)
+            self.attributes[:scsi_controllers].map! do |controller|
+              controller.is_a?(Hash) ? Fog::Compute::Vsphere::SCSIController.new(controller) : controller
+            end
+          elsif attributes[:scsi_controller] && attributes[:scsi_controller].is_a?(Hash)
+            self.attributes[:scsi_controllers] = [
+              Fog::Compute::Vsphere::SCSIController.new(self.attributes[:scsi_controller])
+            ]
+          elsif attributes[:volumes] && attributes[:volumes].is_a?(Array) && !attributes[:volumes].empty?
+            # Create a default scsi controller if there are any disks but no controller defined
+            self.attributes[:scsi_controllers] = [
+              Fog::Compute::Vsphere::SCSIController.new
+            ]
           end
         end
       end

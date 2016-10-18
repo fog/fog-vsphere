@@ -38,7 +38,8 @@ module Fog
               :size => vol.capacityInKB,
               :name => vol.deviceInfo.label,
               :key => vol.key,
-              :unit_number => vol.unitNumber
+              :unit_number => vol.unitNumber,
+              :controller_key => vol.controllerKey
             }
           end
         end
