@@ -1,3 +1,7 @@
+## v1.4.0
+
+* Add ability for VMs to have multiple SCSI controllers
+
 ## v1.3.0
 
 * Add the add_vm_controller method
