@@ -1,3 +1,8 @@
+## v1.5.0
+
+* Rename the get_spec method in create_rule to get_group_spec
+* Change modify_vm_controller to follow changes made to create_controller
+
 ## v1.4.0
 
 * Add ability for VMs to have multiple SCSI controllers
