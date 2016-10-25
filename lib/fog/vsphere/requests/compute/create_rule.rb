@@ -8,7 +8,7 @@ module Fog
           if rule
             raise ArgumentError, "Rule #{attributes[:name]} already exists!"
           end
-          spec = get_spec attributes
+          spec = get_rule_spec attributes
           # Now, attach it to the cluster
           cluster_spec = RbVmomi::VIM.ClusterConfigSpecEx(rulesSpec: [
               RbVmomi::VIM.ClusterRuleSpec(
@@ -27,7 +27,7 @@ module Fog
 
         private
 
-        def get_spec(attributes={})
+        def get_rule_spec(attributes={})
           if (attributes[:type].to_s == 'ClusterAntiAffinityRuleSpec' || attributes[:type].to_s == 'ClusterAffinityRuleSpec')
             vms = attributes[:vm_ids].to_a.map {|id| get_vm_ref(id, attributes[:datacenter])}
             attributes[:type].new(
