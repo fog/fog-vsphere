@@ -8,7 +8,7 @@ module Fog
           if group
             raise ArgumentError, "Group #{attributes[:name]} already exists!"
           end
-          spec = get_spec attributes
+          spec = get_group_spec attributes
           cluster_spec = RbVmomi::VIM.ClusterConfigSpecEx(groupSpec: [
               RbVmomi::VIM.ClusterGroupSpec(
                   operation: RbVmomi::VIM.ArrayUpdateOperation('add'),
@@ -26,7 +26,7 @@ module Fog
 
         private
 
-        def get_spec(attributes={})
+        def get_group_spec(attributes={})
           if attributes[:type].to_s == 'ClusterVmGroup'
             vms = attributes[:vm_ids].to_a.map {|id| get_vm_ref(id, attributes[:datacenter])}
             attributes[:type].new(
