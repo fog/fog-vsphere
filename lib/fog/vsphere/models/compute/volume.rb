@@ -17,7 +17,7 @@ module Fog
         attribute :size_gb
         attribute :key
         attribute :unit_number
-        attribute :controller_key, :type => :integer, :default => 1000
+        attribute :controller_key, :type => :integer
 
         def initialize(attributes={})
           super defaults.merge(attributes)
@@ -93,7 +93,8 @@ module Fog
           {
             :thin => true,
             :name => "Hard disk",
-            :mode => "persistent"
+            :mode => "persistent",
+            :controller_key => 1000
           }
         end
 
