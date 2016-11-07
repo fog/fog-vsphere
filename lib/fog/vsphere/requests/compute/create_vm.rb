@@ -149,7 +149,7 @@ module Fog
               disks.each do |disk|
                 # we allow booting from all harddisks, the first disk has the highest priority
                 boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice.new(
-                  :deviceKey => get_disk_device_key(disk.controllerKey, disk.unitNumber)
+                  :deviceKey => disk.key
                 )
               end
             when 'cdrom'
@@ -161,13 +161,6 @@ module Fog
             end
           end
           boot_order
-        end
-
-        def get_disk_device_key(controller_key, unit_number)
-          # controller key is based on 1000 + controller bus
-          # disk key is based on 2000 + the SCSI ID + the controller bus * 16
-          controller_bus = controller_key - 1000
-          2000 + (controller_bus * 16) + unit_number
         end
 
         def create_nic_backing nic, attributes
@@ -246,12 +239,13 @@ module Fog
           end
 
           disk.set_unit_number
+          disk.set_key
 
           payload = {
             :operation     => operation,
             :fileOperation => operation == :add ? :create : :destroy,
             :device        => RbVmomi::VIM.VirtualDisk(
-              :key           => -1,
+              :key           => disk.key,
               :backing       => RbVmomi::VIM.VirtualDiskFlatVer2BackingInfo(
                 :fileName        => datastore,
                 :diskMode        => disk.mode.to_sym,

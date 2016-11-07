@@ -87,6 +87,17 @@ module Fog
           end
         end
 
+        def set_key
+          requires :controller_key, :unit_number
+
+          return unless key.nil?
+
+          # controller key is based on 1000 + controller bus
+          # disk key is based on 2000 + the SCSI ID + the controller bus * 16
+          controller_bus = controller_key - 1000
+          self.key = 2000 + (controller_bus * 16) + unit_number
+        end
+
         private
 
         def defaults
