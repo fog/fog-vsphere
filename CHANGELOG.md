@@ -1,3 +1,8 @@
+## v1.5.1
+
+* Move volume key generation to volume model
+* Set defaults more reliably for SCSI
+
 ## v1.5.0
 
 * Rename the get_spec method in create_rule to get_group_spec
