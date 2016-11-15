@@ -7,7 +7,7 @@
 [![Test Coverage][coverage-image]][coverage-url]
 [![Code Climate][climate-image]][climate-url]
 
-The VMware vSphere® provider allows you to use the abstractions of the Fog cloud services library to communicate with VMware vSphere®.
+The VMware vSphere® provider allows you to use the abstractions of the Fog cloud services library to communicate with vSphere.
 
 ## Installation
 
@@ -79,7 +79,7 @@ compute.list_vm_scsi_controllers('ab589f9a-af35-428e-9690-9b96587d86f3')
 #=>  >]
 ```
 
-There is a lot more you can do as well! We are working on providing better documentation right now. For now, you can look at the [RubyDocs](http://www.rubydoc.info/gems/fog-vsphere/), look through whats available with [Pry](http://pryrepl.org/), and see the documentation for [Fog](http://fog.io). We hope to have much more documentation and plenty of examples soon.
+There is a lot more you can do as well! We are working on providing better documentation right now. For now, you can look at the [RubyDocs](http://www.rubydoc.info/gems/fog-vsphere/), browse what's available with [Pry](http://pryrepl.org/), and view the documentation for [Fog](http://fog.io). We hope to have much more documentation and plenty of examples soon.
 
 ## Contributing
 
