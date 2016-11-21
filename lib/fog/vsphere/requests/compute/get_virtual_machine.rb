@@ -40,12 +40,23 @@ module Fog
           if name.include?('/')
             folder = File.dirname(name)
             basename = File.basename(name)
-            vms.find { |v| v["name"] == basename && v.parent.pretty_path.include?(folder) }
+            vms.find do |v|
+              begin
+                v["name"] == basename && v.parent.pretty_path.include?(folder)
+              rescue RbVmomi::VIM::ManagedObjectNotFound
+                false
+              end
+            end
           else
-            vms.find { |v| v["name"] == name }
+            vms.find do |v|
+              begin
+                v["name"] == name
+              rescue RbVmomi::VIM::ManagedObjectNotFound
+                false
+              end
+            end
           end
-        end        
-        
+        end
       end
 
       class Mock
