@@ -14,6 +14,7 @@
 * Francois Herbert <F.Herbert@massey.ac.nz>
 * Francois Herbert <fherbert@oss.co.nz>
 * Francois Herbert <francois@herbert.org.nz>
+* Guido Günther <agx@sigxcpu.org>
 * Ivan Nečas <inecas@redhat.com>
 * Ivo Reznicek <ireznice@googlemail.com>
 * J.R. Garcia <jr@garciaole.com>

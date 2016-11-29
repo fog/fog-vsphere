@@ -1,3 +1,7 @@
+## v1.5.2
+
+* Handle vSphere VMs being created or removed when searching for VM
+
 ## v1.5.1
 
 * Move volume key generation to volume model
