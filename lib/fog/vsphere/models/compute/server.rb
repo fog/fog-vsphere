@@ -272,11 +272,12 @@ module Fog
         def save
           requires :name, :cluster, :datacenter
           if persisted?
-            raise "update is not supported yet"
-           # service.update_vm(attributes)
+           vm_reconfig_cpus if attribute_changed?(:cpus) || attribute_changed?(:corespersocket)
+           vm_reconfig_memory if attribute_changed?(:memory_mb)
           else
             self.id = service.create_vm(attributes)
           end
+          @old = nil
           reload
         end
 
@@ -343,6 +344,14 @@ module Fog
               Fog::Compute::Vsphere::SCSIController.new
             ]
           end
+        end
+
+        def attribute_changed?(attr)
+          self.attributes.select { |k, v| old.attributes[k] != v }.key?(attr)
+        end
+
+        def old
+          @old ||= self.dup.reload
         end
       end
     end
