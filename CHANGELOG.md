@@ -1,3 +1,7 @@
+## v1.6.0
+
+*  Support updating of server CPUs and memory
+
 ## v1.5.2
 
 * Handle vSphere VMs being created or removed when searching for VM
