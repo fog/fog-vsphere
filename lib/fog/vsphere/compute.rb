@@ -258,7 +258,7 @@ module Fog
                      }],
                  "interfaces"       =>
                     [{"mac"     => "00:50:56:a9:00:28",
-                      "network" => "VM Network",
+                      "network" => "dvportgroup-123456",
                       "name"    => "Network adapter 1",
                       "status"  => "ok",
                       "summary" => "VM Network",
@@ -312,7 +312,7 @@ module Fog
                     [{ "summary" => "VM Network",
                       "mac"     => "00:50:56:a9:00:00",
                       "status"  => "ok",
-                      "network" => "VM Network",
+                      "network" => "dvportgroup-123456",
                       "name"    => "Network adapter 1" }],
                  "hypervisor"       => "gunab.puppetlabs.lan",
                  "guest_id"         => nil,
