@@ -39,6 +39,12 @@ module Fog
           [folder, folder.childEntity.grep(RbVmomi::VIM::Folder).map(&method(:child_folders)).flatten]
         end
       end
+      class Mock
+        def list_folders(options = {})
+          options.reject! {|k,v| v.nil? } # ignore options with nil value
+          self.data[:folders].values.select {|folder| options.all? {|k,v| folder[k.to_s] == v.to_s }}
+        end
+      end
     end
   end
 end
