@@ -80,6 +80,11 @@ module Fog
           service.vm_reconfig_cpus('instance_uuid' => instance_uuid, 'cpus' => cpus, 'corespersocket' => corespersocket)
         end
 
+        def vm_reconfig_volumes(options = {})
+          requires :instance_uuid, :volumes
+          service.vm_reconfig_volumes('instance_uuid' => instance_uuid, 'volumes' => volumes)
+        end
+
         def vm_reconfig_hardware(hardware_spec, options = {})
           requires :instance_uuid
           service.vm_reconfig_hardware('instance_uuid' => instance_uuid, 'hardware_spec' => hardware_spec)

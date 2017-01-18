@@ -29,6 +29,7 @@ module Fog
 
         def size_gb= s
           attributes[:size] = s.to_i * DISK_SIZE_TO_GB if s
+          attributes[:size_gb] = s.to_i if s
         end
 
         def to_s
