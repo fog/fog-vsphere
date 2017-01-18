@@ -89,6 +89,7 @@ module Fog
       request :get_virtual_machine
       request :vm_reconfig_hardware
       request :vm_reconfig_memory
+      request :vm_reconfig_volumes
       request :vm_reconfig_cpus
       request :vm_reconfig_cdrom
       request :vm_config_vnc
