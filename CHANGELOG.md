@@ -1,3 +1,9 @@
+## v1.7.0
+
+* Update volumes when `save` is called on Server
+* Add the ability to update the size of attached virtual disks
+* Improve mocks for folders and networks
+
 ## v1.6.0
 
 *  Support updating of server CPUs and memory
