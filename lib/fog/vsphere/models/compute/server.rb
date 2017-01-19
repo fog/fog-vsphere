@@ -279,6 +279,7 @@ module Fog
           if persisted?
            vm_reconfig_cpus if attribute_changed?(:cpus) || attribute_changed?(:corespersocket)
            vm_reconfig_memory if attribute_changed?(:memory_mb)
+           vm_reconfig_volumes if attribute_changed?(:volumes)
           else
             self.id = service.create_vm(attributes)
           end
