@@ -747,7 +747,7 @@ module Fog
                          :device  => template_volume }
             end
           end
-          specs.concat(new_volumes.map { |volume| create_disk(volume, volumes.index(volume)) })
+          specs.concat(new_volumes.map { |volume| create_disk(volume) })
           return specs
         end
       end
