@@ -59,9 +59,25 @@ module Fog
             # We have to query vSphere to get the volume attributes since the task handle doesn't include that info.
             created = server.volumes.all.find { |volume| volume.unit_number == self.unit_number }
 
+            # example of "created" =>
+            #   <Fog::Compute::Vsphere::Volume
+            #     id="6000C295-576f-0e2d-5b70-c778cd108b3a",
+            #     datastore="datastore1",
+            #     storage_pod=nil,
+            #     mode="persistent",
+            #     size=10485760,
+            #     thin=true,
+            #     eager_zero=nil,
+            #     name="Hard disk 2",
+            #     filename="[datastore1] testvm/testvm_2.vmdk",
+            #     size_gb=10,
+            #     key=2004,
+            #     unit_number=2,
+            #     controller_key=1000
+            #   >
             self.id = created.id
             self.key = created.key
-            self.controller_key = created.controllerKey
+            self.controller_key = created.controller_key
             self.filename = created.filename
 
             true
