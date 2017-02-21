@@ -123,6 +123,8 @@ module Fog
 
           # Convert symbols to strings
           req_options = options.reduce({}) { |hsh, (k,v)| hsh[k.to_s] = v; hsh }
+          req_options['cluster'] ||= cluster
+          req_options['datacenter'] = "#{datacenter}"
           req_options['instance_uuid'] = instance_uuid
           
           service.vm_migrate(req_options)
