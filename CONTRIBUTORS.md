@@ -56,6 +56,7 @@
 * Rich Daley <rdaley@williamhill.co.uk>
 * Rich Lane <rlane@club.cc.cmu.edu>
 * Samuel Keeley <samuel@dropbox.com>
+* Sergio Cambra <sergio@programatica.es>
 * Shlomi Zadok <shlomi@ben-hanna.com>
 * Simon Josi <me@yokto.net>
 * Tejas Ravindra Mandke <tejas@identified.com>
@@ -70,5 +71,6 @@
 * geemus <geemus@gmail.com>
 * karmab <karimboumedhel@gmail.com>
 * karimb <karimboumedhel@gmail.com>
+* milo_cheung <milo.cheung@appcara.com>
 * slivik <jakub.sliva@gmail.com>
 * tipt0e <topo-2@charter.net>

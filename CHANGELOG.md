@@ -1,3 +1,10 @@
+## v1.7.1
+
+* Send all options to VM migrate request
+* Fix VM clone with resource pool
+* Remove obsolete index argument to create_disk call
+* Fix error when creating volume using the wrong key name
+
 ## v1.7.0
 
 * Update volumes when `save` is called on Server
