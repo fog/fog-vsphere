@@ -133,7 +133,7 @@ module Fog
           # Options['host']<~String>
           # The target host for the virtual machine. Optional.
           if options.key?('host') && !options['host'].empty? && !cluster_name.nil?
-            host = get_raw_host(options['host'], attributes[:cluster], options['datacenter'])
+            host = get_raw_host(options['host'], cluster_name, options['datacenter'])
           else
             host = nil
           end
