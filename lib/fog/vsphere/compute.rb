@@ -56,6 +56,7 @@ module Fog
       request :list_virtual_machines
       request :vm_power_off
       request :vm_power_on
+      request :vm_suspend
       request :vm_reboot
       request :vm_clone
       request :vm_destroy

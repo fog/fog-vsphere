@@ -5,7 +5,7 @@ Shindo.tests('Fog::Compute[:vsphere] | server model', ['vsphere']) do
   tests('The server model should') do
     tests('have the action') do
       test('reload') { server.respond_to? 'reload' }
-      %w{ stop start destroy reboot }.each do |action|
+      %w(stop start suspend destroy reboot).each do |action|
         test(action) { server.respond_to? action }
         test("#{action} returns successfully") { server.send(action.to_sym) ? true : false }
       end

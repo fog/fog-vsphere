@@ -101,6 +101,12 @@ module Fog
           service.vm_power_off('instance_uuid' => instance_uuid, 'force' => options[:force])
         end
 
+        def suspend(options = {})
+          options = { :force => !tools_installed? || !tools_running? }.merge(options)
+          requires :instance_uuid
+          service.vm_suspend('instance_uuid' => instance_uuid, 'force' => options[:force])
+        end
+
         def reboot(options = {})
           options = { :force => false }.merge(options)
           requires :instance_uuid
