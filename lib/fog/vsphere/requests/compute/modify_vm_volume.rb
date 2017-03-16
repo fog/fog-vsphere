@@ -22,6 +22,10 @@ module Fog
           vm_reconfig_hardware('instance_uuid' => volume.server_id, 'hardware_spec' => {'deviceChange'=>[create_cdrom(volume, :add)]})
         end
 
+        def remove_vm_volume(volume)
+          true
+        end
+
         def destroy_vm_volume(volume)
           true
         end
