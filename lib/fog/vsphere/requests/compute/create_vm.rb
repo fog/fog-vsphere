@@ -102,7 +102,7 @@ module Fog
           end
 
           if (disks = attributes[:volumes])
-            devices << disks.map { |disk| create_disk(disk, :add, get_storage_pod(attributes)) }
+            devices << disks.map { |disk| create_disk(disk, :add, storage_pod: get_storage_pod(attributes)) }
           end
 
           if (cdroms = attributes[:cdroms])
@@ -230,9 +230,9 @@ module Fog
           end
         end
 
-        def create_disk(disk, operation = :add, storage_pod = nil)
+        def create_disk(disk, operation = :add, options = {})
           # If we deploy the vm on a storage pod, datastore has to be an empty string
-          if storage_pod
+          if options[:storage_pod]
             datastore = ''
           else
             datastore = "[#{disk.datastore}]"
@@ -243,11 +243,10 @@ module Fog
 
           payload = {
             :operation     => operation,
-            :fileOperation => operation == :add ? :create : :destroy,
             :device        => RbVmomi::VIM.VirtualDisk(
               :key           => disk.key,
               :backing       => RbVmomi::VIM.VirtualDiskFlatVer2BackingInfo(
-                :fileName        => datastore,
+                :fileName        => options[:filename] || datastore,
                 :diskMode        => disk.mode.to_sym,
                 :thinProvisioned => disk.thin
               ),
@@ -256,6 +255,8 @@ module Fog
               :capacityInKB  => disk.size
             )
           }
+          file_operation = options[:file_operation] || (:create if operation == :add)
+          payload[:fileOperation] = file_operation if file_operation
 
           if operation == :add && disk.thin == 'false' && disk.eager_zero == 'true'
             payload[:device][:backing][:eagerlyScrub] = disk.eager_zero
