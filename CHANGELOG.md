@@ -1,3 +1,8 @@
+## v1.8.0
+
+* Add `suspend` to server model
+* Add `vm_suspend` to compute request
+
 ## v1.7.1
 
 * Send all options to VM migrate request
