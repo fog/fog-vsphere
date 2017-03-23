@@ -26,15 +26,16 @@ module Fog
             backing = create_nic_backing(interface, {})
             raw_interface.backing = backing
           end
+          apply_options_to_raw_interface(raw_interface, options)
           spec = {
             operation: :edit,
             device: raw_interface
-          }          
+          }
           vm_reconfig_hardware('instance_uuid' => vmid, 'hardware_spec' => {'deviceChange'=>[spec]})
         end
 
         private
-        
+
         def get_interface_from_options(vmid, options)
           if options and options[:interface]
             options[:interface]
@@ -50,6 +51,15 @@ module Fog
             raise ArgumentError, "interface is a required parameter or pass options with type and network"
           end
         end
+
+        def apply_options_to_raw_interface(raw_interface, options)
+          if options[:connectable]
+            options[:connectable].each do |key, value|
+              raw_interface.connectable.send("#{key}=", value)
+            end
+          end
+          raw_interface
+        end
       end
 
       class Mock
@@ -64,7 +74,7 @@ module Fog
           raise ArgumentError, "interface is a required parameter" unless options and options[:interface]
           true
         end
-        
+
         def update_vm_interface(vmid, options = {})
           return unless options[:interface]
           options[:interface].network = options[:network]
