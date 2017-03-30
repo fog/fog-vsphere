@@ -1,3 +1,8 @@
+## v1.9.0
+
+* Add :connectable option to `update_vm_interface`
+* Add ability to detach volume from VM
+
 ## v1.8.0
 
 * Add `suspend` to server model
