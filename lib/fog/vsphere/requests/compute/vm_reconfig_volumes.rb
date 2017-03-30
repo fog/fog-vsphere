@@ -9,16 +9,7 @@ module Fog
             deviceChange: []
           }
           options['volumes'].each do |volume|
-            hardware_spec[:deviceChange].push({
-              :operation=>:edit,
-              device: RbVmomi::VIM::VirtualDisk(
-                backing: RbVmomi::VIM::VirtualDiskFlatVer2BackingInfo( diskMode: volume.mode, fileName: volume.filename ),
-                unitNumber: volume.unit_number,
-                key: volume.key,
-                controllerKey: volume.controller_key,
-                capacityInKB: volume.size,
-              )
-            })
+            hardware_spec[:deviceChange].push(create_disk(volume, :edit, filename: volume.filename))
           end
           vm_reconfig_hardware('instance_uuid' => options['instance_uuid'], 'hardware_spec' => hardware_spec )
         end

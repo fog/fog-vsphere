@@ -36,6 +36,14 @@ module Fog
           name
         end
 
+        def detach
+          requires :server_id, :key, :unit_number
+
+          service.remove_vm_volume(self)
+          server.volumes -= [self]
+          true
+        end
+
         def destroy
           requires :server_id, :key, :unit_number
 
