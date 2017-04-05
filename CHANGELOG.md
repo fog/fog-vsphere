@@ -1,3 +1,7 @@
+## v1.9.1
+
+* Ensure connection has not been closed before using
+
 ## v1.9.0
 
 * Add :connectable option to `update_vm_interface`
