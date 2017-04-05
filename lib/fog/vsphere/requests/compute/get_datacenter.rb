@@ -15,7 +15,7 @@ module Fog
         end
 
         def get_raw_datacenter name
-          @connection.serviceInstance.find_datacenter(name)
+          connection.serviceInstance.find_datacenter(name)
         end
       end
 

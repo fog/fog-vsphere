@@ -16,7 +16,7 @@ module Fog
                  when true
                    params = {:uuid => id, :vmSearch => true, :instanceUuid => true}
                    params[:datacenter] = raw_datacenter if dc
-                   @connection.searchIndex.FindByUuid(params)
+                   connection.searchIndex.FindByUuid(params)
                  else
                    # try to find based on VM name
                    if dc

@@ -7,7 +7,7 @@ module Fog
           options = { 'force' => false }.merge(options)
 
           search_filter = { :uuid => options['instance_uuid'], 'vmSearch' => true, 'instanceUuid' => true }
-          vm = @connection.searchIndex.FindAllByUuid(search_filter).first
+          vm = connection.searchIndex.FindAllByUuid(search_filter).first
 
           if options['force']
             suspend_forcefully(vm)

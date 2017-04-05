@@ -16,7 +16,7 @@ module Fog
         protected
 
         def raw_getpathmo mo
-          if mo.parent == nil or mo.parent.name == @connection.rootFolder.name then
+          if mo.parent == nil or mo.parent.name == connection.rootFolder.name then
             [ mo.name ]
           else
             [ raw_getpathmo(mo.parent), mo.name ].flatten
@@ -24,7 +24,7 @@ module Fog
         end
 
         def raw_datacenters folder=nil
-          folder ||= @connection.rootFolder
+          folder ||= connection.rootFolder
           @raw_datacenters ||= get_raw_datacenters_from_folder folder
         end
 

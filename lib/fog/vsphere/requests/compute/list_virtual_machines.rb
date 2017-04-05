@@ -62,7 +62,7 @@ module Fog
           ## much faster to interact for some functions.
           datacenters = find_datacenters(datacenter_name)
           datacenters.map do |dc|
-            @connection.serviceContent.viewManager.CreateContainerView({
+            connection.serviceContent.viewManager.CreateContainerView({
                                                                            :container  => dc.vmFolder,
                                                                            :type       =>  ["VirtualMachine"],
                                                                            :recursive  => true

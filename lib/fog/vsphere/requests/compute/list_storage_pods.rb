@@ -13,7 +13,7 @@ module Fog
         def raw_storage_pods(datacenter_name)
           dc = find_raw_datacenter(datacenter_name)
 
-          @connection.serviceContent.viewManager.CreateContainerView({
+          connection.serviceContent.viewManager.CreateContainerView({
             :container  => dc,
             :type       => ["StoragePod"],
             :recursive  => true

@@ -3,7 +3,7 @@ module Fog
     class Vsphere
       class Real
         def list_customfields()
-          @connection.serviceContent.customFieldsManager.field.map do |customfield|
+          connection.serviceContent.customFieldsManager.field.map do |customfield|
             {
               :key   => customfield.key.to_i,
               :name  => customfield.name,

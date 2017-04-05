@@ -9,7 +9,7 @@ module Fog
 
           # Find the VM Object
           search_filter = { :uuid => options['instance_uuid'], 'vmSearch' => true, 'instanceUuid' => true }
-          vm_mob_ref = @connection.searchIndex.FindAllByUuid(search_filter).first
+          vm_mob_ref = connection.searchIndex.FindAllByUuid(search_filter).first
 
           unless vm_mob_ref.kind_of? RbVmomi::VIM::VirtualMachine
             raise Fog::Vsphere::Errors::NotFound,

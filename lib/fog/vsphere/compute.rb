@@ -156,7 +156,7 @@ module Fog
         }
 
         def convert_vm_view_to_attr_hash(vms)
-          vms = @connection.serviceContent.propertyCollector.collectMultiple(vms,*ATTR_TO_PROP.values.uniq)
+          vms = connection.serviceContent.propertyCollector.collectMultiple(vms,*ATTR_TO_PROP.values.uniq)
           vms.map { |vm| props_to_attr_hash(*vm) }
         end
 
@@ -523,6 +523,15 @@ module Fog
           connect
           negotiate_revision(options[:vsphere_rev])
           authenticate
+        end
+
+        def connection
+          if @connection.nil? || @connection.serviceContent.sessionManager.currentSession.nil?
+            Fog::Logger.debug('Reconnecting to vSphere.')
+            @connection = nil
+            reload
+          end
+          @connection
         end
 
         def reload

@@ -6,7 +6,7 @@ module Fog
           raise ArgumentError, "instance_uuid is a required parameter" unless options.key? 'instance_uuid'
 
           search_filter = { :uuid => options['instance_uuid'], 'vmSearch' => true, 'instanceUuid' => true }
-          vm_mob_ref = @connection.searchIndex.FindAllByUuid(search_filter).first
+          vm_mob_ref = connection.searchIndex.FindAllByUuid(search_filter).first
 
           task = vm_mob_ref.PowerOnVM_Task
           task.wait_for_completion

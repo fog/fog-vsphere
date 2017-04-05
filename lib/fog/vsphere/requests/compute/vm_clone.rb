@@ -618,7 +618,7 @@ module Fog
               :cloneName => options['name'],
               :vm => vm_mob_ref,
             )
-            srm = @connection.serviceContent.storageResourceManager
+            srm = connection.serviceContent.storageResourceManager
             result = srm.RecommendDatastores(:storageSpec => storage_spec)
 
             # if result array contains recommendation, we can apply it

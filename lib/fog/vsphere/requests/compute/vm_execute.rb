@@ -18,7 +18,7 @@ module Fog
           raise ArgumentError, "password is a required parameter" unless options.key? 'password'
 
           search_filter = { :uuid => options['instance_uuid'], 'vmSearch' => true, 'instanceUuid' => true }
-          vm_mob_ref = @connection.searchIndex.FindAllByUuid(search_filter).first
+          vm_mob_ref = connection.searchIndex.FindAllByUuid(search_filter).first
 
           auth = RbVmomi::VIM::NamePasswordAuthentication(:interactiveSession => false,
                                                           :username => options['user'],
@@ -28,7 +28,7 @@ module Fog
                                                 :arguments => options['args'],
                                                 :workingDirectory => options['working_dir'])
 
-          gom = @connection.serviceContent.guestOperationsManager
+          gom = connection.serviceContent.guestOperationsManager
           gom.processManager.StartProgramInGuest(:vm => vm_mob_ref, :auth => auth, :spec => spec)
         end
       end

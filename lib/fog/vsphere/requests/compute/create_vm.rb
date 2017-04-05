@@ -60,7 +60,7 @@ module Fog
             :configSpec => vm_cfg,
             :host => host,
           )
-          srm = @connection.serviceContent.storageResourceManager
+          srm = connection.serviceContent.storageResourceManager
           result = srm.RecommendDatastores(:storageSpec => storage_spec)
 
           # if result array contains recommendation, we can apply it
