@@ -23,7 +23,7 @@ module Fog
 
         def get_all_raw_networks(datacenter_name)
           dc = find_raw_datacenter(datacenter_name)
-          @connection.serviceContent.viewManager.
+          connection.serviceContent.viewManager.
             CreateContainerView({
                                  :container => dc.networkFolder,
                                  :type =>      ["Network"],

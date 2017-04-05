@@ -6,7 +6,7 @@ module Fog
           raise ArgumentError, "instance_uuid is a required parameter" unless options.key? 'instance_uuid'
 
           search_filter = { :uuid => options['instance_uuid'], 'vmSearch' => true, 'instanceUuid' => true }
-          vm_mob_ref    = @connection.searchIndex.FindAllByUuid(search_filter).first
+          vm_mob_ref    = connection.searchIndex.FindAllByUuid(search_filter).first
           task          = vm_mob_ref.ReconfigVM_Task(:spec => {
             :extraConfig => [
               { :key => 'RemoteDisplay.vnc.enabled',  :value => options[:enabled] ? 'true' : 'false' },
@@ -21,7 +21,7 @@ module Fog
         # return a hash of VNC attributes required to view the console
         def vm_get_vnc uuid
           search_filter = { :uuid => uuid, 'vmSearch' => true, 'instanceUuid' => true }
-          vm = @connection.searchIndex.FindAllByUuid(search_filter).first
+          vm = connection.searchIndex.FindAllByUuid(search_filter).first
           Hash[vm.config.extraConfig.map do |config|
             if config.key =~ /^RemoteDisplay\.vnc\.(\w+)$/
               [$1.to_sym, config.value]

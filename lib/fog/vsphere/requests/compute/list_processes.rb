@@ -11,7 +11,7 @@ module Fog
             :interactiveSession => false
           )
 
-          p_manager = @connection.serviceContent.guestOperationsManager.processManager
+          p_manager = connection.serviceContent.guestOperationsManager.processManager
           processes = p_manager.ListProcessesInGuest(:vm => vm, :auth => auth)
           processes.map do |pi|
             Process.new(
