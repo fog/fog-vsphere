@@ -1,3 +1,7 @@
+## v1.9.2
+
+* Properly escape regex characters in DC names for `list_clusters`
+
 ## v1.9.1
 
 * Ensure connection has not been closed before using

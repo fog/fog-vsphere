@@ -36,6 +36,7 @@
 * Lukas Zapletal <lzap+git@redhat.com>
 * Marc Grimme <grimme@atix.de>
 * Marc Grimme <marc.grimme@googlemail.com>
+* Marek Hulan <mhulan@redhat.com>
 * Martin Matuska <martin@matuska.org>
 * Matt Darby <matt.darby@rackspace.com>
 * Matthew Black <matthew.black@sap.com>
