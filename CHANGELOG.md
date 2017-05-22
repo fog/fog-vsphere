@@ -1,3 +1,7 @@
+## v1.10.0
+
+* Add request to rename VM
+
 ## v1.9.2
 
 * Properly escape regex characters in DC names for `list_clusters`
