@@ -93,6 +93,7 @@ module Fog
       request :vm_reconfig_volumes
       request :vm_reconfig_cpus
       request :vm_reconfig_cdrom
+      request :vm_rename
       request :vm_config_vnc
       request :create_folder
       request :list_server_types
