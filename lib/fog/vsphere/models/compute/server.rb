@@ -70,6 +70,11 @@ module Fog
         end
         # End Lazy Loaded Attributes
 
+        def vm_rename
+          requires :instance_uuid, :name
+          service.vm_rename('instance_uuid' => instance_uuid, 'name' => name)
+        end
+
         def vm_reconfig_memory(options = {})
           requires :instance_uuid, :memory
           service.vm_reconfig_memory('instance_uuid' => instance_uuid, 'memory' => memory_mb)
@@ -290,9 +295,10 @@ module Fog
         def save
           requires :name, :cluster, :datacenter
           if persisted?
-           vm_reconfig_cpus if attribute_changed?(:cpus) || attribute_changed?(:corespersocket)
-           vm_reconfig_memory if attribute_changed?(:memory_mb)
-           vm_reconfig_volumes if attribute_changed?(:volumes)
+            vm_rename if attribute_changed?(:name)
+            vm_reconfig_cpus if attribute_changed?(:cpus) || attribute_changed?(:corespersocket)
+            vm_reconfig_memory if attribute_changed?(:memory_mb)
+            vm_reconfig_volumes if attribute_changed?(:volumes)
           else
             self.id = service.create_vm(attributes)
           end
