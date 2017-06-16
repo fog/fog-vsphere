@@ -33,6 +33,11 @@ module Fog
         def revert
           service.vm_revert_snapshot server_id, ref
         end
+
+        def destroy(remove_children = false)
+          requires :server_id, :ref
+          service.vm_remove_snapshot(server_id, ref, remove_children)
+        end
       end
     end
   end
