@@ -121,6 +121,7 @@ module Fog
       request :destroy_group
       request :get_host
       request :modify_vm_controller
+      request :vm_revert_snapshot
 
       module Shared
         attr_reader :vsphere_is_vcenter

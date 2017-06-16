@@ -29,6 +29,10 @@ module Fog
           return self if ref == snapshot_ref
           child_snapshots().get(snapshot_ref)
         end
+
+        def revert
+          service.vm_revert_snapshot server_id, ref
+        end
       end
     end
   end

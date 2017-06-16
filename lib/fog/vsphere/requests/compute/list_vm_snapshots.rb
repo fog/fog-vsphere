@@ -31,7 +31,8 @@ module Fog
               :mo_ref => snap_tree.snapshot,
               :tree_node => snap_tree,
               :ref_chain => "#{vm_id}/#{snap_tree.snapshot._ref}",
-              :snapshot_name_chain => "#{vm_id}/#{snap_tree.name}"
+              :snapshot_name_chain => "#{vm_id}/#{snap_tree.name}",
+              :server_id => vm_id
             }
           end
       end
