@@ -32,7 +32,8 @@ module Fog
               :snapshot_name_chain =>
                 "#{parent_snap.snapshot_name_chain}/#{snap_tree.name}",
               :ref_chain =>
-                "#{parent_snap.ref_chain}/#{snap_tree.snapshot._ref}"
+                "#{parent_snap.ref_chain}/#{snap_tree.snapshot._ref}",
+              :server_id => parent_snap.server_id
             }
           end
       end
