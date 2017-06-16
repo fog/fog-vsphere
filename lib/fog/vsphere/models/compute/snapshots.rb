@@ -19,7 +19,10 @@ module Fog
         end
 
         def get(snapshot_ref)
-          all.find { |snapshot| snapshot.get_child(snapshot_ref) }
+          all.each do |snapshot|
+            snapshot = snapshot.get_child(snapshot_ref)
+            break snapshot if snapshot
+          end
         end
       end
     end
