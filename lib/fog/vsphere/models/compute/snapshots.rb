@@ -21,8 +21,9 @@ module Fog
         def get(snapshot_ref)
           all.each do |snapshot|
             snapshot = snapshot.get_child(snapshot_ref)
-            break snapshot if snapshot
+            return snapshot if snapshot
           end
+          nil
         end
       end
     end
