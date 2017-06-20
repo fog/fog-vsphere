@@ -15,13 +15,32 @@ module Fog
 
         # root ResourcePool + Children if they exists
         def list_raw_resource_pools(cluster)
-          [cluster.resourcePool, cluster.resourcePool.resourcePool].flatten
+          pools = []
+          traverse_raw_resource_pools(pools, cluster.resourcePool)
+          pools.uniq
         end
 
-        def resource_pool_attributes resource_pool, cluster, datacenter
+        def traverse_raw_resource_pools(pools, rp)
+          if rp 
+            if rp.respond_to? :resourcePool
+              traverse_raw_resource_pools(pools, rp.resourcePool)
+            end
+            if rp.respond_to? :each
+               rp.each do |resourcePool|
+                 traverse_raw_resource_pools(pools, resourcePool)
+               end
+            else
+              pools << rp
+            end
+          end
+        end
+
+        def resource_pool_attributes(resource_pool, cluster, datacenter)
+          name = folder_path(resource_pool).gsub(/^.*Resources(\/|)/,'')
+          name = 'Resources' if name.empty?
           {
             :id                   => managed_obj_id(resource_pool),
-            :name                 => resource_pool.name,
+            :name                 => name,
             :configured_memory_mb => resource_pool.summary.configuredMemoryMB,
             :overall_status       => resource_pool.overallStatus,
             :cluster              => cluster,
@@ -29,6 +48,7 @@ module Fog
           }
         end
       end
+
       class Mock
         def list_resource_pools(filters = { })
         end
