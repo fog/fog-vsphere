@@ -1,3 +1,11 @@
+## v1.11.0
+
+* Add ability to query subresource pools
+* Fix `snapshots.get(id)` when no snapshot is found
+* Add `vm_remove_snapshot` request, use in `snapshot.destroy`
+* Fix `snapshots.get` for non-root snapshot
+* Add `vm_revert_snapshot` request and `revert` method to `snapshot`
+
 ## v1.10.0
 
 * Add request to rename VM
