@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'fog-vsphere'
   spec.version       = Fog::Vsphere::VERSION
   spec.authors       = ['J.R. Garcia']
-  spec.email         = ['jrg@vmware.com']
+  spec.email         = ['jr@garciaole.com']
 
   spec.summary       = "Module for the 'fog' gem to support VMware vSphere."
   spec.description   = 'This library can be used as a module for `fog` or as standalone provider to use vSphere in applications.'
