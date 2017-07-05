@@ -24,8 +24,14 @@ module Fog
         protected
 
         def network_attributes network, datacenter
+          raw_network = get_raw_network(network.name, datacenter)
+          if raw_network.kind_of? RbVmomi::VIM::DistributedVirtualPortgroup
+            id = raw_network.key
+          else
+            id = managed_obj_id(network)
+          end
           {
-            :id            => managed_obj_id(network),
+            :id            => id,
             :name          => network.name,
             :accessible    => network.summary.accessible,
             :datacenter    => datacenter,
