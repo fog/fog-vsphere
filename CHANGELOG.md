@@ -1,3 +1,7 @@
+## v1.11.1
+
+* Use key to identify dvPort Group
+
 ## v1.11.0
 
 * Add ability to query subresource pools

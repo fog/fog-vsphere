@@ -76,3 +76,4 @@
 * slivik <jakub.sliva@gmail.com>
 * theOpenBit <theopenbit@users.noreply.github.com>
 * tipt0e <topo-2@charter.net>
+* wiad <adam.winberg@gmail.com>
