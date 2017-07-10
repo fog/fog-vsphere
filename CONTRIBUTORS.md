@@ -63,6 +63,7 @@
 * Tejas Ravindra Mandke <tejas@identified.com>
 * Timo Goebel <timo.goebel@dm.de>
 * Timur Alperovich <timur@maginatics.com>
+* Tyler Gregory <01100010011001010110010101110000@users.noreply.github.com>
 * Wesley Beary <geemus+github@gmail.com>
 * Wesley Beary <geemus@gmail.com>
 * Xavier Fontrodona <xavier.fontrodona@safelayer.com>

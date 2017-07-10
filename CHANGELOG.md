@@ -1,3 +1,7 @@
+## v1.11.2
+
+* Prevent failing when cloning from template to different cluster
+
 ## v1.11.1
 
 * Use key to identify dvPort Group
