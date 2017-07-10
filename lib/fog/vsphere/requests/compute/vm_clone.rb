@@ -117,7 +117,6 @@ module Fog
             resource_pool = get_raw_resource_pool(pool_name, cluster_name, options['datacenter'])
           elsif ( options.key?('resource_pool') && options['resource_pool'].is_a?(Array) && options['resource_pool'].length == 2 && options['resource_pool'][1] == 'Resources')
             cluster_name = options['resource_pool'][0]
-            pool_name = options['resource_pool'][1]
             resource_pool = get_raw_resource_pool(nil, cluster_name, options['datacenter'])
           elsif ( vm_mob_ref.resourcePool == nil )
             # If the template is really a template then there is no associated resource pool,
