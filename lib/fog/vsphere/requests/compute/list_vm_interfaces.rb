@@ -67,6 +67,7 @@ module Fog
             :mac     => nic.macAddress,
             :network => nic.backing.respond_to?("network") ? nic.backing.network.name : nic.backing.port.portgroupKey,
             :status  => nic.connectable.status,
+            :connected => nic.connectable.connected,
             :summary => nic.deviceInfo.summary,
             :type    => nic.class,
             :key     => nic.key,
