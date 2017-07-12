@@ -10,6 +10,7 @@ module Fog
         attribute :network
         attribute :name
         attribute :status
+        attribute :connected
         attribute :summary
         attribute :type
         attribute :key
