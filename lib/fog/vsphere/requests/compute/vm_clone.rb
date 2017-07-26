@@ -155,7 +155,7 @@ module Fog
             if options.key?('network_label')
               raise ArgumentError, "interfaces option can't be specified together with network_label"
             end
-            device_change.concat(modify_template_nics_specs(template_path, options['interfaces'], options['datacenter']))
+            device_change.concat(modify_template_nics_specs(vm_mob_ref, options['interfaces'], options['datacenter']))
           elsif options.key?('network_label')
             device_change << modify_template_nics_simple_spec(options['network_label'], options['nic_type'], options['network_adapter_device_key'], options['datacenter'])
           end
@@ -711,21 +711,36 @@ module Fog
         end
 
 
-        def modify_template_nics_specs(template_path, new_nics, datacenter)
-          template_nics = list_vm_interfaces(template_path, datacenter).map do |old_attributes|
-            Fog::Compute::Vsphere::Interface.new(old_attributes)
-          end
+        def modify_template_nics_specs(vm_mob_ref, nics, datacenter)
           specs = []
+          template_nics = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualEthernetCard)
+          modified_nics = nics.take(template_nics.size)
+          new_nics      = nics.drop(template_nics.size)
 
-          template_nics.each do |interface|
-            specs << create_interface(interface, interface.key, :remove, :datacenter => datacenter)
+          template_nics.zip(modified_nics).each do |template_nic, new_nic|
+            if new_nic
+              backing = create_nic_backing(new_nic, {})
+              template_nic.backing = backing
+              connectable = RbVmomi::VIM::VirtualDeviceConnectInfo(
+                :allowGuestControl => true,
+                :connected => true,
+                :startConnected => true
+              )
+              template_nic.connectable = connectable
+              specs << {
+                operation: :edit,
+                device: template_nic
+              }
+            else
+              specs << create_interface(interface, interface.key, :remove, :datacenter => datacenter)
+            end
           end
 
           new_nics.each do |interface|
             specs << create_interface(interface, 0, :add, :datacenter => datacenter)
           end
 
-          return specs
+          specs
         end
 
         def modify_template_volumes_specs(vm_mob_ref, volumes)
