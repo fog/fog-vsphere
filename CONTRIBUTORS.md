@@ -61,6 +61,7 @@
 * Shlomi Zadok <shlomi@ben-hanna.com>
 * Simon Josi <me@yokto.net>
 * Tejas Ravindra Mandke <tejas@identified.com>
+* Timo Goebel <mail@timogoebel.name>
 * Timo Goebel <timo.goebel@dm.de>
 * Timur Alperovich <timur@maginatics.com>
 * Tyler Gregory <01100010011001010110010101110000@users.noreply.github.com>

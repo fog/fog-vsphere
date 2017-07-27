@@ -1,3 +1,8 @@
+## v1.11.3
+
+* Fix issue when cloning and interface is in boot order
+* Add connected attribute to interface
+
 ## v1.11.2
 
 * Prevent failing when cloning from template to different cluster
