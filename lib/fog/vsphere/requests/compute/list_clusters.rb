@@ -2,11 +2,17 @@ module Fog
   module Compute
     class Vsphere
       class Real
-        def list_clusters(filters = { })
-          datacenter_name = filters[:datacenter]
 
-          raw_clusters(datacenter_name).map do |cluster|
-            cluster_attributes(cluster, datacenter_name)
+        def list_clusters(filters = {})
+          datacenter_name = filters[:datacenter] if filters.key? :datacenter
+          if datacenter_name.nil?
+            list_datacenters.map { |dc| list_clusters(datacenter: dc[:name]) }.flatten
+          else
+            raw_clusters(datacenter_name).map do |cluster|
+              if cluster.instance_of? RbVmomi::VIM::ClusterComputeResource
+                cluster_attributes(cluster, datacenter_name)
+              end
+            end.compact
           end
         end
 
@@ -27,41 +33,41 @@ module Fog
           end.flatten
         end
 
-        def cluster_attributes cluster, datacenter_name
+        def cluster_attributes(cluster, datacenter_name)
           {
-            :id             => managed_obj_id(cluster),
-            :name           => cluster.name,
-            :full_path      => cluster_path(cluster, datacenter_name),
-            :num_host       => cluster.summary.numHosts,
-            :num_cpu_cores  => cluster.summary.numCpuCores,
-            :overall_status => cluster.summary.overallStatus,
-            :datacenter     => datacenter_name || parent_attribute(cluster.path, :datacenter)[1],
+            id: managed_obj_id(cluster),
+            name: cluster.name,
+            full_path: cluster_path(cluster, datacenter_name),
+            num_host: cluster.summary.numHosts,
+            num_cpu_cores: cluster.summary.numCpuCores,
+            overall_status: cluster.summary.overallStatus,
+            datacenter: datacenter_name || parent_attribute(cluster.path, :datacenter)[1]
           }
         end
 
         def cluster_path(cluster, datacenter_name)
           datacenter = find_raw_datacenter(datacenter_name)
-          cluster.pretty_path.gsub(/(#{Regexp.escape(datacenter_name)}|#{Regexp.escape(datacenter.hostFolder.name)})\//,'')
+          cluster.pretty_path.gsub(%r{(#{Regexp.escape(datacenter_name)}|#{Regexp.escape(datacenter.hostFolder.name)})\/}, '')
         end
       end
 
       class Mock
-        def list_clusters(filters = { })
+        def list_clusters(*)
           raw_clusters.map do |cluster|
             cluster
           end
         end
 
         def raw_clusters
-          folder = self.data[:clusters]
+          folder = data[:clusters]
           @raw_clusters = get_raw_clusters_from_folder(folder)
         end
 
         def get_raw_clusters_from_folder(folder)
           folder.map do |child|
-            if child[:klass] == "RbVmomi::VIM::ComputeResource"
-               child
-            elsif child[:klass] == "RbVmomi::VIM::Folder"
+            if child[:klass] == 'RbVmomi::VIM::ComputeResource'
+              child
+            elsif child[:klass] == 'RbVmomi::VIM::Folder'
               get_raw_clusters_from_folder(child[:clusters])
             end
           end.flatten
