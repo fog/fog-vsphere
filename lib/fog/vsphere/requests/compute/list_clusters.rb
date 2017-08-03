@@ -6,7 +6,7 @@ module Fog
         def list_clusters(filters = {})
           datacenter_name = filters[:datacenter] if filters.key? :datacenter
           if datacenter_name.nil?
-            list_datacenters.map { |dc| list_clusters(datacenter: dc[:name]) }.flatten
+            list_datacenters.map { |dc| list_clusters(:datacenter => dc[:name]) }.flatten
           else
             raw_clusters(datacenter_name).map do |cluster|
               if cluster.instance_of? RbVmomi::VIM::ClusterComputeResource
@@ -35,13 +35,13 @@ module Fog
 
         def cluster_attributes(cluster, datacenter_name)
           {
-            id: managed_obj_id(cluster),
-            name: cluster.name,
-            full_path: cluster_path(cluster, datacenter_name),
-            num_host: cluster.summary.numHosts,
-            num_cpu_cores: cluster.summary.numCpuCores,
-            overall_status: cluster.summary.overallStatus,
-            datacenter: datacenter_name || parent_attribute(cluster.path, :datacenter)[1]
+            :id => managed_obj_id(cluster),
+            :name => cluster.name,
+            :full_path => cluster_path(cluster, datacenter_name),
+            :num_host => cluster.summary.numHosts,
+            :num_cpu_cores => cluster.summary.numCpuCores,
+            :overall_status => cluster.summary.overallStatus,
+            :datacenter => datacenter_name || parent_attribute(cluster.path, :datacenter)[1]
           }
         end
 
