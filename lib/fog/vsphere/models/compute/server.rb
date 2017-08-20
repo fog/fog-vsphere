@@ -324,6 +324,10 @@ module Fog
           (path.split('/').reject {|e| e.empty?} - ["Datacenters", datacenter, "vm"]).join("/")
         end
 
+        def acquire_ticket(type = nil)
+          service.tickets(:server => self).create
+        end
+
         private
 
         def defaults
