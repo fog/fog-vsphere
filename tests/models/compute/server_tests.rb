@@ -36,6 +36,9 @@ Shindo.tests('Fog::Compute[:vsphere] | server model', ['vsphere']) do
           end
         end
       end
+      test('tickets') do
+        test('acquire ticket successfully') { server.acquire_ticket.kind_of? Fog::Compute::Vsphere::Ticket }
+      end
     end
     tests('have attributes') do
       model_attribute_hash = server.attributes

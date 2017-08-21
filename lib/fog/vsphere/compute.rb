@@ -49,6 +49,8 @@ module Fog
       collection :rules
       model :host
       collection :hosts
+      model :ticket
+      collection :tickets
 
       request_path 'fog/vsphere/requests/compute'
       request :current_time
@@ -123,6 +125,7 @@ module Fog
       request :modify_vm_controller
       request :vm_revert_snapshot
       request :vm_remove_snapshot
+      request :vm_acquire_ticket
 
       module Shared
         attr_reader :vsphere_is_vcenter
