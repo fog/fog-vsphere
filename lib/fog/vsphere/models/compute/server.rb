@@ -97,7 +97,7 @@ module Fog
 
         def start(options = {})
           requires :instance_uuid
-          service.vm_power_on('instance_uuid' => instance_uuid) unless power_state == ready?
+          service.vm_power_on('instance_uuid' => instance_uuid) unless ready?
         end
 
         def stop(options = {})
