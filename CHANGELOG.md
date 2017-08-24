@@ -1,3 +1,8 @@
+## v1.12.0
+
+* Add existing state validation for power on/off requests
+* Add ability for server to acquire WebMKS ticket
+
 ## v1.11.3
 
 * Fix issue when cloning and interface is in boot order

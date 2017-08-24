@@ -75,6 +75,7 @@
 * karmab <karimboumedhel@gmail.com>
 * karimb <karimboumedhel@gmail.com>
 * milo_cheung <milo.cheung@appcara.com>
+* scottd018 <scottd018@users.noreply.github.com>
 * slivik <jakub.sliva@gmail.com>
 * theOpenBit <theopenbit@users.noreply.github.com>
 * tipt0e <topo-2@charter.net>
