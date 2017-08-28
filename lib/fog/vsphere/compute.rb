@@ -126,6 +126,7 @@ module Fog
       request :vm_revert_snapshot
       request :vm_remove_snapshot
       request :vm_acquire_ticket
+      request :vm_relocate
 
       module Shared
         attr_reader :vsphere_is_vcenter
