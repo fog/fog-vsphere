@@ -16,9 +16,17 @@ module Fog
               "Could not find VirtualMachine with instance uuid #{options['instance_uuid']}"
           end
           options['host'] = get_raw_host(options['host'], options['cluster'], options['datacenter']) if options['host']
-          task = vm_mob_ref.MigrateVM_Task(:pool => options['pool'], :host => options['host'], :priority => "#{priority}", :state => options['state'] )
-          task.wait_for_completion
-          { 'task_state' => task.info.state }
+          task_options = {:pool => options['pool'], :host => options['host'], :state => options['state']}
+          if options['check']
+            checker = connection.serviceContent.vmProvisioningChecker
+            task = checker.CheckMigrate_Task(task_options.merge(:vm => vm_mob_ref))
+            task.wait_for_completion
+            {'error' => task.info.result[0].error, 'warning' => task.info.result[0].warning}
+          else
+            task = vm_mob_ref.MigrateVM_Task(task_options.merge(:priority => "#{priority}"))
+            task.wait_for_completion
+            { 'task_state' => task.info.state }
+          end
         end
       end
 
