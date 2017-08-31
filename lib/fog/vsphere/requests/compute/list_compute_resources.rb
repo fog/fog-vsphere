@@ -9,9 +9,11 @@ module Fog
           compute_resources = raw_compute_resources datacenter_name
           
           compute_resources.map do |compute_resource|
-            summary = compute_resource.summary
-            next if only_active and summary.numEffectiveHosts == 0
-            compute_resource_attributes(compute_resource, datacenter_name)
+            unless compute_resource.instance_of? RbVmomi::VIM::Folder
+              summary = compute_resource.summary
+              next if only_active and summary.numEffectiveHosts == 0
+              compute_resource_attributes(compute_resource, datacenter_name)
+            end
           end.compact
         end
         
