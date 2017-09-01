@@ -773,7 +773,6 @@ module Fog
         def relocate_template_volumes_specs(vm_mob_ref, volumes, datacenter)
           template_volumes = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualDisk)
           modified_volumes = volumes.take(template_volumes.size)
-          new_volumes      = volumes.drop(template_volumes.size)
 
           specs = []
           template_volumes.zip(modified_volumes).each do |template_volume, new_volume|
