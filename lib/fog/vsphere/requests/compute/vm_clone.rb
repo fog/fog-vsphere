@@ -721,6 +721,8 @@ module Fog
             if new_nic
               backing = create_nic_backing(new_nic, {})
               template_nic.backing = backing
+              template_nic.addressType = 'generated'
+              template_nic.macAddress = nil
               connectable = RbVmomi::VIM::VirtualDeviceConnectInfo(
                 :allowGuestControl => true,
                 :connected => true,
