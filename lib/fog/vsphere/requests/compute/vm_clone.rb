@@ -175,6 +175,37 @@ module Fog
           virtual_machine_config_spec.memoryHotAddEnabled = options['memoryHotAddEnabled'] if ( options.key?('memoryHotAddEnabled') )
           virtual_machine_config_spec.firmware = options['firmware'] if ( options.key?('firmware') )
           virtual_machine_config_spec.extraConfig = extra_config(extra_config: options['extraConfig']) if ( options.key?('extraConfig') )
+          if @vsphere_rev.to_f >= 5 && options.key?('boot_order')
+            boot_order = options['boot_order'].flat_map do |boot_device|
+              case boot_device.to_sym
+              when :network
+                interfaces = device_change.select do |change|
+                  [:edit, :add].include?(change[:operation]) &&
+                    change[:device].class <= RbVmomi::VIM::VirtualEthernetCard
+                end.map { |change| change[:device] }
+                interfaces.map do |interface|
+                  RbVmomi::VIM::VirtualMachineBootOptionsBootableEthernetDevice.new(
+                    :deviceKey => interface.key
+                  )
+                end
+              when :disk
+                disks = device_change.select do |change|
+                  [:edit, :add].include?(change[:operation]) &&
+                    change[:device].is_a?(RbVmomi::VIM::VirtualDisk)
+                end.map { |change| change[:device] }
+                disks.map do |disk|
+                  RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice.new(
+                    :deviceKey => disk.key
+                  )
+                end
+              when :cdrom
+                RbVmomi::VIM::VirtualMachineBootOptionsBootableCdromDevice.new
+              when :floppy
+                RbVmomi::VIM::VirtualMachineBootOptionsBootableFloppyDevice.new
+              end
+            end
+            virtual_machine_config_spec.bootOptions = { :bootOrder => boot_order }
+          end
           # Options['customization_spec']
           # OLD Options still supported
           # * domain <~String> - *REQUIRED* - Sets the server's domain for customization
