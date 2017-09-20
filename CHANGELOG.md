@@ -1,3 +1,13 @@
+## v1.13.0
+
+* Add ability to change boot order on VM clone (#110)
+* Support cloning volumes in different datastore (#107)
+* Add ability to generate new mac addresses on VM clone (#109)
+* Fix list_compute_resources error when folder nested inside datacenter level (#100)
+* Updated list_clusters to have an optional param or allow filtering on datacenter (#102)
+* Add check option for vm_migrate
+* Add vm_relocate request
+
 ## v1.12.0
 
 * Add existing state validation for power on/off requests

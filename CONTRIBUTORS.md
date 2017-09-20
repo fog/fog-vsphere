@@ -9,6 +9,7 @@
 * Christopher Oliver <coliver@datapipe.com>
 * Cyrus Team <cyrusteam@cyruslists.com>
 * Darren Foo <stonith@users.noreply.github.com>
+* Derek Wright <derekmwright@users.noreply.github.com>
 * Dominic Cleal <dcleal@redhat.com>
 * Eric Stonfer <ericstonfer@yahoo.com>
 * Ewoud Kohl van Wijngaarden <ewoud@kohlvanwijngaarden.nl>
