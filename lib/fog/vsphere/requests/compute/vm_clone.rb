@@ -766,7 +766,7 @@ module Fog
                 device: template_nic
               }
             else
-              specs << create_interface(interface, interface.key, :remove, :datacenter => datacenter)
+              specs << create_interface(template_nic, template_nic.key, :remove, :datacenter => datacenter)
             end
           end
 
