@@ -1,3 +1,7 @@
+## v1.13.1
+
+* Fix typo of local variable name in clone operation (#114)
+
 ## v1.13.0
 
 * Add ability to change boot order on VM clone (#110)
