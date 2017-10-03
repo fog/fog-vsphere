@@ -766,7 +766,8 @@ module Fog
                 device: template_nic
               }
             else
-              specs << create_interface(template_nic, template_nic.key, :remove, :datacenter => datacenter)
+              interface = Fog::Compute::Vsphere::Interface.new(raw_to_hash(template_nic))
+              specs << create_interface(interface, interface.key, :remove, :datacenter => datacenter)
             end
           end
 
