@@ -127,6 +127,9 @@ module Fog
       request :vm_remove_snapshot
       request :vm_acquire_ticket
       request :vm_relocate
+      request :host_shutdown
+      request :host_start_maintenance
+      request :host_finish_maintenance
 
       module Shared
         attr_reader :vsphere_is_vcenter
