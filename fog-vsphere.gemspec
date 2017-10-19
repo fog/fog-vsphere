@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 1.8.7'
+  spec.required_ruby_version = '>= 2.0.0'
 
   spec.add_runtime_dependency 'fog-core'
   spec.add_runtime_dependency 'rbvmomi', '~> 1.9'
