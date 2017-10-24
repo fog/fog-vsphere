@@ -437,6 +437,7 @@ module Fog
                   :num_cpu_cores => "16",
                   :overall_status => "green",
                   :datacenter => "Solutions",
+                  :full_path => 'Solutionscluster',
                   :klass => "RbVmomi::VIM::ComputeResource"
                  },
                  {:id => "e4195973-102b-4096-bbd6-5429ff0b35c9",
@@ -445,6 +446,7 @@ module Fog
                   :num_cpu_cores => "32",
                   :overall_status => "green",
                   :datacenter => "Solutions",
+                  :full_path => 'Problemscluster',
                   :klass => "RbVmomi::VIM::ComputeResource"
                  },
                  {
@@ -455,6 +457,7 @@ module Fog
                                   :num_cpu_cores => "32",
                                   :overall_status => "green",
                                   :datacenter => "Solutions",
+                                  :full_path => 'Nested/Problemscluster',
                                   :klass => "RbVmomi::VIM::ComputeResource"
                                  },
                                  {:id => "03616b8d-b707-41fd-b3b5-the Second",
@@ -463,6 +466,7 @@ module Fog
                                   :num_cpu_cores => "32",
                                   :overall_status => "green",
                                   :datacenter => "Solutions",
+                                  :full_path => 'Nested/Lastcluster',
                                   :klass => "RbVmomi::VIM::ComputeResource"}
                    ]
                  }

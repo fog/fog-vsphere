@@ -14,7 +14,7 @@ module Fog
         def resource_pools(filters = { })
           self.attributes[:resource_pools] ||= id.nil? ? [] : service.resource_pools({
                                                                                           :service => service,
-                                                                                          :cluster    => name,
+                                                                                          :cluster    => full_path,
                                                                                           :datacenter => datacenter
                                                                                         }.merge(filters))
         end
@@ -22,7 +22,7 @@ module Fog
         def datastores(filters = { })
           self.attributes[:datastores] ||= id.nil? ? [] : service.datastores({
                                                                                           :service => service,
-                                                                                          :cluster    => name,
+                                                                                          :cluster    => full_path,
                                                                                           :datacenter => datacenter
                                                                                         }.merge(filters))
         end
@@ -30,17 +30,17 @@ module Fog
         def networks(filters = { })
           self.attributes[:networks] ||= id.nil? ? [] : service.networks({
                                                                                           :service => service,
-                                                                                          :cluster    => name,
+                                                                                          :cluster    => full_path,
                                                                                           :datacenter => datacenter
                                                                                         }.merge(filters))
         end
 
         def rules
-          service.rules(:datacenter => datacenter, :cluster => name)
+          service.rules(:datacenter => datacenter, :cluster => full_path)
         end
 
         def hosts
-          service.hosts(:datacenter => datacenter, :cluster => name)
+          service.hosts(:datacenter => datacenter, :cluster => full_path)
         end
 
         def to_s
