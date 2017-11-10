@@ -8,9 +8,27 @@ module Fog
         attribute :cluster
         attribute :name
         attribute :vm_ids
+        attribute :cpu_cores
+        attribute :cpu_sockets
+        attribute :cpu_threads
+        attribute :memory
+        attribute :uuid
+
+        # Lazy Loaded Attributes
+        [:vm_ids].each do |attr|
+          define_method attr do
+            attributes[attr] = attributes[attr].call if attributes[attr].is_a?(Proc)
+            attributes[attr]
+          end
+        end
+        # End Lazy Loaded Attributes
 
         def to_s
           name
+        end
+
+        def memory_mb
+          memory / 1024 / 1024
         end
 
         def shutdown
