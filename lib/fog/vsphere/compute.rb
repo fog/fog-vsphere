@@ -490,6 +490,19 @@ module Fog
                    :datacenter => 'Solutions',
                    :cluster => 'Solutionscluster',
                    :name => 'host1.example.com',
+                   :model => 'PowerEdge R730',
+                   :vendor => 'Dell Inc.',
+                   :ipaddress => '1.2.3.4',
+                   :ipaddress6 => nil,
+                   :hostname => 'host1',
+                   :domainname => 'example.com',
+                   :product_name => 'VMware ESXi',
+                   :uuid => '4c4c4544-0051-3610-8046-c4c44f584a32',
+                   :cpu_cores => 20,
+                   :cpu_sockets => 2,
+                   :cpu_threads => 40,
+                   :memory => 824597241856,
+                   :product_version => '6.0.0',
                    :vm_ids => ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']
                  }
                }
