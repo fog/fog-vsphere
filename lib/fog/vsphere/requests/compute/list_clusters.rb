@@ -47,7 +47,7 @@ module Fog
 
         def cluster_path(cluster, datacenter_name)
           datacenter = find_raw_datacenter(datacenter_name)
-          cluster.pretty_path.gsub(%r{(#{Regexp.escape(datacenter_name)}|#{Regexp.escape(datacenter.hostFolder.name)})\/}, '')
+          cluster.pretty_path.gsub(%r{(^#{Regexp.escape(datacenter_name)}|#{Regexp.escape(datacenter.hostFolder.name)})\/}, '')
         end
       end
 
