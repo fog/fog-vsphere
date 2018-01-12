@@ -12,8 +12,7 @@ module Fog
 
         def get_raw_network(name, datacenter_name, distributedswitch=nil)
           finder = choose_finder(name, distributedswitch)
-          networks = get_all_raw_networks(datacenter_name)
-          networks.find { |n| finder.call(n) }
+          get_all_raw_networks(datacenter_name).find { |n| finder.call(n) }
         end
       end
 
@@ -22,13 +21,7 @@ module Fog
         protected
 
         def get_all_raw_networks(datacenter_name)
-          dc = find_raw_datacenter(datacenter_name)
-          connection.serviceContent.viewManager.
-            CreateContainerView({
-                                 :container => dc.networkFolder,
-                                 :type =>      ["Network"],
-                                 :recursive => true
-                                }).view
+          list_container_view(datacenter_name, 'Network', :networkFolder)
         end
 
         def choose_finder(name, distributedswitch)

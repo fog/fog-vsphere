@@ -23,15 +23,15 @@ module Fog
         def list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
           vms = raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive).to_a
           # remove all template based virtual machines
-          vms.delete_if { |v| v.config.nil? or v.config.template }
+          vms.delete_if { |v| v.config.nil? || v.config.template }
           vms.map(&method(:convert_vm_mob_ref_to_attr_hash))
         end
-        
+
         def raw_list_all_virtual_machines_in_folder(path, datacenter_name, recursive)
           folder = get_raw_vmfolder(path, datacenter_name)
           folder_enumerator(folder, recursive)
         end
-        
+
         # An enumerator for a folder. Enumerates all the VMs in the folder, recursively if
         # passed recursive=true
         def folder_enumerator(raw_folder, recursive)
@@ -46,7 +46,7 @@ module Fog
             end
           end
         end
-        
+
         def list_all_virtual_machines(options = { })
           raw_vms = raw_list_all_virtual_machines(options[:datacenter])
           vms = convert_vm_view_to_attr_hash(raw_vms)
@@ -62,17 +62,11 @@ module Fog
           ## much faster to interact for some functions.
           datacenters = find_datacenters(datacenter_name)
           datacenters.map do |dc|
-            connection.serviceContent.viewManager.CreateContainerView({
-                                                                           :container  => dc.vmFolder,
-                                                                           :type       =>  ["VirtualMachine"],
-                                                                           :recursive  => true
-                                                                       }).view
+            list_container_view(dc, 'VirtualMachine', :vmFolder)
           end.flatten
         end
         def get_folder_path(folder, root = nil)
-          if (not folder.methods.include?('parent')) or (folder == root)
-            return
-          end
+          return if (!folder.methods.include?('parent')) || (folder == root)
           "#{get_folder_path(folder.parent)}/#{folder.name}"
         end
       end

@@ -648,6 +648,30 @@ module Fog
             raise Fog::Vsphere::Errors::SecurityError, "The remote system presented a public key with hash #{pubkey_hash} but we're expecting a hash of #{expected_pubkey_hash || '<unset>'}.  If you are sure the remote system is authentic set vsphere_expected_pubkey_hash: <the hash printed in this message> in ~/.fog"
           end
         end
+
+        def list_container_view(datacenter_obj_or_name, type, container_object = nil)
+          dc = if datacenter_obj_or_name.kind_of?(String)
+                 find_raw_datacenter(datacenter_obj_or_name)
+               else
+                 datacenter_obj_or_name
+               end
+
+          container = if container_object
+                        dc.public_send(container_object)
+                      else
+                        dc
+                      end
+
+          container_view = connection.serviceContent.viewManager.CreateContainerView(
+            :container  => dc,
+            :type       =>  [type],
+            :recursive  => true
+          )
+
+          result = container_view.view
+          container_view.DestroyView
+          result
+        end
       end
     end
   end
