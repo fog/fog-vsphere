@@ -10,18 +10,14 @@ module Fog
         end
 
         private
-        def raw_storage_pods(datacenter_name)
-          dc = find_raw_datacenter(datacenter_name)
 
-          connection.serviceContent.viewManager.CreateContainerView({
-            :container  => dc,
-            :type       => ["StoragePod"],
-            :recursive  => true
-          }).view
+        def raw_storage_pods(datacenter_name)
+          list_container_view(datacenter_name, 'StoragePod')
         end
+
         protected
 
-        def storage_pod_attributes storage_pod, datacenter
+        def storage_pod_attributes(storage_pod, datacenter)
           {
             :id          => managed_obj_id(storage_pod),
             :name        => storage_pod.name,

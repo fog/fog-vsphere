@@ -11,19 +11,13 @@ module Fog
         protected
 
         def get_raw_storage_pod(name, datacenter_name)
-          dc = find_raw_datacenter(datacenter_name)
-
-          connection.serviceContent.viewManager.CreateContainerView({
-            :container  => dc,
-            :type       => ["StoragePod"],
-            :recursive  => true
-          }).view.select{|pod| pod.name == name}.first
+          raw_storage_pods(datacenter_name).detect { |pod| pod.name == name}
         end
       end
 
       class Mock
         def get_storage_pod(name, datacenter_name)
-          list_storage_pods({datacenter: datacenter_name}).select{|h| h[:name] == name }.first
+          list_storage_pods({datacenter: datacenter_name}).detect { |h| h[:name] == name }
         end
       end
     end
