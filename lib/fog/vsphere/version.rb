@@ -1,5 +1,5 @@
 module Fog
   module Vsphere
-    VERSION = '1.13.1'.freeze
+    VERSION = '2.0.0'.freeze
   end
 end

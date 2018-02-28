@@ -1,3 +1,12 @@
+## v2.0.0
+
+* Drop support for ruby versions < 2.0.0
+* Fix regex issue when folder contains the datacenter name (#120)
+* add more attributes to host model (#119)
+* Fixes listing resource pools for clusters nested in folders (#118)
+* Add requests to host (#116)
+* Fix interface code in VM clone (#115)
+
 ## v1.13.1
 
 * Fix typo of local variable name in clone operation (#114)
