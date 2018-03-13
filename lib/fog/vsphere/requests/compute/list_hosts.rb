@@ -27,7 +27,7 @@ module Fog
             product_version: host.summary.config.product.version,
             hostname:        (host.config.network.dnsConfig.hostName rescue nil),
             domainname:      (host.config.network.dnsConfig.domainName rescue nil),
-            vm_ids:          Proc.new { host[:vm].map {|vm| vm.config.instanceUuid } }
+            vm_ids:          Proc.new { host[:vm].map {|vm| vm.config.instanceUuid rescue nil} }
           }
         end
       end
