@@ -4,6 +4,7 @@
 * Ben Talbot - btalbot <ben_t48@hotmail.com>
 * Carl Caum <carl@carlcaum.com>
 * Carlos Sanchez <csanchez@maestrodev.com>
+* Chris Roberts <chrobert@redhat.com>
 * Chris Thompson <chris.thompson@govdelivery.com>
 * Chris Thompson <teaforthecat@gmail.com>
 * Christopher Oliver <coliver@datapipe.com>
