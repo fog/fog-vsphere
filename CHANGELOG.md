@@ -1,3 +1,8 @@
+## v2.0.1
+
+* Ensure views are destroyed after use (#122)
+* rescue nil for retrieving vm.config.instanceUuid (#123)
+
 ## v2.0.0
 
 * Drop support for ruby versions < 2.0.0
