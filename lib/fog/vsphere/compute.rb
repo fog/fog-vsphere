@@ -268,6 +268,12 @@ module Fog
                       "filename"  => "[Storage1] rhel6-mfojtik/rhel6-mfojtik.vmdk",
                       "size_gb"   => 8
                      }],
+                 "scsi_controllers" =>
+                    [{"shared_bus"  => "noSharing",
+                      "type"        => "VirtualLsiLogicController",
+                      "unit_number" => 7,
+                      "key"         => 1000
+                    }],
                  "interfaces"       =>
                     [{"mac"     => "00:50:56:a9:00:28",
                       "network" => "dvportgroup-123456",
@@ -320,6 +326,12 @@ module Fog
                       "name"      => "Hard disk 1",
                       "mode"      => "persistent",
                       "id"        => "6000C29b-f364-d073-8316-8e98ac0a0eae" }],
+                 "scsi_controllers" =>
+                    [{"shared_bus"  => "noSharing",
+                      "type"        => "VirtualLsiLogicController",
+                      "unit_number" => 7,
+                      "key"         => 1000
+                    }],
                  "interfaces"       =>
                     [{ "summary" => "VM Network",
                       "mac"     => "00:50:56:a9:00:00",
