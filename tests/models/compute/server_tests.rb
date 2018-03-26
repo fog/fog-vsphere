@@ -5,10 +5,12 @@ Shindo.tests('Fog::Compute[:vsphere] | server model', ['vsphere']) do
   tests('The server model should') do
     tests('have the action') do
       test('reload') { server.respond_to? 'reload' }
-      %w(stop start suspend destroy reboot).each do |action|
+      %w(stop suspend destroy reboot).each do |action|
         test(action) { server.respond_to? action }
         test("#{action} returns successfully") { server.send(action.to_sym) ? true : false }
       end
+      test('start') { server.respond_to?('start') }
+      test("start returns false, because it is already poweredOn") { server.start ? true : false }
       test('guest_processes') { server.respond_to? 'guest_processes' }
       test('take_snapshot') do
         test('responds') { server.respond_to? 'take_snapshot'}
