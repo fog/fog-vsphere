@@ -8,7 +8,7 @@ module Fog
           # default to show all networks
           only_active = filters[:accessible] || false
           raw_networks(datacenter_name, cluster_name).map do |network|
-            next if only_active and !network.summary.accessible
+            next if only_active && !network.summary.accessible
             network_attributes(network, datacenter_name)
           end.compact
         end
@@ -23,20 +23,35 @@ module Fog
 
         protected
 
-        def network_attributes network, datacenter
-          raw_network = get_raw_network(network.name, datacenter)
-          if raw_network.kind_of? RbVmomi::VIM::DistributedVirtualPortgroup
-            id = raw_network.key
+        def network_attributes(network, datacenter)
+          if network.kind_of?(RbVmomi::VIM::DistributedVirtualPortgroup)
+            id = network.key
+            virtualswitch = network.config.distributedVirtualSwitch.name
+            vlanid = raw_network_vlan_id(network.config.defaultPortConfig.vlan)
           else
             id = managed_obj_id(network)
+            virtualswitch = nil
+            vlanid = nil
           end
           {
             :id            => id,
             :name          => network.name,
             :accessible    => network.summary.accessible,
             :datacenter    => datacenter,
-            :virtualswitch => network.class.name == "DistributedVirtualPortgroup" ? network.config.distributedVirtualSwitch.name : nil
+            :virtualswitch => virtualswitch,
+            :vlanid        => vlanid
           }
+        end
+
+        private
+
+        def raw_network_vlan_id(vlan)
+          case vlan
+          when RbVmomi::VIM::VmwareDistributedVirtualSwitchVlanIdSpec
+            vlan.vlanId
+          else
+            nil
+          end
         end
       end
       class Mock
