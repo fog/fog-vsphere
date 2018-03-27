@@ -6,13 +6,19 @@ module Fog
 
         attribute :datacenter
         attribute :cluster
-        attribute :name
-        attribute :vm_ids
         attribute :cpu_cores
         attribute :cpu_sockets
         attribute :cpu_threads
         attribute :memory
         attribute :uuid
+        attribute :ipaddress
+        attribute :ipaddress6
+        attribute :model
+        attribute :vendor
+        attribute :product_name
+        attribute :product_version
+        attribute :hostname
+        attribute :domainname
 
         # Lazy Loaded Attributes
         [:vm_ids].each do |attr|

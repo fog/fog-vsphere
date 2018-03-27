@@ -4,30 +4,71 @@ module Fog
       class Real
         def list_hosts(filters = {})
           cluster = get_raw_cluster(filters[:cluster], filters[:datacenter])
-          cluster.host.map {|host| host_attributes(host, filters)}
+
+          results = property_collector_results(host_system_filter_spec(cluster))
+
+          results.map do |host|
+            hsh = map_attrs_to_hash(host, host_system_attribute_mapping)
+            hsh.merge(
+              datacenter: filters[:datacenter],
+              cluster: filters[:cluster],
+              ipaddress: (host['config.network.vnic'].first.spec.ip.ipAddress rescue nil),
+              ipaddress6: (host['config.network.vnic'].first.spec.ip.ipV6Config.ipV6Address.first.ipAddress rescue nil),
+              vm_ids: Proc.new { host['vm'].map {|vm| vm.config.instanceUuid rescue nil} }
+            )
+          end
         end
 
         protected
 
-        def host_attributes(host, filters)
+        def map_attrs_to_hash(obj, attribute_mapping)
+          attribute_mapping.each_with_object({}) do |(k, v), hsh|
+            hsh[k] = obj[v]
+          end
+        end
+
+        def property_collector_results(filter_spec)
+          property_collector = connection.serviceContent.propertyCollector
+          property_collector.RetrieveProperties(:specSet => [filter_spec])
+        end
+
+        def compute_resource_host_traversal_spec
+          RbVmomi::VIM.TraversalSpec(
+            :name => 'computeResourceHostTraversalSpec',
+            :type => 'ComputeResource',
+            :path => 'host',
+            :skip => false
+          )
+        end
+
+        def host_system_filter_spec(obj)
+          RbVmomi::VIM.PropertyFilterSpec(
+            :objectSet => [
+              :obj => obj,
+              :selectSet => [
+                compute_resource_host_traversal_spec
+              ]
+            ],
+            :propSet => [
+              { :type => 'HostSystem', :pathSet => host_system_attribute_mapping.values + ['config.network.vnic', 'vm'] }
+            ]
+          )
+        end
+
+        def host_system_attribute_mapping
           {
-            datacenter:      filters[:datacenter],
-            cluster:         filters[:cluster],
-            name:            host[:name],
-            cpu_cores:       host.hardware.cpuInfo.numCpuCores,
-            cpu_sockets:     host.hardware.cpuInfo.numCpuPackages,
-            cpu_threads:     host.hardware.cpuInfo.numCpuThreads,
-            memory:          host.hardware.memorySize,
-            uuid:            host.hardware.systemInfo.uuid,
-            model:           host.hardware.systemInfo.model,
-            vendor:          host.hardware.systemInfo.vendor,
-            ipaddress:       (host.config.network.vnic.first.spec.ip.ipAddress rescue nil),
-            ipaddress6:      (host.config.network.vnic.first.spec.ip.ipV6Config.ipV6Address.first.ipAddress rescue nil),
-            product_name:    host.summary.config.product.name,
-            product_version: host.summary.config.product.version,
-            hostname:        (host.config.network.dnsConfig.hostName rescue nil),
-            domainname:      (host.config.network.dnsConfig.domainName rescue nil),
-            vm_ids:          Proc.new { host[:vm].map {|vm| vm.config.instanceUuid rescue nil} }
+            name:            'name',
+            cpu_cores:       'hardware.cpuInfo.numCpuCores',
+            cpu_sockets:     'hardware.cpuInfo.numCpuPackages',
+            cpu_threads:     'hardware.cpuInfo.numCpuThreads',
+            memory:          'hardware.memorySize',
+            uuid:            'hardware.systemInfo.uuid',
+            model:           'hardware.systemInfo.model',
+            vendor:          'hardware.systemInfo.vendor',
+            product_name:    'summary.config.product.name',
+            product_version: 'summary.config.product.version',
+            hostname:        'config.network.dnsConfig.hostName',
+            domainname:      'config.network.dnsConfig.domainName'
           }
         end
       end
