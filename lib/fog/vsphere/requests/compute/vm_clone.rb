@@ -751,7 +751,7 @@ module Fog
 
           template_nics.zip(modified_nics).each do |template_nic, new_nic|
             if new_nic
-              backing = create_nic_backing(new_nic, {})
+              backing = create_nic_backing(new_nic, {datacenter: datacenter})
               template_nic.backing = backing
               template_nic.addressType = 'generated'
               template_nic.macAddress = nil
