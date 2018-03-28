@@ -629,7 +629,10 @@ module Fog
               relocation_spec[:datastore] = datastore_obj
             end
           end
-          relocation_spec[:disk] = relocate_template_volumes_specs(vm_mob_ref, options['volumes'], options['datacenter'])
+          # relocate templates is not supported by fog-vsphere when vm is cloned on a storage pod
+          unless options.key?('storage_pod')
+            relocation_spec[:disk] = relocate_template_volumes_specs(vm_mob_ref, options['volumes'], options['datacenter'])
+          end
           # And the clone specification
           clone_spec = RbVmomi::VIM.VirtualMachineCloneSpec(:location => relocation_spec,
                                                             :config => virtual_machine_config_spec,
@@ -801,7 +804,7 @@ module Fog
             end
           end
           specs.concat(new_volumes.map { |volume| create_disk(volume) })
-          return specs
+          specs
         end
 
         def relocate_template_volumes_specs(vm_mob_ref, volumes, datacenter)
@@ -810,11 +813,11 @@ module Fog
 
           specs = []
           template_volumes.zip(modified_volumes).each do |template_volume, new_volume|
-            if new_volume && new_volume.datastore != template_volume.backing.datastore.name
-              specs << { :diskId => new_volume.key, :datastore => get_raw_datastore(new_volume.datastore, datacenter) }
+            if new_volume && new_volume.datastore && new_volume.datastore != template_volume.backing.datastore.name
+              specs << { :diskId => template_volume.key, :datastore => get_raw_datastore(new_volume.datastore, datacenter) }
             end
           end
-          return specs
+          specs
         end
       end
 
