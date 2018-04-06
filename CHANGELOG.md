@@ -1,3 +1,8 @@
+## v2.1.0
+* fixes two issues that broke vm cloning (#134, #135)
+* performance of host listing was improved (#131)
+* networks have a vlan property (#129)
+
 ## v2.0.1
 
 * Ensure views are destroyed after use (#122)
