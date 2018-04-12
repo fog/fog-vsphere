@@ -27,7 +27,7 @@ module Fog
           if network.kind_of?(RbVmomi::VIM::DistributedVirtualPortgroup)
             id = network.key
             virtualswitch = network.config.distributedVirtualSwitch.name
-            vlanid = raw_network_vlan_id(network.config.defaultPortConfig.vlan)
+            vlanid = raw_network_vlan(network.config.defaultPortConfig)
           else
             id = managed_obj_id(network)
             virtualswitch = nil
@@ -44,6 +44,15 @@ module Fog
         end
 
         private
+
+        def raw_network_vlan(network)
+          case network
+          when RbVmomi::VIM::VMwareDVSPortSetting
+            raw_network_vlan_id(network.vlan)
+          else
+            nil
+          end
+        end
 
         def raw_network_vlan_id(vlan)
           case vlan
