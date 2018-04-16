@@ -1,3 +1,6 @@
+## v2.1.1
+* fixes an issue where networks of type DVPort cannot be listed (#137)
+
 ## v2.1.0
 * fixes two issues that broke vm cloning (#134, #135)
 * performance of host listing was improved (#131)
