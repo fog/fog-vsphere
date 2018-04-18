@@ -140,33 +140,33 @@ module Fog
         protected
 
         ATTR_TO_PROP = {
-          :id => 'config.instanceUuid',
-          :name => 'name',
-          :uuid => 'config.uuid',
-          :template => 'config.template',
-          :parent => 'parent',
-          :hostname => 'summary.guest.hostName',
-          :operatingsystem => 'summary.guest.guestFullName',
-          :ipaddress => 'guest.ipAddress',
-          :power_state => 'runtime.powerState',
-          :connection_state => 'runtime.connectionState',
-          :hypervisor => 'runtime.host',
-          :tools_state => 'guest.toolsStatus',
-          :tools_version => 'guest.toolsVersionStatus',
-          :memory_mb => 'config.hardware.memoryMB',
-          :cpus   => 'config.hardware.numCPU',
-          :corespersocket   => 'config.hardware.numCoresPerSocket',
-          :overall_status => 'overallStatus',
-          :guest_id => 'config.guestId',
-          :hardware_version => 'config.version',
-          :cpuHotAddEnabled => 'config.cpuHotAddEnabled',
-          :memoryHotAddEnabled => 'config.memoryHotAddEnabled',
-          :firmware => 'config.firmware',
-          :annotation => 'config.annotation',
-        }
+          id: 'config.instanceUuid',
+          name: 'name',
+          uuid: 'config.uuid',
+          template: 'config.template',
+          parent: 'parent',
+          hostname: 'summary.guest.hostName',
+          operatingsystem: 'summary.guest.guestFullName',
+          ipaddress: 'guest.ipAddress',
+          power_state: 'runtime.powerState',
+          connection_state: 'runtime.connectionState',
+          hypervisor: 'runtime.host',
+          tools_state: 'guest.toolsStatus',
+          tools_version: 'guest.toolsVersionStatus',
+          memory_mb: 'config.hardware.memoryMB',
+          cpus: 'config.hardware.numCPU',
+          corespersocket: 'config.hardware.numCoresPerSocket',
+          overall_status: 'overallStatus',
+          guest_id: 'config.guestId',
+          hardware_version: 'config.version',
+          cpuHotAddEnabled: 'config.cpuHotAddEnabled',
+          memoryHotAddEnabled: 'config.memoryHotAddEnabled',
+          firmware: 'config.firmware',
+          annotation: 'config.annotation'
+        }.freeze
 
         def convert_vm_view_to_attr_hash(vms)
-          vms = connection.serviceContent.propertyCollector.collectMultiple(vms,*ATTR_TO_PROP.values.uniq)
+          vms = connection.serviceContent.propertyCollector.collectMultiple(vms, *ATTR_TO_PROP.values.uniq)
           vms.map { |vm| props_to_attr_hash(*vm) }
         end
 
@@ -181,7 +181,7 @@ module Fog
           props_to_attr_hash vm_mob_ref, props
         end
 
-        def props_to_attr_hash vm_mob_ref, props
+        def props_to_attr_hash(vm_mob_ref, props)
           # NOTE: Object.tap is in 1.8.7 and later.
           # Here we create the hash object that this method returns, but first we need
           # to add a few more attributes that require additional calls to the vSphere
@@ -190,47 +190,82 @@ module Fog
           #
           # The use of the "tap" method here is a convenience, it allows us to update the
           # hash object without explicitly returning the hash at the end of the method.
-          Hash[ATTR_TO_PROP.map { |k,v| [k.to_s, props[v]] }].tap do |attrs|
+          Hash[ATTR_TO_PROP.map { |k, v| [k.to_s, props[v]] }].tap do |attrs|
             attrs['id'] ||= vm_mob_ref._ref
             attrs['mo_ref'] = vm_mob_ref._ref
             # The name method "magically" appears after a VM is ready and
             # finished cloning.
-            if attrs['hypervisor'].kind_of?(RbVmomi::VIM::HostSystem)
+            if attrs['hypervisor'].is_a?(RbVmomi::VIM::HostSystem)
               host = attrs['hypervisor']
-              attrs['datacenter'] = Proc.new { parent_attribute(host.path, :datacenter)[1] rescue nil }
-              attrs['cluster']    = Proc.new { parent_attribute(host.path, :cluster)[1] rescue nil }
-              attrs['hypervisor'] = Proc.new { host.name rescue nil }
-              attrs['resource_pool'] = Proc.new {(vm_mob_ref.resourcePool || host.resourcePool).name rescue nil}
+              attrs['datacenter'] = proc {
+                begin
+                           parent_attribute(host.path, :datacenter)[1]
+                         rescue
+                           nil
+                         end
+              }
+              attrs['cluster'] = proc {
+                begin
+                           parent_attribute(host.path, :cluster)[1]
+                         rescue
+                           nil
+                         end
+              }
+              attrs['hypervisor'] = proc {
+                begin
+                           host.name
+                         rescue
+                           nil
+                         end
+              }
+              attrs['resource_pool'] = proc {
+                begin
+                          (vm_mob_ref.resourcePool || host.resourcePool).name
+                        rescue
+                          nil
+                        end
+              }
             end
             # This inline rescue catches any standard error.  While a VM is
             # cloning, a call to the macs method will throw and NoMethodError
-            attrs['mac_addresses'] = Proc.new {vm_mob_ref.macs rescue nil}
+            attrs['mac_addresses'] = proc {
+              begin
+                        vm_mob_ref.macs
+                      rescue
+                        nil
+                      end
+            }
             # Rescue nil to catch testing while vm_mob_ref isn't reaL??
-            attrs['path'] = "/"+attrs['parent'].path.map(&:last).join('/') rescue nil
+            attrs['path'] = begin
+                              '/' + attrs['parent'].path.map(&:last).join('/')
+                            rescue
+                              nil
+                            end
           end
         end
+
         # returns the parent object based on a type
         # provides both real RbVmomi object and its name.
         # e.g.
-        #[Datacenter("datacenter-2"), "dc-name"]
-        def parent_attribute path, type
+        # [Datacenter("datacenter-2"), "dc-name"]
+        def parent_attribute(path, type)
           element = case type
-                      when :datacenter
-                        RbVmomi::VIM::Datacenter
-                      when :cluster
-                        RbVmomi::VIM::ClusterComputeResource
-                      when :host
-                        RbVmomi::VIM::HostSystem
-                      else
-                        raise "Unknown type"
+                    when :datacenter
+                      RbVmomi::VIM::Datacenter
+                    when :cluster
+                      RbVmomi::VIM::ClusterComputeResource
+                    when :host
+                      RbVmomi::VIM::HostSystem
+                    else
+                      raise 'Unknown type'
                     end
-          path.select {|x| x[0].is_a? element}.flatten
+          path.select { |x| x[0].is_a? element }.flatten
         rescue
           nil
         end
 
         # returns vmware managed obj id string
-        def managed_obj_id obj
+        def managed_obj_id(obj)
           obj.to_s.match(/\("([^"]+)"\)/)[1]
         end
 
@@ -245,174 +280,171 @@ module Fog
         def self.data
           @data ||= Hash.new do |hash, key|
             hash[key] = {
-              :servers => {
-                "5032c8a5-9c5e-ba7a-3804-832a03e16381" => {
-                 "resource_pool"    => "Resources",
-                 "memory_mb"        => 2196,
-                 "mac_addresses"    => { "Network adapter 1" => "00:50:56:a9:00:28" },
-                 "power_state"      => "poweredOn",
-                 "cpus"             => 1,
-                 "hostname"         => "dhcp75-197.virt.bos.redhat.com",
-                 "mo_ref"           => "vm-562",
-                 "connection_state" => "connected",
-                 "overall_status"   => "green",
-                 "datacenter"       => "Solutions",
-                 "volumes"          =>
+              servers: {
+                '5032c8a5-9c5e-ba7a-3804-832a03e16381' => {
+                  'resource_pool'    => 'Resources',
+                  'memory_mb'        => 2196,
+                  'mac_addresses'    => { 'Network adapter 1' => '00:50:56:a9:00:28' },
+                  'power_state'      => 'poweredOn',
+                  'cpus'             => 1,
+                  'hostname'         => 'dhcp75-197.virt.bos.redhat.com',
+                  'mo_ref'           => 'vm-562',
+                  'connection_state' => 'connected',
+                  'overall_status'   => 'green',
+                  'datacenter'       => 'Solutions',
+                  'volumes'          =>
                     [{
-                      "id"        => "6000C29c-a47d-4cd9-5249-c371de775f06",
-                      "datastore" => "Storage1",
-                      "mode"      => "persistent",
-                      "size"      => 8388608,
-                      "thin"      => true,
-                      "name"      => "Hard disk 1",
-                      "filename"  => "[Storage1] rhel6-mfojtik/rhel6-mfojtik.vmdk",
-                      "size_gb"   => 8
-                     }],
-                 "scsi_controllers" =>
-                    [{"shared_bus"  => "noSharing",
-                      "type"        => "VirtualLsiLogicController",
-                      "unit_number" => 7,
-                      "key"         => 1000
+                      'id'        => '6000C29c-a47d-4cd9-5249-c371de775f06',
+                      'datastore' => 'Storage1',
+                      'mode'      => 'persistent',
+                      'size'      => 8_388_608,
+                      'thin'      => true,
+                      'name'      => 'Hard disk 1',
+                      'filename'  => '[Storage1] rhel6-mfojtik/rhel6-mfojtik.vmdk',
+                      'size_gb'   => 8
                     }],
-                 "interfaces"       =>
-                    [{"mac"     => "00:50:56:a9:00:28",
-                      "network" => "dvportgroup-123456",
-                      "name"    => "Network adapter 1",
-                      "status"  => "ok",
-                      "summary" => "VM Network",
-                     }],
-                 "cdroms" =>
+                  'scsi_controllers' =>
+                    [{ 'shared_bus' => 'noSharing',
+                       'type'        => 'VirtualLsiLogicController',
+                       'unit_number' => 7,
+                       'key'         => 1000 }],
+                  'interfaces'       =>
+                    [{ 'mac' => '00:50:56:a9:00:28',
+                       'network' => 'dvportgroup-123456',
+                       'name'    => 'Network adapter 1',
+                       'status'  => 'ok',
+                       'summary' => 'VM Network' }],
+                  'cdroms' =>
                     [{
-                      "name"                => "CD-/DVD-Drive 1",
-                      "filename"            => nil,
-                      "key"                 => 3000,
-                      "controller_key"      => 200,
-                      "unit_number"         => 0,
-                      "start_connected"     => false,
-                      "allow_guest_control" => true,
-                      "connected"           => false,
-                     }],
-                 "hypervisor"       => "gunab.puppetlabs.lan",
-                 "guest_id"         => "rhel6_64Guest",
-                 "tools_state"      => "toolsOk",
-                 "cluster"          => "Solutionscluster",
-                 "name"             => "rhel64",
-                 "operatingsystem"  => "Red Hat Enterprise Linux 6 (64-bit)",
-                 "path"             => "/Datacenters/Solutions/vm",
-                 "uuid"             => "4229f0e9-bfdc-d9a7-7bac-12070772e6dc",
-                 "instance_uuid"    => "5032c8a5-9c5e-ba7a-3804-832a03e16381",
-                 "id"               => "5032c8a5-9c5e-ba7a-3804-832a03e16381",
-                 "tools_version"    => "guestToolsUnmanaged",
-                 "ipaddress"        => "192.168.100.184",
-                 "template"         => false
-                },
-                "502916a3-b42e-17c7-43ce-b3206e9524dc" => {
-                 "resource_pool"    => "Resources",
-                 "memory_mb"        => 512,
-                 "power_state"      => "poweredOn",
-                 "mac_addresses"    => { "Network adapter 1" => "00:50:56:a9:00:00" },
-                 "hostname"         => nil,
-                 "cpus"             => 1,
-                 "connection_state" => "connected",
-                 "mo_ref"           => "vm-621",
-                 "overall_status"   => "green",
-                 "datacenter"       => "Solutions",
-                 "volumes"          =>
-                    [{"thin"      => false,
-                      "size_gb"   => 10,
-                      "datastore" => "datastore1",
-                      "filename"  => "[datastore1] i-1342439683/i-1342439683.vmdk",
-                      "size"      => 10485762,
-                      "name"      => "Hard disk 1",
-                      "mode"      => "persistent",
-                      "id"        => "6000C29b-f364-d073-8316-8e98ac0a0eae" }],
-                 "scsi_controllers" =>
-                    [{"shared_bus"  => "noSharing",
-                      "type"        => "VirtualLsiLogicController",
-                      "unit_number" => 7,
-                      "key"         => 1000
+                      'name'                => 'CD-/DVD-Drive 1',
+                      'filename'            => nil,
+                      'key'                 => 3000,
+                      'controller_key'      => 200,
+                      'unit_number'         => 0,
+                      'start_connected'     => false,
+                      'allow_guest_control' => true,
+                      'connected'           => false
                     }],
-                 "interfaces"       =>
-                    [{ "summary" => "VM Network",
-                      "mac"     => "00:50:56:a9:00:00",
-                      "status"  => "ok",
-                      "network" => "dvportgroup-123456",
-                      "name"    => "Network adapter 1" }],
-                 "hypervisor"       => "gunab.puppetlabs.lan",
-                 "guest_id"         => nil,
-                 "cluster"          => "Solutionscluster",
-                 "tools_state"      => "toolsNotInstalled",
-                 "name"             => "i-1342439683",
-                 "operatingsystem"  => nil,
-                 "path"             => "/",
-                 "tools_version"    => "guestToolsNotInstalled",
-                 "uuid"             => "4229e0de-30cb-ceb2-21f9-4d8d8beabb52",
-                 "instance_uuid"    => "502916a3-b42e-17c7-43ce-b3206e9524dc",
-                 "id"               => "502916a3-b42e-17c7-43ce-b3206e9524dc",
-                 "ipaddress"        => nil,
-                 "template"         => false
+                  'hypervisor'       => 'gunab.puppetlabs.lan',
+                  'guest_id'         => 'rhel6_64Guest',
+                  'tools_state'      => 'toolsOk',
+                  'cluster'          => 'Solutionscluster',
+                  'name'             => 'rhel64',
+                  'operatingsystem'  => 'Red Hat Enterprise Linux 6 (64-bit)',
+                  'path'             => '/Datacenters/Solutions/vm',
+                  'uuid'             => '4229f0e9-bfdc-d9a7-7bac-12070772e6dc',
+                  'instance_uuid'    => '5032c8a5-9c5e-ba7a-3804-832a03e16381',
+                  'id'               => '5032c8a5-9c5e-ba7a-3804-832a03e16381',
+                  'tools_version'    => 'guestToolsUnmanaged',
+                  'ipaddress'        => '192.168.100.184',
+                  'template'         => false
                 },
-                "5029c440-85ee-c2a1-e9dd-b63e39364603" => {
-                 "resource_pool"    => "Resources",
-                 "memory_mb"        => 2196,
-                 "power_state"      => "poweredOn",
-                 "mac_addresses"    => { "Network adapter 1" => "00:50:56:b2:00:af" },
-                 "hostname"         => "centos56gm.localdomain",
-                 "cpus"             => 1,
-                 "connection_state" => "connected",
-                 "mo_ref"           => "vm-715",
-                 "overall_status"   => "green",
-                 "datacenter"       => "Solutions",
-                 "hypervisor"       => "gunab.puppetlabs.lan",
-                 "guest_id"         => "rhel6_64Guest",
-                 "cluster"          => "Solutionscluster",
-                 "tools_state"      => "toolsOk",
-                 "name"             => "jefftest",
-                 "operatingsystem"  => "Red Hat Enterprise Linux 6 (64-bit)",
-                 "path"             => "/Solutions/wibble",
-                 "tools_version"    => "guestToolsUnmanaged",
-                 "ipaddress"        => "192.168.100.187",
-                 "uuid"             => "42329da7-e8ab-29ec-1892-d6a4a964912a",
-                 "instance_uuid"    => "5029c440-85ee-c2a1-e9dd-b63e39364603",
-                 "id"               => "5029c440-85ee-c2a1-e9dd-b63e39364603",
-                 "template"         => false
+                '502916a3-b42e-17c7-43ce-b3206e9524dc' => {
+                  'resource_pool'    => 'Resources',
+                  'memory_mb'        => 512,
+                  'power_state'      => 'poweredOn',
+                  'mac_addresses'    => { 'Network adapter 1' => '00:50:56:a9:00:00' },
+                  'hostname'         => nil,
+                  'cpus'             => 1,
+                  'connection_state' => 'connected',
+                  'mo_ref'           => 'vm-621',
+                  'overall_status'   => 'green',
+                  'datacenter'       => 'Solutions',
+                  'volumes'          =>
+                    [{ 'thin' => false,
+                       'size_gb'   => 10,
+                       'datastore' => 'datastore1',
+                       'filename'  => '[datastore1] i-1342439683/i-1342439683.vmdk',
+                       'size'      => 10_485_762,
+                       'name'      => 'Hard disk 1',
+                       'mode'      => 'persistent',
+                       'id'        => '6000C29b-f364-d073-8316-8e98ac0a0eae' }],
+                  'scsi_controllers' =>
+                    [{ 'shared_bus' => 'noSharing',
+                       'type'        => 'VirtualLsiLogicController',
+                       'unit_number' => 7,
+                       'key'         => 1000 }],
+                  'interfaces'       =>
+                    [{ 'summary' => 'VM Network',
+                       'mac'     => '00:50:56:a9:00:00',
+                       'status'  => 'ok',
+                       'network' => 'dvportgroup-123456',
+                       'name'    => 'Network adapter 1' }],
+                  'hypervisor'       => 'gunab.puppetlabs.lan',
+                  'guest_id'         => nil,
+                  'cluster'          => 'Solutionscluster',
+                  'tools_state'      => 'toolsNotInstalled',
+                  'name'             => 'i-1342439683',
+                  'operatingsystem'  => nil,
+                  'path'             => '/',
+                  'tools_version'    => 'guestToolsNotInstalled',
+                  'uuid'             => '4229e0de-30cb-ceb2-21f9-4d8d8beabb52',
+                  'instance_uuid'    => '502916a3-b42e-17c7-43ce-b3206e9524dc',
+                  'id'               => '502916a3-b42e-17c7-43ce-b3206e9524dc',
+                  'ipaddress'        => nil,
+                  'template'         => false
+                },
+                '5029c440-85ee-c2a1-e9dd-b63e39364603' => {
+                  'resource_pool'    => 'Resources',
+                  'memory_mb'        => 2196,
+                  'power_state'      => 'poweredOn',
+                  'mac_addresses'    => { 'Network adapter 1' => '00:50:56:b2:00:af' },
+                  'hostname'         => 'centos56gm.localdomain',
+                  'cpus'             => 1,
+                  'connection_state' => 'connected',
+                  'mo_ref'           => 'vm-715',
+                  'overall_status'   => 'green',
+                  'datacenter'       => 'Solutions',
+                  'hypervisor'       => 'gunab.puppetlabs.lan',
+                  'guest_id'         => 'rhel6_64Guest',
+                  'cluster'          => 'Solutionscluster',
+                  'tools_state'      => 'toolsOk',
+                  'name'             => 'jefftest',
+                  'operatingsystem'  => 'Red Hat Enterprise Linux 6 (64-bit)',
+                  'path'             => '/Solutions/wibble',
+                  'tools_version'    => 'guestToolsUnmanaged',
+                  'ipaddress'        => '192.168.100.187',
+                  'uuid'             => '42329da7-e8ab-29ec-1892-d6a4a964912a',
+                  'instance_uuid'    => '5029c440-85ee-c2a1-e9dd-b63e39364603',
+                  'id'               => '5029c440-85ee-c2a1-e9dd-b63e39364603',
+                  'template'         => false
                 }
               },
-              :datacenters => {
-                "Solutions" => {:name => "Solutions", :status => "grey", :path => ['Solutions']}
+              datacenters: {
+                'Solutions' => { name: 'Solutions', status: 'grey', path: ['Solutions'] }
               },
-              :datastores => {
+              datastores: {
                 'Storage1' => {
                   'id' => 'datastore-123456',
                   'name' => 'Storage1',
                   'datacenter' => 'Solutions',
                   'type' => 'VMFS',
-                  'freespace' => 697471860736,
+                  'freespace' => 697_471_860_736,
                   'accessible' => true,
-                  'capacity' => 1099243192320,
-                  'uncommitted' => 977158537741,
-                  'cluster' => [],
+                  'capacity' => 1_099_243_192_320,
+                  'uncommitted' => 977_158_537_741,
+                  'cluster' => []
                 },
                 'datastore1' => {
                   'id' => 'datastore-789123',
                   'name' => 'datastore1',
                   'datacenter' => 'Solutions',
                   'type' => 'VMFS',
-                  'freespace' => 697471860736,
+                  'freespace' => 697_471_860_736,
                   'accessible' => true,
-                  'capacity' => 1099243192320,
-                  'uncommitted' => 977158537741,
-                  'cluster' => ['Solutionscluster'],
-                },
+                  'capacity' => 1_099_243_192_320,
+                  'uncommitted' => 977_158_537_741,
+                  'cluster' => ['Solutionscluster']
+                }
               },
-              :networks => {
+              networks: {
                 'network1' => {
                   'id' => 'dvportgroup-123456',
                   'name' => 'network1',
                   'datacenter' => 'Solutions',
                   'accessible' => true,
                   'virtualswitch' => nil,
-                  'cluster' => ['Solutionscluster'],
+                  'cluster' => ['Solutionscluster']
                 },
                 'network2' => {
                   'id' => 'dvportgroup-789123',
@@ -420,10 +452,10 @@ module Fog
                   'datacenter' => 'Solutions',
                   'accessible' => true,
                   'virtualswitch' => nil,
-                  'cluster' => [],
-                },
+                  'cluster' => []
+                }
               },
-              :folders => {
+              folders: {
                 'wibble' => {
                   'name' => 'wibble',
                   'datacenter' => 'Solutions',
@@ -437,92 +469,83 @@ module Fog
                   'type' => 'vm'
                 }
               },
-              :storage_pods =>
-                [{:id => "group-p123456",
-                  :name => "Datastore Cluster 1",
-                  :freespace => "4856891834368",
-                  :capacity => "7132061630464",
-                  :datacenter => "Solutions",
-                 },
-                ],
-              :clusters =>
-                [{:id => "1d4d9a3f-e4e8-4c40-b7fc-263850068fa4",
-                  :name => "Solutionscluster",
-                  :num_host => "4",
-                  :num_cpu_cores => "16",
-                  :overall_status => "green",
-                  :datacenter => "Solutions",
-                  :full_path => 'Solutionscluster',
-                  :klass => "RbVmomi::VIM::ComputeResource"
-                 },
-                 {:id => "e4195973-102b-4096-bbd6-5429ff0b35c9",
-                  :name => "Problemscluster",
-                  :num_host => "4",
-                  :num_cpu_cores => "32",
-                  :overall_status => "green",
-                  :datacenter => "Solutions",
-                  :full_path => 'Problemscluster',
-                  :klass => "RbVmomi::VIM::ComputeResource"
-                 },
-                 {
-                   :klass => "RbVmomi::VIM::Folder",
-                   :clusters => [{:id => "03616b8d-b707-41fd-b3b5-The first",
-                                  :name => "Problemscluster",
-                                  :num_host => "4",
-                                  :num_cpu_cores => "32",
-                                  :overall_status => "green",
-                                  :datacenter => "Solutions",
-                                  :full_path => 'Nested/Problemscluster',
-                                  :klass => "RbVmomi::VIM::ComputeResource"
-                                 },
-                                 {:id => "03616b8d-b707-41fd-b3b5-the Second",
-                                  :name => "Lastcluster",
-                                  :num_host => "8",
-                                  :num_cpu_cores => "32",
-                                  :overall_status => "green",
-                                  :datacenter => "Solutions",
-                                  :full_path => 'Nested/Lastcluster',
-                                  :klass => "RbVmomi::VIM::ComputeResource"}
-                   ]
-                 }
-               ],
-               :rules => {
-                 'anti-affinity-foo' => {
-                   :datacenter => 'Solutions',
-                   :cluster => 'Solutionscluster',
-                   :key => 4242,
-                   :name => 'anti-affinity-foo',
-                   :enabled => true,
-                   :type => RbVmomi::VIM::ClusterAntiAffinityRuleSpec,
-                   :vm_ids => ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']
-                 }
-               },
-               :hosts => {
-                 'Host1' => {
-                   :datacenter => 'Solutions',
-                   :cluster => 'Solutionscluster',
-                   :name => 'host1.example.com',
-                   :model => 'PowerEdge R730',
-                   :vendor => 'Dell Inc.',
-                   :ipaddress => '1.2.3.4',
-                   :ipaddress6 => nil,
-                   :hostname => 'host1',
-                   :domainname => 'example.com',
-                   :product_name => 'VMware ESXi',
-                   :uuid => '4c4c4544-0051-3610-8046-c4c44f584a32',
-                   :cpu_cores => 20,
-                   :cpu_sockets => 2,
-                   :cpu_threads => 40,
-                   :memory => 824597241856,
-                   :product_version => '6.0.0',
-                   :vm_ids => ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']
-                 }
-               }
+              storage_pods:                 [{ id: 'group-p123456',
+                                               name: 'Datastore Cluster 1',
+                                               freespace: '4856891834368',
+                                               capacity: '7132061630464',
+                                               datacenter: 'Solutions' }],
+              clusters:                 [{ id: '1d4d9a3f-e4e8-4c40-b7fc-263850068fa4',
+                                           name: 'Solutionscluster',
+                                           num_host: '4',
+                                           num_cpu_cores: '16',
+                                           overall_status: 'green',
+                                           datacenter: 'Solutions',
+                                           full_path: 'Solutionscluster',
+                                           klass: 'RbVmomi::VIM::ComputeResource' },
+                                         { id: 'e4195973-102b-4096-bbd6-5429ff0b35c9',
+                                           name: 'Problemscluster',
+                                           num_host: '4',
+                                           num_cpu_cores: '32',
+                                           overall_status: 'green',
+                                           datacenter: 'Solutions',
+                                           full_path: 'Problemscluster',
+                                           klass: 'RbVmomi::VIM::ComputeResource' },
+                                         {
+                                           klass: 'RbVmomi::VIM::Folder',
+                                           clusters: [{ id: '03616b8d-b707-41fd-b3b5-The first',
+                                                        name: 'Problemscluster',
+                                                        num_host: '4',
+                                                        num_cpu_cores: '32',
+                                                        overall_status: 'green',
+                                                        datacenter: 'Solutions',
+                                                        full_path: 'Nested/Problemscluster',
+                                                        klass: 'RbVmomi::VIM::ComputeResource' },
+                                                      { id: '03616b8d-b707-41fd-b3b5-the Second',
+                                                        name: 'Lastcluster',
+                                                        num_host: '8',
+                                                        num_cpu_cores: '32',
+                                                        overall_status: 'green',
+                                                        datacenter: 'Solutions',
+                                                        full_path: 'Nested/Lastcluster',
+                                                        klass: 'RbVmomi::VIM::ComputeResource' }]
+                                         }],
+              rules: {
+                'anti-affinity-foo' => {
+                  datacenter: 'Solutions',
+                  cluster: 'Solutionscluster',
+                  key: 4242,
+                  name: 'anti-affinity-foo',
+                  enabled: true,
+                  type: RbVmomi::VIM::ClusterAntiAffinityRuleSpec,
+                  vm_ids: ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']
+                }
+              },
+              hosts: {
+                'Host1' => {
+                  datacenter: 'Solutions',
+                  cluster: 'Solutionscluster',
+                  name: 'host1.example.com',
+                  model: 'PowerEdge R730',
+                  vendor: 'Dell Inc.',
+                  ipaddress: '1.2.3.4',
+                  ipaddress6: nil,
+                  hostname: 'host1',
+                  domainname: 'example.com',
+                  product_name: 'VMware ESXi',
+                  uuid: '4c4c4544-0051-3610-8046-c4c44f584a32',
+                  cpu_cores: 20,
+                  cpu_sockets: 2,
+                  cpu_threads: 40,
+                  memory: 824_597_241_856,
+                  product_version: '6.0.0',
+                  vm_ids: ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']
+                }
+              }
             }
           end
         end
 
-        def initialize(options={})
+        def initialize(options = {})
           require 'rbvmomi'
           @vsphere_username = options[:vsphere_username]
           @vsphere_password = 'REDACTED'
@@ -544,7 +567,7 @@ module Fog
       class Real
         include Shared
 
-        def initialize(options={})
+        def initialize(options = {})
           require 'rbvmomi'
           @vsphere_username = options[:vsphere_username]
           @vsphere_password = options[:vsphere_password]
@@ -576,21 +599,20 @@ module Fog
         def reload
           connect
           # Check if the negotiation was ever run
-          if @vsphere_is_vcenter.nil?
-            negotiate
-          end
+          negotiate if @vsphere_is_vcenter.nil?
           authenticate
         end
 
         private
+
         def negotiate_revision(revision = nil)
           # Negotiate the API revision
-          if not revision
+          unless revision
             rev = @connection.serviceContent.about.apiVersion
-            @connection.rev = [ rev, ENV['FOG_VSPHERE_REV'] || '4.1' ].max
+            @connection.rev = [rev, ENV['FOG_VSPHERE_REV'] || '4.1'].max
           end
 
-          @vsphere_is_vcenter = @connection.serviceContent.about.apiType == "VirtualCenter"
+          @vsphere_is_vcenter = @connection.serviceContent.about.apiType == 'VirtualCenter'
           @vsphere_rev = @connection.rev
         end
 
@@ -599,14 +621,14 @@ module Fog
           bad_cert = false
           loop do
             begin
-              @connection = RbVmomi::VIM.new :host => @vsphere_server,
-                                             :port => @vsphere_port,
-                                             :path => @vsphere_path,
-                                             :ns   => @vsphere_ns,
-                                             :rev  => @vsphere_rev,
-                                             :ssl  => @vsphere_ssl,
-                                             :insecure => bad_cert,
-                                             :debug => @vsphere_debug
+              @connection = RbVmomi::VIM.new host: @vsphere_server,
+                                             port: @vsphere_port,
+                                             path: @vsphere_path,
+                                             ns: @vsphere_ns,
+                                             rev: @vsphere_rev,
+                                             ssl: @vsphere_ssl,
+                                             insecure: bad_cert,
+                                             debug: @vsphere_debug
 
               # Create a shadow class to change the behaviour of @connection.obj2xml
               # so that xsd:any types are converted to xsd:int (and not xsd:long).
@@ -618,7 +640,7 @@ module Fog
               # pull request that fixes it in RbVmomi.
               #
               class <<@connection
-                def obj2xml xml, name, type, is_array, o, attrs={}
+                def obj2xml(xml, name, type, is_array, o, attrs = {})
                   case o
                   when Integer
                     attrs['xsi:type'] = 'xsd:int' if type(type) == RbVmomi::BasicTypes::AnyType
@@ -637,18 +659,14 @@ module Fog
             end
           end
 
-          if bad_cert then
-            validate_ssl_connection
-          end
+          validate_ssl_connection if bad_cert
         end
 
         def authenticate
-          begin
-            @connection.serviceContent.sessionManager.Login :userName => @vsphere_username,
-                                                            :password => @vsphere_password
-          rescue RbVmomi::VIM::InvalidLogin => e
-            raise Fog::Vsphere::Errors::ServiceError, e.message
-          end
+          @connection.serviceContent.sessionManager.Login userName: @vsphere_username,
+                                                          password: @vsphere_password
+        rescue RbVmomi::VIM::InvalidLogin => e
+          raise Fog::Vsphere::Errors::ServiceError, e.message
         end
 
         # Verify a SSL certificate based on the hashed public key
@@ -656,13 +674,13 @@ module Fog
           pubkey = @connection.http.peer_cert.public_key
           pubkey_hash = Digest::SHA2.hexdigest(pubkey.to_s)
           expected_pubkey_hash = @vsphere_expected_pubkey_hash
-          if pubkey_hash != expected_pubkey_hash then
+          if pubkey_hash != expected_pubkey_hash
             raise Fog::Vsphere::Errors::SecurityError, "The remote system presented a public key with hash #{pubkey_hash} but we're expecting a hash of #{expected_pubkey_hash || '<unset>'}.  If you are sure the remote system is authentic set vsphere_expected_pubkey_hash: <the hash printed in this message> in ~/.fog"
           end
         end
 
         def list_container_view(datacenter_obj_or_name, type, container_object = nil)
-          dc = if datacenter_obj_or_name.kind_of?(String)
+          dc = if datacenter_obj_or_name.is_a?(String)
                  find_raw_datacenter(datacenter_obj_or_name)
                else
                  datacenter_obj_or_name
@@ -675,9 +693,9 @@ module Fog
                       end
 
           container_view = connection.serviceContent.viewManager.CreateContainerView(
-            :container  => dc,
-            :type       =>  [type],
-            :recursive  => true
+            container: dc,
+            type: [type],
+            recursive: true
           )
 
           result = container_view.view

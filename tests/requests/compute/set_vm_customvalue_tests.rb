@@ -1,5 +1,4 @@
 Shindo.tests('Fog::Compute[:vsphere] | set_vm_customvalue request', ['vsphere']) do
-
   compute = Fog::Compute[:vsphere]
 
   instance_uuid = '50137835-88a1-436e-768e-9b2677076e67'
@@ -16,5 +15,4 @@ Shindo.tests('Fog::Compute[:vsphere] | set_vm_customvalue request', ['vsphere'])
     raises(ArgumentError, 'raises ArgumentError when custom_key option is missing') { compute.set_vm_customvalue(instance_uuid) }
     raises(ArgumentError, 'raises ArgumentError when custom_value option is missing') { compute.set_vm_customvalue(instance_uuid, custom_key) }
   end
-
 end

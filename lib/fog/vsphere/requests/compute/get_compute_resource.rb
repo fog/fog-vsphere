@@ -16,23 +16,23 @@ module Fog
       end
 
       class Mock
-        def get_compute_resource(name, datacenter_name)
+        def get_compute_resource(_name, _datacenter_name)
           {
-            :id=>"domain-s7", 
-            :name=>"fake-host", 
-            :totalCpu=>33504, 
-            :totalMemory=>154604142592, 
-            :numCpuCores=>12, 
-            :numCpuThreads=>24, 
-            :effectiveCpu=>32247, 
-            :effectiveMemory=>135733, 
-            :numHosts=>1, 
-            :numEffectiveHosts=>1, 
-            :overallStatus=>"gray", 
-            :overallCpuUsage=>15682, 
-            :overallMemoryUsage=>132755, 
-            :effective=>true, 
-            :isSingleHost=>true
+            id: 'domain-s7',
+            name: 'fake-host',
+            totalCpu: 33_504,
+            totalMemory: 154_604_142_592,
+            numCpuCores: 12,
+            numCpuThreads: 24,
+            effectiveCpu: 32_247,
+            effectiveMemory: 135_733,
+            numHosts: 1,
+            numEffectiveHosts: 1,
+            overallStatus: 'gray',
+            overallCpuUsage: 15_682,
+            overallMemoryUsage: 132_755,
+            effective: true,
+            isSingleHost: true
           }
         end
       end

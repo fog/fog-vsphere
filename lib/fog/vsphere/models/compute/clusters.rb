@@ -9,7 +9,7 @@ module Fog
 
         def all(filters = {})
           requires :datacenter
-          load service.list_clusters(filters.merge(:datacenter => datacenter))
+          load service.list_clusters(filters.merge(datacenter: datacenter))
         end
 
         def get(id)

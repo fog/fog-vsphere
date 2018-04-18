@@ -12,9 +12,25 @@ module Fog
             hsh.merge(
               datacenter: filters[:datacenter],
               cluster: filters[:cluster],
-              ipaddress: (host['config.network.vnic'].first.spec.ip.ipAddress rescue nil),
-              ipaddress6: (host['config.network.vnic'].first.spec.ip.ipV6Config.ipV6Address.first.ipAddress rescue nil),
-              vm_ids: Proc.new { host['vm'].map {|vm| vm.config.instanceUuid rescue nil} }
+              ipaddress: (begin
+                            host['config.network.vnic'].first.spec.ip.ipAddress
+                          rescue
+                            nil
+                          end),
+              ipaddress6: (begin
+                             host['config.network.vnic'].first.spec.ip.ipV6Config.ipV6Address.first.ipAddress
+                           rescue
+                             nil
+                           end),
+              vm_ids: proc {
+                host['vm'].map do |vm|
+                  begin
+                                           vm.config.instanceUuid
+                                         rescue
+                                           nil
+                                         end
+                end
+              }
             )
           end
         end
@@ -29,28 +45,28 @@ module Fog
 
         def property_collector_results(filter_spec)
           property_collector = connection.serviceContent.propertyCollector
-          property_collector.RetrieveProperties(:specSet => [filter_spec])
+          property_collector.RetrieveProperties(specSet: [filter_spec])
         end
 
         def compute_resource_host_traversal_spec
           RbVmomi::VIM.TraversalSpec(
-            :name => 'computeResourceHostTraversalSpec',
-            :type => 'ComputeResource',
-            :path => 'host',
-            :skip => false
+            name: 'computeResourceHostTraversalSpec',
+            type: 'ComputeResource',
+            path: 'host',
+            skip: false
           )
         end
 
         def host_system_filter_spec(obj)
           RbVmomi::VIM.PropertyFilterSpec(
-            :objectSet => [
-              :obj => obj,
-              :selectSet => [
+            objectSet: [
+              obj: obj,
+              selectSet: [
                 compute_resource_host_traversal_spec
               ]
             ],
-            :propSet => [
-              { :type => 'HostSystem', :pathSet => host_system_attribute_mapping.values + ['config.network.vnic', 'vm'] }
+            propSet: [
+              { type: 'HostSystem', pathSet: host_system_attribute_mapping.values + ['config.network.vnic', 'vm'] }
             ]
           )
         end
@@ -75,7 +91,7 @@ module Fog
 
       class Mock
         def list_hosts(filters = {})
-          self.data[:hosts].values.select {|r| r[:datacenter] == filters[:datacenter] && r[:cluster] == filters[:cluster]}
+          data[:hosts].values.select { |r| r[:datacenter] == filters[:datacenter] && r[:cluster] == filters[:cluster] }
         end
       end
     end

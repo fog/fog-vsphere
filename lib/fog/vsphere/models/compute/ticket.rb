@@ -4,7 +4,6 @@ module Fog
   module Compute
     class Vsphere
       class Ticket < Fog::Model
-
         attribute :server_id
 
         attribute :ticket

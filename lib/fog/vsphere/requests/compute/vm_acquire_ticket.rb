@@ -3,12 +3,12 @@ module Fog
     class Vsphere
       class Real
         def vm_acquire_ticket(options = {})
-          raise ArgumentError, "instance_uuid is a required parameter" unless options.key?('instance_uuid')
+          raise ArgumentError, 'instance_uuid is a required parameter' unless options.key?('instance_uuid')
           ticket_type = options['ticket_type'] || 'webmks'
 
           vm_mob_ref = get_vm_ref(options['instance_uuid'])
 
-          ticket = vm_mob_ref.AcquireTicket(:ticketType => ticket_type)
+          ticket = vm_mob_ref.AcquireTicket(ticketType: ticket_type)
           {
             'ticket' => ticket.ticket,
             'host' => ticket.host,
@@ -20,7 +20,7 @@ module Fog
 
       class Mock
         def vm_acquire_ticket(options = {})
-          raise ArgumentError, "instance_uuid is a required parameter" unless options.key?('instance_uuid')
+          raise ArgumentError, 'instance_uuid is a required parameter' unless options.key?('instance_uuid')
           {
             'ticket' => 'fdsfdsf',
             'host' => 'esxi.example.com',

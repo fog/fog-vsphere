@@ -17,7 +17,7 @@ module Fog
       end
 
       class Mock
-        def vm_revert_snapshot(vm_id, snapshot_id)
+        def vm_revert_snapshot(_vm_id, _snapshot_id)
           {
             'task_state' => 'success',
             'was_cancelled' => false

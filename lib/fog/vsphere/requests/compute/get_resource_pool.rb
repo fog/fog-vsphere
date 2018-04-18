@@ -18,8 +18,7 @@ module Fog
       end
 
       class Mock
-        def get_resource_pool(name, cluster_name, datacenter_name)
-        end
+        def get_resource_pool(name, cluster_name, datacenter_name); end
       end
     end
   end

@@ -15,15 +15,15 @@ module Fog
         #       hash with diskId wich is key attribute of volume,
         #       and datastore to relocate to.
         def vm_relocate(options = {})
-          raise ArgumentError, "instance_uuid is a required parameter" unless options.key? 'instance_uuid'
+          raise ArgumentError, 'instance_uuid is a required parameter' unless options.key? 'instance_uuid'
 
           # Find the VM Object
           search_filter = { :uuid => options['instance_uuid'], 'vmSearch' => true, 'instanceUuid' => true }
           vm_mob_ref = connection.searchIndex.FindAllByUuid(search_filter).first
 
-          unless vm_mob_ref.kind_of? RbVmomi::VIM::VirtualMachine
+          unless vm_mob_ref.is_a? RbVmomi::VIM::VirtualMachine
             raise Fog::Vsphere::Errors::NotFound,
-              "Could not find VirtualMachine with instance uuid #{options['instance_uuid']}"
+                  "Could not find VirtualMachine with instance uuid #{options['instance_uuid']}"
           end
           options['host'] = get_raw_host(options['host'], options['cluster'], options['datacenter']) if options['host']
           if options['disks']
@@ -33,11 +33,11 @@ module Fog
             end
           end
           spec = RbVmomi::VIM::VirtualMachineRelocateSpec(
-            :pool => options['pool'],
-            :host => options['host'],
-            :disk => options['disks']
+            pool: options['pool'],
+            host: options['host'],
+            disk: options['disks']
           )
-          task = vm_mob_ref.RelocateVM_Task(:spec => spec, :priority => options["priority"])
+          task = vm_mob_ref.RelocateVM_Task(spec: spec, priority: options['priority'])
           task.wait_for_completion
           { 'task_state' => task.info.state }
         end
@@ -45,7 +45,7 @@ module Fog
 
       class Mock
         def vm_relocate(options = {})
-          raise ArgumentError, "instance_uuid is a required parameter" unless options.key? 'instance_uuid'
+          raise ArgumentError, 'instance_uuid is a required parameter' unless options.key? 'instance_uuid'
           { 'task_state' => 'success' }
         end
       end
