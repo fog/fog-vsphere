@@ -8,7 +8,7 @@ module Fog
         attr_accessor :datacenter, :cluster
 
         def all(filters = {})
-          f = { :datacenter => datacenter, :cluster => cluster }.merge(filters)
+          f = { datacenter: datacenter, cluster: cluster }.merge(filters)
           load service.list_networks(f)
         end
 

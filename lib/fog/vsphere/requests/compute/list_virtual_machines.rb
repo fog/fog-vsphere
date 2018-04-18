@@ -2,21 +2,20 @@ module Fog
   module Compute
     class Vsphere
       class Real
-        def list_virtual_machines(options = { })
+        def list_virtual_machines(options = {})
           # Listing all VM's can be quite slow and expensive.  Try and optimize
           # based on the available options we have.  These conditions are in
           # ascending order of time to complete for large deployments.
 
           options[:folder] ||= options['folder']
-          if options['instance_uuid'] then
+          if options['instance_uuid']
             [get_virtual_machine(options['instance_uuid'])]
-          elsif options[:folder] && options[:datacenter] then
+          elsif options[:folder] && options[:datacenter]
             list_all_virtual_machines_in_folder(options[:folder], options[:datacenter], options[:recursive])
           else
             list_all_virtual_machines(options)
           end
         end
-
 
         private
 
@@ -39,7 +38,7 @@ module Fog
             raw_folder.children.each do |child|
               case child
               when RbVmomi::VIM::Folder
-                folder_enumerator(child, true).each {|item| yielder.yield item} if recursive
+                folder_enumerator(child, true).each { |item| yielder.yield item } if recursive
               when RbVmomi::VIM::VirtualMachine
                 yielder.yield child
               end
@@ -47,7 +46,7 @@ module Fog
           end
         end
 
-        def list_all_virtual_machines(options = { })
+        def list_all_virtual_machines(options = {})
           raw_vms = raw_list_all_virtual_machines(options[:datacenter])
           vms = convert_vm_view_to_attr_hash(raw_vms)
 
@@ -65,29 +64,30 @@ module Fog
             list_container_view(dc, 'VirtualMachine', :vmFolder)
           end.flatten
         end
+
         def get_folder_path(folder, root = nil)
-          return if (!folder.methods.include?('parent')) || (folder == root)
+          return if !folder.methods.include?('parent') || (folder == root)
           "#{get_folder_path(folder.parent)}/#{folder.name}"
         end
       end
 
       class Mock
-        def get_folder_path(folder, root = nil)
+        def get_folder_path(_folder, _root = nil)
           nil
         end
 
-        def list_virtual_machines(options = { })
+        def list_virtual_machines(options = {})
           if options['instance_uuid']
-            server = self.data[:servers][options['instance_uuid']]
+            server = data[:servers][options['instance_uuid']]
             server.nil? ? [] : [server]
           elsif options['mo_ref']
-            self.data[:servers].values.select{|vm| vm['mo_ref'] == options['mo_ref']}
-          elsif options[:folder] and options[:datacenter]
-            self.data[:servers].values.select {|vm| vm['path'] == options[:folder] && vm['datacenter'] == options[:datacenter]}
+            data[:servers].values.select { |vm| vm['mo_ref'] == options['mo_ref'] }
+          elsif options[:folder] && options[:datacenter]
+            data[:servers].values.select { |vm| vm['path'] == options[:folder] && vm['datacenter'] == options[:datacenter] }
           else
             options.delete('datacenter') # real code iterates if this is missing
-            options.reject! {|k,v| v.nil? } # ignore options with nil value
-            self.data[:servers].values.select {|vm| options.all? {|k,v| vm[k.to_s] == v.to_s }}
+            options.reject! { |_k, v| v.nil? } # ignore options with nil value
+            data[:servers].values.select { |vm| options.all? { |k, v| vm[k.to_s] == v.to_s } }
           end
         end
       end

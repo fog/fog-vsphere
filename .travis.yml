@@ -18,6 +18,7 @@ matrix:
       gemfile: Gemfile
     - rvm: jruby-head
       gemfile: Gemfile
+script: bundle exec rake travis:ci
 notifications:
   email: false
 addons:

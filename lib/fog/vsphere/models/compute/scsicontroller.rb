@@ -5,7 +5,7 @@ module Fog
         attribute :shared_bus
         attribute :type
         attribute :unit_number
-        attribute :key, :type => :integer
+        attribute :key, type: :integer
         attribute :server_id
 
         def initialize(attributes = {})

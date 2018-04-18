@@ -4,8 +4,8 @@ module Fog
       class Real
         def cloudinit_to_customspec(user_data)
           raise ArgumentError, "user_data can't be nil" if user_data.nil?
-          custom_spec = { 'customization_spec' => Hash.new }
-          user_data = YAML.load(user_data)
+          custom_spec = { 'customization_spec' => {} }
+          user_data = YAML.safe_load(user_data)
           # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Specification.html
           # encryptionKey expects an array
           # globalIPSettings expects a hash, REQUIRED
@@ -16,10 +16,10 @@ module Fog
           custom_spec['encryptionKey']    = user_data['encryptionKey'] if user_data.key?('encryptionKey')
           custom_spec['globalIPSettings'] = user_data['globalIPSettings'] if user_data.key?('globalIPSettings')
           custom_spec['identity']         = user_data['identity'] if user_data.key?('identity')
-          custom_spec['identity']         = {"Sysprep"=>{"guiRunOnce"=>{"commandList"=>user_data['runcmd']}}} if user_data.key?('runcmd') and not user_data.key?('identity')
+          custom_spec['identity']         = { 'Sysprep' => { 'guiRunOnce' => { 'commandList' => user_data['runcmd'] } } } if user_data.key?('runcmd') && !user_data.key?('identity')
           custom_spec['nicSettingMap']    = user_data['nicSettingMap'] if user_data.key?('nicSettingMap')
           custom_spec['options']          = user_data['options'] if user_data.key?('options')
-          
+
           # for backwards compatability
           # hostname expects a string, REQUIRED
           # netmask expects a string
@@ -36,15 +36,15 @@ module Fog
           custom_spec['domain']                      =  user_data['domain'] if user_data.key?('domain')
           custom_spec['dnsSuffixList']               =  user_data['domainsuffixlist'] if user_data.key?('domainsuffixlist')
           custom_spec['time_zone']                   =  user_data['timezone'] if user_data.key?('timezone')
-          custom_spec  
+          custom_spec
         end
       end
 
       class Mock
         def cloudinit_to_customspec(user_data)
           raise ArgumentError, "user_data can't be nil" if user_data.nil?
-          custom_spec = { 'customization_spec' => Hash.new }
-          user_data = YAML.load(user_data)
+          custom_spec = { 'customization_spec' => {} }
+          user_data = YAML.safe_load(user_data)
           custom_spec['encryptionKey']                = user_data['encryptionKey'] if user_data.key?('encryptionKey')
           custom_spec['globalIPSettings']             = user_data['globalIPSettings'] if user_data.key?('globalIPSettings')
           custom_spec['identity']                     = user_data['identity'] if user_data.key?('identity')
@@ -58,7 +58,7 @@ module Fog
           custom_spec['domain']                       =  user_data['domain'] if user_data.key?('domain')
           custom_spec['dnsSuffixList']                =  user_data['domainsuffixlist'] if user_data.key?('domainsuffixlist')
           custom_spec['time_zone']                    =  user_data['timezone'] if user_data.key?('timezone')
-          custom_spec  
+          custom_spec
         end
       end
     end

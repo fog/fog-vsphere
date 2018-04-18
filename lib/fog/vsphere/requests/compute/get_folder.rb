@@ -7,17 +7,17 @@ module Fog
 
           # Cycle through all types of folders.
           case type
-            when 'vm', :vm
-              # if you're a vm then grab the VM.
-              folder = get_raw_vmfolder(path, datacenter_name)
-              raise(Fog::Compute::Vsphere::NotFound) unless folder
-              folder_attributes(folder, datacenter_name)
-            when 'network', :network
-              raise "not implemented"
-            when 'datastore', :datastore
-              raise "not implemented"
-            else
-              raise ArgumentError, "#{type} is unknown"
+          when 'vm', :vm
+            # if you're a vm then grab the VM.
+            folder = get_raw_vmfolder(path, datacenter_name)
+            raise(Fog::Compute::Vsphere::NotFound) unless folder
+            folder_attributes(folder, datacenter_name)
+          when 'network', :network
+            raise 'not implemented'
+          when 'datastore', :datastore
+            raise 'not implemented'
+          else
+            raise ArgumentError, "#{type} is unknown"
           end
         end
 
@@ -30,8 +30,8 @@ module Fog
           dc             = find_raw_datacenter(datacenter_name)
           dc_root_folder = dc.vmFolder
           # Filter the root path for this datacenter not to be used."
-          dc_root_folder_path=dc_root_folder.path.map { | id, name | name }.join("/")
-          paths          = path.sub(/^\/?#{Regexp.quote(dc_root_folder_path)}\/?/, '').split('/')
+          dc_root_folder_path = dc_root_folder.path.map { |_id, name| name }.join('/')
+          paths = path.sub(/^\/?#{Regexp.quote(dc_root_folder_path)}\/?/, '').split('/')
 
           return dc_root_folder if paths.empty?
           # Walk the tree resetting the folder pointer as we go
@@ -48,17 +48,17 @@ module Fog
 
         def folder_attributes(folder, datacenter_name)
           {
-            :id         => managed_obj_id(folder),
-            :name       => folder.name,
-            :parent     => folder.parent.name,
-            :datacenter => datacenter_name,
-            :type       => folder_type(folder),
-            :path       => folder_path(folder),
+            id: managed_obj_id(folder),
+            name: folder.name,
+            parent: folder.parent.name,
+            datacenter: datacenter_name,
+            type: folder_type(folder),
+            path: folder_path(folder)
           }
         end
-        
+
         def folder_path(folder)
-            "/"+folder.path.map(&:last).join('/')
+          '/' + folder.path.map(&:last).join('/')
         end
 
         def folder_type(folder)
@@ -70,9 +70,9 @@ module Fog
       end
 
       class Mock
-        def get_folder(path, datacenter_name, type = nil)
-          self.data[:folders].values.find {|f| f['datacenter'] == datacenter_name and f['path'].end_with? path} or
-            raise Fog::Compute::Vsphere::NotFound        
+        def get_folder(path, datacenter_name, _type = nil)
+          data[:folders].values.find { |f| (f['datacenter'] == datacenter_name) && f['path'].end_with?(path) } ||
+            raise(Fog::Compute::Vsphere::NotFound)
         end
       end
     end

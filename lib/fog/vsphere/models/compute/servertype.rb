@@ -9,7 +9,7 @@ module Fog
         attribute :datacenter
         attribute :interfacetypes
 
-        def initialize(attributes={} )
+        def initialize(attributes = {})
           super defaults.merge(attributes)
         end
 
@@ -17,17 +17,17 @@ module Fog
           id
         end
 
-        def interfacetypes filters={}
-          attributes[:interfacetypes] ||= service.interfacetypes({ :datacenter => datacenter, :servertype => self }.merge(filters))
+        def interfacetypes(filters = {})
+          attributes[:interfacetypes] ||= service.interfacetypes({ datacenter: datacenter, servertype: self }.merge(filters))
         end
 
         private
 
         def defaults
           {
-            :id=>"otherGuest64",
-            :family=>"otherGuestFamily",
-            :interfacetypes => nil,
+            id: 'otherGuest64',
+            family: 'otherGuestFamily',
+            interfacetypes: nil
           }
         end
       end

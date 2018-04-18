@@ -8,16 +8,14 @@ module Fog
         attr_accessor :datacenter
         attr_accessor :servertype
 
-        def all(filters = { })
+        def all(filters = {})
           requires :servertype
           case servertype
-            when Fog::Compute::Vsphere::Servertype
-               load service.list_interface_types(filters.merge({
-                                                      :datacenter => datacenter,
-                                                      :servertype => servertype.id
-                                                 }))
-            else
-               raise 'interfacetypes should have a servertype'
+          when Fog::Compute::Vsphere::Servertype
+            load service.list_interface_types(filters.merge(datacenter: datacenter,
+                                                            servertype: servertype.id))
+          else
+            raise 'interfacetypes should have a servertype'
           end
         end
 

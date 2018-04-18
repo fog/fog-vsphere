@@ -20,7 +20,7 @@ module Fog
         #  mydc = vspconn.datacenters.first
         #  folders = mydc.vm_folders
         #
-        def list_folders(filters = { })
+        def list_folders(filters = {})
           path            = filters[:path] || filters['path'] || ''
           datacenter_name = filters[:datacenter]
           get_raw_vmfolders(path, datacenter_name).map do |folder|
@@ -35,14 +35,14 @@ module Fog
           child_folders(folder).flatten.compact
         end
 
-        def child_folders folder
+        def child_folders(folder)
           [folder, folder.childEntity.grep(RbVmomi::VIM::Folder).map(&method(:child_folders)).flatten]
         end
       end
       class Mock
         def list_folders(options = {})
-          options.reject! {|k,v| v.nil? } # ignore options with nil value
-          self.data[:folders].values.select {|folder| options.all? {|k,v| folder[k.to_s] == v.to_s }}
+          options.reject! { |_k, v| v.nil? } # ignore options with nil value
+          data[:folders].values.select { |folder| options.all? { |k, v| folder[k.to_s] == v.to_s } }
         end
       end
     end

@@ -2,7 +2,7 @@ module Fog
   module Compute
     class Vsphere
       class Volume < Fog::Model
-        DISK_SIZE_TO_GB = 1048576
+        DISK_SIZE_TO_GB = 1_048_576
         identity :id
 
         has_one :server, Server
@@ -17,9 +17,9 @@ module Fog
         attribute :size_gb
         attribute :key
         attribute :unit_number
-        attribute :controller_key, :type => :integer
+        attribute :controller_key, type: :integer
 
-        def initialize(attributes={})
+        def initialize(attributes = {})
           super defaults.merge(attributes)
         end
 
@@ -27,7 +27,7 @@ module Fog
           attributes[:size_gb] ||= attributes[:size].to_i / DISK_SIZE_TO_GB if attributes[:size]
         end
 
-        def size_gb= s
+        def size_gb=(s)
           attributes[:size] = s.to_i * DISK_SIZE_TO_GB if s
           attributes[:size_gb] = s.to_i if s
         end
@@ -52,7 +52,7 @@ module Fog
         end
 
         def save
-          raise Fog::Errors::Error.new('Resaving an existing object may create a duplicate') if persisted?
+          raise Fog::Errors::Error, 'Resaving an existing object may create a duplicate' if persisted?
           requires :server_id, :size, :datastore
 
           set_unit_number
@@ -60,9 +60,7 @@ module Fog
           data = service.add_vm_volume(self)
 
           if data['task_state'] == 'success'
-            if self.unit_number >= 7
-              self.unit_number += 1
-            end
+            self.unit_number += 1 if unit_number >= 7
 
             # We have to query vSphere to get the volume attributes since the task handle doesn't include that info.
             created = server.volumes.all.find { |volume| volume.unit_number == self.unit_number }
@@ -106,7 +104,7 @@ module Fog
           if unit_number.nil?
             self.unit_number = calculate_free_unit_number
           else
-            if server.volumes.select { |vol| vol.controller_key == controller_key }.any? { |volume| volume.unit_number == self.unit_number && volume.id != self.id }
+            if server.volumes.select { |vol| vol.controller_key == controller_key }.any? { |volume| volume.unit_number == self.unit_number && volume.id != id }
               raise "A volume already exists with that unit_number, so we can't save the new volume"
             end
           end
@@ -127,10 +125,10 @@ module Fog
 
         def defaults
           {
-            :thin => true,
-            :name => "Hard disk",
-            :mode => "persistent",
-            :controller_key => 1000
+            thin: true,
+            name: 'Hard disk',
+            mode: 'persistent',
+            controller_key: 1000
           }
         end
 
@@ -139,7 +137,7 @@ module Fog
 
           # Vsphere maps unit_numbers 7 and greater to a higher SCSI ID since the pvscsi driver reserves SCSI ID 7
           used_unit_numbers = server.volumes
-            .select { |vol| vol.unit_number && vol.controller_key == controller_key }.map(&:unit_number) + [7]
+                                    .select { |vol| vol.unit_number && vol.controller_key == controller_key }.map(&:unit_number) + [7]
           free_unit_numbers = (0..15).to_a - used_unit_numbers
 
           free_unit_numbers.first

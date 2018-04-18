@@ -20,8 +20,7 @@ module Fog
       end
 
       class Mock
-        def get_datastore(name, datacenter_name)
-        end
+        def get_datastore(name, datacenter_name); end
       end
     end
   end

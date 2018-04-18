@@ -2,7 +2,7 @@ module Fog
   module Compute
     class Vsphere
       class Real
-        def list_networks(filters = { })
+        def list_networks(filters = {})
           datacenter_name = filters[:datacenter]
           cluster_name = filters.fetch(:cluster, nil)
           # default to show all networks
@@ -24,7 +24,7 @@ module Fog
         protected
 
         def network_attributes(network, datacenter)
-          if network.kind_of?(RbVmomi::VIM::DistributedVirtualPortgroup)
+          if network.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup)
             id = network.key
             virtualswitch = network.config.distributedVirtualSwitch.name
             vlanid = raw_network_vlan(network.config.defaultPortConfig)
@@ -34,12 +34,12 @@ module Fog
             vlanid = nil
           end
           {
-            :id            => id,
-            :name          => network.name,
-            :accessible    => network.summary.accessible,
-            :datacenter    => datacenter,
-            :virtualswitch => virtualswitch,
-            :vlanid        => vlanid
+            id: id,
+            name: network.name,
+            accessible: network.summary.accessible,
+            datacenter: datacenter,
+            virtualswitch: virtualswitch,
+            vlanid: vlanid
           }
         end
 
@@ -49,8 +49,6 @@ module Fog
           case network
           when RbVmomi::VIM::VMwareDVSPortSetting
             raw_network_vlan_id(network.vlan)
-          else
-            nil
           end
         end
 
@@ -58,8 +56,6 @@ module Fog
           case vlan
           when RbVmomi::VIM::VmwareDistributedVirtualSwitchVlanIdSpec
             vlan.vlanId
-          else
-            nil
           end
         end
       end
@@ -68,11 +64,11 @@ module Fog
           datacenter_name = filters[:datacenter]
           cluster_name = filters.fetch(:cluster, nil)
           if cluster_name.nil?
-            self.data[:networks].values.select { |d| d['datacenter'] == datacenter_name } or
-              raise Fog::Compute::Vsphere::NotFound
+            data[:networks].values.select { |d| d['datacenter'] == datacenter_name } ||
+              raise(Fog::Compute::Vsphere::NotFound)
           else
-            self.data[:networks].values.select { |d| d['datacenter'] == datacenter_name && d['cluster'].include?(cluster_name) } or
-              raise Fog::Compute::Vsphere::NotFound
+            data[:networks].values.select { |d| d['datacenter'] == datacenter_name && d['cluster'].include?(cluster_name) } ||
+              raise(Fog::Compute::Vsphere::NotFound)
           end
         end
       end

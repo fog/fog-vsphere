@@ -18,8 +18,8 @@ module Fog
 
       class Mock
         def get_cluster(name, datacenter_name)
-          self.data[:clusters].find {|c| c[:name] == name && c[:datacenter] == datacenter_name} or
-            raise Fog::Compute::Vsphere::NotFound
+          data[:clusters].find { |c| c[:name] == name && c[:datacenter] == datacenter_name } ||
+            raise(Fog::Compute::Vsphere::NotFound)
         end
       end
     end

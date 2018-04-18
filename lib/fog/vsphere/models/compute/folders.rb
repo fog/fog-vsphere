@@ -7,10 +7,10 @@ module Fog
         model Fog::Compute::Vsphere::Folder
         attr_accessor :datacenter, :type, :path
 
-        def all(filters = { })
+        def all(filters = {})
           requires :datacenter
           requires :type
-          load service.list_folders(filters.merge(:datacenter => datacenter, :type => type, :path => path))
+          load service.list_folders(filters.merge(datacenter: datacenter, type: type, path: path))
         end
 
         def get(id)

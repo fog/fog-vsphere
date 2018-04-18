@@ -5,7 +5,7 @@ module Fog
   module Compute
     class Vsphere
       class Snapshots < Fog::Collection
-        attribute :server_id, :alias => :instance_uuid
+        attribute :server_id, alias: :instance_uuid
         attribute :parent_snapshot
         model Fog::Compute::Vsphere::Snapshot
 

@@ -11,13 +11,13 @@ module Fog
         protected
 
         def get_raw_storage_pod(name, datacenter_name)
-          raw_storage_pods(datacenter_name).detect { |pod| pod.name == name}
+          raw_storage_pods(datacenter_name).detect { |pod| pod.name == name }
         end
       end
 
       class Mock
         def get_storage_pod(name, datacenter_name)
-          list_storage_pods({datacenter: datacenter_name}).detect { |h| h[:name] == name }
+          list_storage_pods(datacenter: datacenter_name).detect { |h| h[:name] == name }
         end
       end
     end
