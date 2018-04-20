@@ -43,11 +43,15 @@ module Fog
 
         def get_raw_interface(vm_id, options = {})
           raise ArgumentError, 'instance id is a required parameter' unless vm_id
+
           if options.is_a? Fog::Compute::Vsphere::Interface
             options
+
           else
             raise ArgumentError, "Either key or name is a required parameter. options: #{options}" unless options.key?(:key) || options.key?(:mac) || options.key?(:name)
-            get_raw_interfaces(vm_id).find do |nic|
+            raise ArgumentError, "'datacenter' is a required parameter in options: #{options}" unless options.key?(:datacenter)
+
+            get_raw_interfaces(vm_id, options[:datacenter]).find do |nic|
               (options.key?(:key) && (nic.key == options[:key].to_i)) ||
                 (options.key?(:mac) && (nic.macAddress == options[:mac])) ||
                 (options.key?(:name) && (nic.deviceInfo.label == options[:name]))

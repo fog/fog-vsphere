@@ -18,19 +18,26 @@ module Fog
 
         def update_vm_interface(vmid, options = {})
           raise ArgumentError, 'instance id is a required parameter' unless vmid
+          raise ArgumentError, "'datacenter' is a required key in options: #{options}" unless options.key?(:datacenter)
+
+          datacenter_name = options[:datacenter]
 
           interface = get_interface_from_options(vmid, options)
-          raw_interface = get_raw_interface(vmid, key: interface.key)
+          raw_interface = get_raw_interface(vmid, key: interface.key, datacenter: datacenter_name)
+
           if options[:network]
             interface.network = options[:network]
-            backing = create_nic_backing(interface, {})
+            backing = create_nic_backing(interface, datacenter: datacenter_name)
             raw_interface.backing = backing
           end
+
           apply_options_to_raw_interface(raw_interface, options)
+
           spec = {
             operation: :edit,
             device: raw_interface
           }
+
           vm_reconfig_hardware('instance_uuid' => vmid, 'hardware_spec' => { 'deviceChange' => [spec] })
         end
 
