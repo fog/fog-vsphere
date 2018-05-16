@@ -2,10 +2,10 @@ module Fog
   module Compute
     class Vsphere
       class Cdroms < Fog::Collection
-        attribute :instance_uuid, alias: :server_id
+        attribute :instance_uuid, :alias => :server_id
         model Fog::Compute::Vsphere::Cdrom
 
-        def all(_filters = {})
+        def all(filters = {})
           load service.list_vm_cdroms(instance_uuid)
         end
 

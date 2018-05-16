@@ -3,26 +3,25 @@ module Fog
     class Vsphere
       module Shared
         private
-
         def vm_clone_check_options(options)
           default_options = {
             'force'        => false,
             'linked_clone' => false,
-            'nic_type' => 'VirtualE1000'
+            'nic_type' => 'VirtualE1000',
           }
           options = default_options.merge(options)
-          options['storage_pod'] = nil if options['storage_pod'] == ''
+          options["storage_pod"] = nil if options["storage_pod"] == ''
           # Backwards compat for "path" option
-          options['template_path'] ||= options['path']
-          options['path'] ||= options['template_path']
-          required_options = %w[datacenter template_path name]
+          options["template_path"] ||= options["path"]
+          options["path"] ||= options["template_path"]
+          required_options = %w{ datacenter template_path name }
           required_options.each do |param|
             raise ArgumentError, "#{required_options.join(', ')} are required" unless options.key? param
           end
-          raise Fog::Compute::Vsphere::NotFound, "Datacenter #{options['datacenter']} Doesn't Exist!" unless get_datacenter(options['datacenter'])
-          raise Fog::Compute::Vsphere::NotFound, "Template #{options['template_path']} Doesn't Exist!" unless get_virtual_machine(options['template_path'], options['datacenter'])
+          raise Fog::Compute::Vsphere::NotFound, "Datacenter #{options["datacenter"]} Doesn't Exist!" unless get_datacenter(options["datacenter"])
+          raise Fog::Compute::Vsphere::NotFound, "Template #{options["template_path"]} Doesn't Exist!" unless get_virtual_machine(options["template_path"], options["datacenter"])
           if options.key?('storage_pod') && !options['storage_pod'].nil? && !get_raw_storage_pod(options['storage_pod'], options['datacenter'])
-            raise Fog::Compute::Vsphere::NotFound, "Storage Pod #{options['storage_pod']} Doesn't Exist!"
+            raise Fog::Compute::Vsphere::NotFound, "Storage Pod #{options["storage_pod"]} Doesn't Exist!"
           end
           options
         end
@@ -65,7 +64,7 @@ module Fog
         #   * 'numCoresPerSocket'<~Integer> - the number of cores per socket of the Destination VM
         #   * 'memoryMB'<~Integer> - the size of memory of the Destination VM in MB
         #   * customization_spec<~Hash>: Options are marked as required if you
-        #     use this customization_spec.
+        #     use this customization_spec. 
         #     As defined https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Specification.html
         #     * encryptionKey <~array of bytes> Used to encrypt/decrypt password
         #     * globalIPSettings expects a hash, REQUIRED
@@ -73,7 +72,7 @@ module Fog
         #     * nicSettingMap expects an array
         #     * options expects a hash
         #     * All options can be parsed using a yaml template with cloudinit_to_customspec.rb
-        #
+        #      
         #     OLD Values still supported:
         #     This only support cloning and setting DHCP on the first interface
         #     * 'domain'<~String> - *REQUIRED* This is put into
@@ -107,19 +106,16 @@ module Fog
 
           # Options['dest_folder']<~String>
           # Grab the destination folder object if it exists else use cloned mach
-          dest_folder_path = options.fetch('dest_folder', '/') # default to root path ({dc_name}/vm/)
+          dest_folder_path = options.fetch('dest_folder','/') # default to root path ({dc_name}/vm/)
           dest_folder = get_raw_vmfolder(dest_folder_path, options['datacenter'])
 
           # Options['resource_pool']<~Array>
           # Now find _a_ resource pool to use for the clone if one is not specified
-          if options.key?('resource_pool') && options['resource_pool'].is_a?(Array) && options['resource_pool'].length == 2 && options['resource_pool'][1] != 'Resources'
+          if ( options.key?('resource_pool') && options['resource_pool'].is_a?(Array) && options['resource_pool'].length == 2 && options['resource_pool'][1] != 'Resources')
             cluster_name = options['resource_pool'][0]
             pool_name = options['resource_pool'][1]
             resource_pool = get_raw_resource_pool(pool_name, cluster_name, options['datacenter'])
-          elsif options.key?('resource_pool') && options['resource_pool'].is_a?(Array) && options['resource_pool'].length == 2 && options['resource_pool'][1] == 'Resources'
-            cluster_name = options['resource_pool'][0]
-            resource_pool = get_raw_resource_pool(nil, cluster_name, options['datacenter'])
-          elsif vm_mob_ref.resourcePool.nil?
+          elsif ( vm_mob_ref.resourcePool == nil )
             # If the template is really a template then there is no associated resource pool,
             # so we need to find one using the template's parent host or cluster
             esx_host = vm_mob_ref.collect!('runtime.host')['runtime.host']
@@ -136,9 +132,11 @@ module Fog
 
           # Options['host']<~String>
           # The target host for the virtual machine. Optional.
-          host = if options.key?('host') && !options['host'].empty? && !cluster_name.nil?
-                   get_raw_host(options['host'], cluster_name, options['datacenter'])
-                 end
+          if options.key?('host') && !options['host'].empty? && !cluster_name.nil?
+            host = get_raw_host(options['host'], attributes[:cluster], options['datacenter'])
+          else
+            host = nil
+          end
 
           # Options['datastore']<~String>
           # Grab the datastore object if option is set
@@ -150,11 +148,11 @@ module Fog
           device_change = []
           # fully futured interfaces api: replace the current nics
           # with the new based on the specification
-          if options.key?('interfaces')
+          if (options.key?('interfaces') )
             if options.key?('network_label')
               raise ArgumentError, "interfaces option can't be specified together with network_label"
             end
-            device_change.concat(modify_template_nics_specs(vm_mob_ref, options['interfaces'], options['datacenter']))
+            device_change.concat(modify_template_nics_specs(template_path, options['interfaces'], options['datacenter']))
           elsif options.key?('network_label')
             device_change << modify_template_nics_simple_spec(options['network_label'], options['nic_type'], options['network_adapter_device_key'], options['datacenter'])
           end
@@ -167,44 +165,13 @@ module Fog
           # https://github.com/rlane/rbvmomi/blob/master/test/test_serialization.rb
           # http://www.vmware.com/support/developer/vc-sdk/visdk41pubs/ApiReference/vim.vm.ConfigSpec.html
           # FIXME: pad this out with the rest of the useful things in VirtualMachineConfigSpec
-          virtual_machine_config_spec.numCPUs = options['numCPUs'] if options.key?('numCPUs')
+          virtual_machine_config_spec.numCPUs = options['numCPUs'] if  ( options.key?('numCPUs') )
           virtual_machine_config_spec.numCoresPerSocket = options['numCoresPerSocket'] if options.key?('numCoresPerSocket')
-          virtual_machine_config_spec.memoryMB = options['memoryMB'] if options.key?('memoryMB')
-          virtual_machine_config_spec.cpuHotAddEnabled = options['cpuHotAddEnabled'] if options.key?('cpuHotAddEnabled')
-          virtual_machine_config_spec.memoryHotAddEnabled = options['memoryHotAddEnabled'] if options.key?('memoryHotAddEnabled')
-          virtual_machine_config_spec.firmware = options['firmware'] if options.key?('firmware')
-          virtual_machine_config_spec.extraConfig = extra_config(extra_config: options['extraConfig']) if options.key?('extraConfig')
-          if @vsphere_rev.to_f >= 5 && options.key?('boot_order')
-            boot_order = options['boot_order'].flat_map do |boot_device|
-              case boot_device.to_sym
-              when :network
-                interfaces = device_change.select do |change|
-                  %i[edit add].include?(change[:operation]) &&
-                    change[:device].class <= RbVmomi::VIM::VirtualEthernetCard
-                end.map { |change| change[:device] }
-                interfaces.map do |interface|
-                  RbVmomi::VIM::VirtualMachineBootOptionsBootableEthernetDevice.new(
-                    deviceKey: interface.key
-                  )
-                end
-              when :disk
-                disks = device_change.select do |change|
-                  %i[edit add].include?(change[:operation]) &&
-                    change[:device].is_a?(RbVmomi::VIM::VirtualDisk)
-                end.map { |change| change[:device] }
-                disks.map do |disk|
-                  RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice.new(
-                    deviceKey: disk.key
-                  )
-                end
-              when :cdrom
-                RbVmomi::VIM::VirtualMachineBootOptionsBootableCdromDevice.new
-              when :floppy
-                RbVmomi::VIM::VirtualMachineBootOptionsBootableFloppyDevice.new
-              end
-            end
-            virtual_machine_config_spec.bootOptions = { bootOrder: boot_order }
-          end
+          virtual_machine_config_spec.memoryMB = options['memoryMB'] if ( options.key?('memoryMB') )
+          virtual_machine_config_spec.cpuHotAddEnabled = options['cpuHotAddEnabled'] if ( options.key?('cpuHotAddEnabled') )
+          virtual_machine_config_spec.memoryHotAddEnabled = options['memoryHotAddEnabled'] if ( options.key?('memoryHotAddEnabled') )
+          virtual_machine_config_spec.firmware = options['firmware'] if ( options.key?('firmware') )
+          virtual_machine_config_spec.extraConfig = extra_config(extra_config: options['extraConfig']) if ( options.key?('extraConfig') )
           # Options['customization_spec']
           # OLD Options still supported
           # * domain <~String> - *REQUIRED* - Sets the server's domain for customization
@@ -233,10 +200,10 @@ module Fog
           #   *       password: <~Hash> - REQUIRED, new administrator password for the machine
           #   *         plainText: boolean - REQUIRED, specify whether or not the password is in plain text, rather than encrypted
           #   *         value: <~String> - REQUIRED, password string
-          #   *       timeZone: <~int> - REQUIRED, (see here for values https://msdn.microsoft.com/en-us/library/ms912391(v=winembedded.11).aspx)
+          #   *       timeZone: <~int> - REQUIRED, (see here for values https://msdn.microsoft.com/en-us/library/ms912391(v=winembedded.11).aspx)    
           #   *     identification: <~Hash> - REQUIRED, representation of the sysprep Identification key
           #   *       domainAdmin: <~String> - Optional, domain user account used for authentication if the virtual machine is joining a domain
-          #   *       domainAdminPassword: <~Hash> - Optional, password for the domain user account used for authentication
+          #   *       domainAdminPassword: <~Hash> - Optional, password for the domain user account used for authentication 
           #   *         plainText: boolean - REQUIRED, specify whether or not the password is in plain text, rather than encrypted
           #   *         value: <~String> - REQUIRED, password string
           #   *       joinDomain: <~String> - Optional, The domain that the virtual machine should join. If this value is supplied, then domainAdmin and domainAdminPassword must also be supplied
@@ -255,7 +222,7 @@ module Fog
           #   *     hwClockUTC: <~Boolean> - Optional, Specifies whether the hardware clock is in UTC or local time
           #   *     timeZone: <~String> - Optional, Case sensistive timezone, valid values can be found at https://pubs.vmware.com/vsphere-51/topic/com.vmware.wssdk.apiref.doc/timezone.html
           #   *   SysprepText: <~Hash> - Optional, alternate way to specify the sysprep.inf answer file.
-          #   *     value: <~String> - REQUIRED, Text for the sysprep.inf answer file.
+          #   *     value: <~String> - REQUIRED, Text for the sysprep.inf answer file. 
           #   * nicSettingMap: <~Array> - Optional, IP settings that are specific to a particular virtual network adapter
           #   *   Each item in array:
           #   *   adapter: <~Hash> - REQUIRED, IP settings for the associated virtual network adapter
@@ -276,7 +243,7 @@ module Fog
           #   *   deleteAccounts: <~Boolean> - REQUIRED, If deleteAccounts is true, then all user accounts are removed from the system
           #   *   reboot: <~String> - Optional, (defaults to reboot), Action to be taken after running sysprep, must be one of: 'noreboot', 'reboot', 'shutdown'
           #
-          if options.key?('customization_spec')
+          if ( options.key?('customization_spec') )
             custom_spec = options['customization_spec']
 
             # backwards compatablity
@@ -294,44 +261,44 @@ module Fog
               #
               # we can assume old parameters being passed
               cust_hostname = custom_spec['hostname'] || options['name']
-              custom_spec['identity'] = {} unless custom_spec.key?('identity')
-              custom_spec['identity']['LinuxPrep'] = { 'domain' => custom_spec['domain'], 'hostName' => cust_hostname, 'timeZone' => custom_spec['time_zone'] }
-
+              custom_spec['identity'] = Hash.new unless custom_spec.key?('identity')
+              custom_spec['identity']['LinuxPrep'] = {"domain" => custom_spec['domain'], "hostName" => cust_hostname, "timeZone" => custom_spec['time_zone']}
+            
               if custom_spec.key?('ipsettings')
-                custom_spec['globalIPSettings'] = {} unless custom_spec.key?('globalIPSettings')
+                custom_spec['globalIPSettings']=Hash.new unless custom_spec.key?('globalIPSettings')
                 custom_spec['globalIPSettings']['dnsServerList'] = custom_spec['ipsettings']['dnsServerList'] if custom_spec['ipsettings'].key?('dnsServerList')
-                custom_spec['globalIPSettings']['dnsSuffixList'] = custom_spec['dnsSuffixList'] || [custom_spec['domain']] if custom_spec['dnsSuffixList'] || custom_spec['domain']
-                if custom_spec['ipsettings'].key?('ip') || custom_spec['ipsettings'].key?('gateway') || custom_spec['ipsettings'].key?('subnetMask') || custom_spec['ipsettings'].key?('domain') || custom_spec['ipsettings'].key?('dnsServerList')
-                  if custom_spec['ipsettings'].key?('ip') && !custom_spec['ipsettings'].key?('subnetMask')
-                    raise ArgumentError, 'subnetMask is required for static ip'
-                  end
-                  custom_spec['nicSettingMap'] = [] unless custom_spec.key?('nicSettingMap')
-                  custom_spec['nicSettingMap'][0] = {} if custom_spec['nicSettingMap'].empty?
-                  custom_spec['nicSettingMap'][0]['adapter'] = {} unless custom_spec['nicSettingMap'][0].key?('adapter')
-                  custom_spec['nicSettingMap'][0]['adapter']['ip'] = custom_spec['ipsettings']['ip'] if custom_spec['ipsettings'].key?('ip')
-                  custom_spec['nicSettingMap'][0]['adapter']['gateway'] = custom_spec['ipsettings']['gateway'] if custom_spec['ipsettings'].key?('gateway')
-                  custom_spec['nicSettingMap'][0]['adapter']['subnetMask'] = custom_spec['ipsettings']['subnetMask'] if custom_spec['ipsettings'].key?('subnetMask')
-                  custom_spec['nicSettingMap'][0]['adapter']['dnsDomain'] = custom_spec['ipsettings']['domain'] if custom_spec['ipsettings'].key?('domain')
-                  custom_spec['nicSettingMap'][0]['adapter']['dnsServerList'] = custom_spec['ipsettings']['dnsServerList'] if custom_spec['ipsettings'].key?('dnsServerList')
-                end
+                custom_spec['globalIPSettings']['dnsSuffixList'] = custom_spec['dnsSuffixList'] || [custom_spec['domain']] if ( custom_spec['dnsSuffixList'] || custom_spec['domain'])
+                if (custom_spec['ipsettings'].key?('ip') or custom_spec['ipsettings'].key?('gateway') or custom_spec['ipsettings'].key?('subnetMask') or custom_spec['ipsettings'].key?('domain') or custom_spec['ipsettings'].key?('dnsServerList'))
+                    if custom_spec['ipsettings'].key?('ip') and !custom_spec["ipsettings"].key?("subnetMask")
+                      raise ArgumentError, "subnetMask is required for static ip"
+                    end
+                    custom_spec['nicSettingMap']=Array.new unless custom_spec.key?('nicSettingMap')
+                    custom_spec['nicSettingMap'][0]=Hash.new unless custom_spec['nicSettingMap'].length > 0
+                    custom_spec['nicSettingMap'][0]['adapter']=Hash.new unless custom_spec['nicSettingMap'][0].key?('adapter')
+                    custom_spec['nicSettingMap'][0]['adapter']['ip'] = custom_spec['ipsettings']['ip'] if custom_spec['ipsettings'].key?('ip')
+                    custom_spec['nicSettingMap'][0]['adapter']['gateway'] = custom_spec['ipsettings']['gateway'] if custom_spec['ipsettings'].key?('gateway')
+                    custom_spec['nicSettingMap'][0]['adapter']['subnetMask'] = custom_spec['ipsettings']['subnetMask'] if custom_spec['ipsettings'].key?('subnetMask')
+                    custom_spec['nicSettingMap'][0]['adapter']['dnsDomain'] = custom_spec['ipsettings']['domain'] if custom_spec['ipsettings'].key?('domain')
+                    custom_spec['nicSettingMap'][0]['adapter']['dnsServerList'] = custom_spec['ipsettings']['dnsServerList'] if custom_spec['ipsettings'].key?('dnsServerList')
+                end       
               end
             end
-            ### End of backwards compatability
+            ### End of backwards compatability 
 
             ## requirements check here ##
-            raise ArgumentError, 'globalIPSettings are required when using Customization Spec' unless custom_spec.key?('globalIPSettings')
-            raise ArgumentError, 'identity is required when using Customization Spec' unless custom_spec.key?('identity')
-
+            raise ArgumentError, "globalIPSettings are required when using Customization Spec" unless custom_spec.key?('globalIPSettings')
+            raise ArgumentError, "identity is required when using Customization Spec" unless custom_spec.key?('identity')
+          
             # encryptionKey
             custom_encryptionKey = custom_spec['encryptionKey'] if custom_spec.key?('encryptionKey')
             custom_encryptionKey ||= nil
-
+            
             # globalIPSettings
             # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.GlobalIPSettings.html
-            custom_globalIPSettings = RbVmomi::VIM::CustomizationGlobalIPSettings.new
-            custom_globalIPSettings.dnsServerList = custom_spec['globalIPSettings']['dnsServerList'] if custom_spec['globalIPSettings'].key?('dnsServerList')
-            custom_globalIPSettings.dnsSuffixList = custom_spec['globalIPSettings']['dnsSuffixList'] if custom_spec['globalIPSettings'].key?('dnsSuffixList')
-
+            custom_globalIPSettings = RbVmomi::VIM::CustomizationGlobalIPSettings.new()
+            custom_globalIPSettings.dnsServerList = custom_spec['globalIPSettings']['dnsServerList'] if custom_spec['globalIPSettings'].key?("dnsServerList")
+            custom_globalIPSettings.dnsSuffixList = custom_spec['globalIPSettings']['dnsSuffixList'] if custom_spec['globalIPSettings'].key?("dnsSuffixList")
+            
             # identity
             # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.IdentitySettings.html
             # Accepts the 3 supported CustomizationIdentitySettings Types:
@@ -341,21 +308,21 @@ module Fog
             # At least one of these is required
             #
             identity = custom_spec['identity']
-            if identity.key?('LinuxPrep')
+            if identity.key?("LinuxPrep")
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.LinuxPrep.html
               # Fields:
               #   * domain: string **REQUIRED**
               #   * hostName: string (CustomizationName)  **REQUIRED** Will use options['name'] if not provided.
               #   * hwClockUTC: boolean
-              #   * timeZone: string (https://pubs.vmware.com/vsphere-55/topic/com.vmware.wssdk.apiref.doc/timezone.html)
-              raise ArgumentError, 'domain is required when using LinuxPrep identity' unless identity['LinuxPrep'].key?('domain')
-              custom_identity = RbVmomi::VIM::CustomizationLinuxPrep(domain: identity['LinuxPrep']['domain'])
-              cust_hostname = RbVmomi::VIM::CustomizationFixedName(name: identity['LinuxPrep']['hostName']) if identity['LinuxPrep'].key?('hostName')
-              cust_hostname ||= RbVmomi::VIM::CustomizationFixedName(name: options['name'])
+              #   * timeZone: string (https://pubs.vmware.com/vsphere-55/topic/com.vmware.wssdk.apiref.doc/timezone.html) 
+              raise ArgumentError, "domain is required when using LinuxPrep identity" unless identity['LinuxPrep'].key?('domain')
+              custom_identity = RbVmomi::VIM::CustomizationLinuxPrep(:domain => identity['LinuxPrep']['domain'])
+              cust_hostname = RbVmomi::VIM::CustomizationFixedName(:name => identity['LinuxPrep']['hostName']) if identity['LinuxPrep'].key?('hostName')
+              cust_hostname ||= RbVmomi::VIM::CustomizationFixedName(:name => options['name'])
               custom_identity.hostName = cust_hostname
               custom_identity.hwClockUTC = identity['LinuxPrep']['hwClockUTC'] if identity['LinuxPrep'].key?('hwClockUTC')
-              custom_identity.timeZone = identity['LinuxPrep']['timeZone'] if identity['LinuxPrep'].key?('timeZone')
-            elsif identity.key?('Sysprep')
+              custom_identity.timeZone = identity['LinuxPrep']['timeZone'] if identity['LinuxPrep'].key?('timeZone') 
+            elsif identity.key?("Sysprep")
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Sysprep.html
               # Fields:
               #   * guiRunOnce: CustomizationGuiRunOnce
@@ -363,42 +330,42 @@ module Fog
               #   * identification: CustomizationIdentification  **REQUIRED**
               #   * licenseFilePrintData: CustomizationLicenseFilePrintData
               #   * userData: CustomizationUserData **REQUIRED**
-              #
-              raise ArgumentError, 'guiUnattended is required when using Sysprep identity' unless identity['Sysprep'].key?('guiUnattended')
-              raise ArgumentError, 'identification is required when using Sysprep identity' unless identity['Sysprep'].key?('identification')
-              raise ArgumentError, 'userData is required when using Sysprep identity' unless identity['Sysprep'].key?('userData')
+              # 
+              raise ArgumentError, "guiUnattended is required when using Sysprep identity" unless identity['Sysprep'].key?('guiUnattended')
+              raise ArgumentError, "identification is required when using Sysprep identity" unless identity['Sysprep'].key?('identification')
+              raise ArgumentError, "userData is required when using Sysprep identity" unless identity['Sysprep'].key?('userData')
               if identity['Sysprep']['guiRunOnce']
                 # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.GuiRunOnce.html
                 # Fields:
                 #  * commandList: array of string **REQUIRED***
                 #
-                raise ArgumentError, 'commandList is required when using Sysprep identity and guiRunOnce' unless identity['Sysprep']['guiRunOnce'].key?('commandList')
-                cust_guirunonce = RbVmomi::VIM.CustomizationGuiRunOnce(commandList: identity['Sysprep']['guiRunOnce']['commandList'])
+                raise ArgumentError, "commandList is required when using Sysprep identity and guiRunOnce" unless identity['Sysprep']['guiRunOnce'].key?('commandList')
+                cust_guirunonce = RbVmomi::VIM.CustomizationGuiRunOnce( :commandList => identity['Sysprep']['guiRunOnce']['commandList'] )
               end
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.GuiUnattended.html
               # Fields:
               #   * autoLogin: boolean **REQUIRED**
               #   * autoLogonCount: int **REQUIRED**
               #   * timeZone: int (see here for values https://msdn.microsoft.com/en-us/library/ms912391(v=winembedded.11).aspx) **REQUIRED**
-              #   * password: CustomizationPassword
-              raise ArgumentError, 'guiUnattended->autoLogon is required when using Sysprep identity' unless identity['Sysprep']['guiUnattended'].key?('autoLogon')
-              raise ArgumentError, 'guiUnattended->autoLogonCount is required when using Sysprep identity' unless identity['Sysprep']['guiUnattended'].key?('autoLogonCount')
-              raise ArgumentError, 'guiUnattended->timeZone is required when using Sysprep identity' unless identity['Sysprep']['guiUnattended'].key?('timeZone')
+              #   * password: CustomizationPassword 
+              raise ArgumentError, "guiUnattended->autoLogon is required when using Sysprep identity" unless identity['Sysprep']['guiUnattended'].key?('autoLogon')
+              raise ArgumentError, "guiUnattended->autoLogonCount is required when using Sysprep identity" unless identity['Sysprep']['guiUnattended'].key?('autoLogonCount')
+              raise ArgumentError, "guiUnattended->timeZone is required when using Sysprep identity" unless identity['Sysprep']['guiUnattended'].key?('timeZone')
               custom_guiUnattended = RbVmomi::VIM.CustomizationGuiUnattended(
-                autoLogon: identity['Sysprep']['guiUnattended']['autoLogon'],
-                autoLogonCount: identity['Sysprep']['guiUnattended']['autoLogonCount'],
-                timeZone: identity['Sysprep']['guiUnattended']['timeZone']
+                :autoLogon => identity['Sysprep']['guiUnattended']['autoLogon'],
+                :autoLogonCount => identity['Sysprep']['guiUnattended']['autoLogonCount'],
+                :timeZone => identity['Sysprep']['guiUnattended']['timeZone']
               )
               if identity['Sysprep']['guiUnattended']['password']
                 # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Password.html
                 # Fields:
                 #   * plainText: boolean  **REQUIRED**
                 #   * value: string  **REQUIRED**
-                raise ArgumentError, 'guiUnattended->password->plainText is required when using Sysprep identity and guiUnattended -> password' unless identity['Sysprep']['guiUnattended']['password'].key?('plainText')
-                raise ArgumentError, 'guiUnattended->password->value is required when using Sysprep identity and guiUnattended -> password' unless identity['Sysprep']['guiUnattended']['password'].key?('value')
+                raise ArgumentError, "guiUnattended->password->plainText is required when using Sysprep identity and guiUnattended -> password" unless identity['Sysprep']['guiUnattended']['password'].key?('plainText')
+                raise ArgumentError, "guiUnattended->password->value is required when using Sysprep identity and guiUnattended -> password" unless identity['Sysprep']['guiUnattended']['password'].key?('value')
                 custom_guiUnattended.password = RbVmomi::VIM.CustomizationPassword(
-                  plainText: identity['Sysprep']['guiUnattended']['password']['plainText'],
-                  value: identity['Sysprep']['guiUnattended']['password']['value']
+                  :plainText => identity['Sysprep']['guiUnattended']['password']['plainText'],
+                  :value => identity['Sysprep']['guiUnattended']['password']['value']
                 )
               end
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Identification.html
@@ -411,19 +378,19 @@ module Fog
               if identity['Sysprep']['identification'].key?('joinWorkgroup')
                 custom_identification.joinWorkgroup = identity['Sysprep']['identification']['joinWorkgroup']
               elsif identity['Sysprep']['identification'].key?('joinDomain')
-                raise ArgumentError, 'identification->domainAdmin is required when using Sysprep identity and identification -> joinDomain' unless identity['Sysprep']['identification'].key?('domainAdmin')
-                raise ArgumentError, 'identification->domainAdminPassword is required when using Sysprep identity and identification -> joinDomain' unless identity['Sysprep']['identification'].key?('domainAdmin')
-                raise ArgumentError, 'identification->domainAdminPassword->plainText is required when using Sysprep identity and identification -> joinDomain' unless identity['Sysprep']['identification']['domainAdminPassword'].key?('plainText')
-                raise ArgumentError, 'identification->domainAdminPassword->value is required when using Sysprep identity and identification -> joinDomain' unless identity['Sysprep']['identification']['domainAdminPassword'].key?('value')
+                raise ArgumentError, "identification->domainAdmin is required when using Sysprep identity and identification -> joinDomain" unless identity['Sysprep']['identification'].key?('domainAdmin')
+                raise ArgumentError, "identification->domainAdminPassword is required when using Sysprep identity and identification -> joinDomain" unless identity['Sysprep']['identification'].key?('domainAdmin')
+                raise ArgumentError, "identification->domainAdminPassword->plainText is required when using Sysprep identity and identification -> joinDomain" unless identity['Sysprep']['identification']['domainAdminPassword'].key?('plainText')
+                raise ArgumentError, "identification->domainAdminPassword->value is required when using Sysprep identity and identification -> joinDomain" unless identity['Sysprep']['identification']['domainAdminPassword'].key?('value')
                 custom_identification.joinDomain = identity['Sysprep']['identification']['joinDomain']
                 custom_identification.domainAdmin = identity['Sysprep']['identification']['domainAdmin']
                 # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Password.html
                 # Fields:
                 #   * plainText: boolean **REQUIRED**
                 #   * value: string **REQUIRED**
-                custom_identification.domainAdminPassword = RbVmomi::VIM.CustomizationPassword(
-                  plainText: identity['Sysprep']['identification']['domainAdminPassword']['plainText'],
-                  value: identity['Sysprep']['identification']['domainAdminPassword']['value']
+                custom_identification.domainAdminPassword = RbVmomi::VIM.CustomizationPassword( 
+                  :plainText => identity['Sysprep']['identification']['domainAdminPassword']['plainText'],
+                  :value => identity['Sysprep']['identification']['domainAdminPassword']['value']
                 )
               else
                 raise ArgumentError, "No valid Indentification found, valid values are 'joinWorkgroup' and 'joinDomain'"
@@ -433,13 +400,13 @@ module Fog
                 # Fields:
                 #   * autoMode: string (CustomizationLicenseDataMode) ** REQUIRED **, valid strings are: 'perSeat' or 'perServer'
                 #   * autoUsers: int (valid only if AutoMode = PerServer)
-                raise ArgumentError, 'licenseFilePrintData->autoMode is required when using Sysprep identity and licenseFilePrintData' unless identity['Sysprep']['licenseFilePrintData'].key?('autoMode')
-                raise ArgumentError, "Unsupported autoMode, supported modes are : 'perSeat' or 'perServer'" unless %w[perSeat perServer].include? identity['Sysprep']['licenseFilePrintData']['autoMode']
+                raise ArgumentError, "licenseFilePrintData->autoMode is required when using Sysprep identity and licenseFilePrintData" unless identity['Sysprep']['licenseFilePrintData'].key?('autoMode')
+                raise ArgumentError, "Unsupported autoMode, supported modes are : 'perSeat' or 'perServer'" unless ['perSeat', 'perServer'].include? identity['Sysprep']['licenseFilePrintData']['autoMode']
                 custom_licenseFilePrintData = RbVmomi::VIM.CustomizationLicenseFilePrintData(
-                  autoMode: RbVmomi::VIM.CustomizationLicenseDataMode(identity['Sysprep']['licenseFilePrintData']['autoMode'])
+                  :autoMode => RbVmomi::VIM.CustomizationLicenseDataMode(identity['Sysprep']['licenseFilePrintData']['autoMode'])
                 )
                 if identity['Sysprep']['licenseFilePrintData'].key?('autoUsers')
-                  custom_licenseFilePrintData.autoUsers = identity['Sysprep']['licenseFilePrintData']['autoUsers'] if identity['Sysprep']['licenseFilePrintData']['autoMode'] == 'PerServer'
+                  custom_licenseFilePrintData.autoUsers = identity['Sysprep']['licenseFilePrintData']['autoUsers'] if identity['Sysprep']['licenseFilePrintData']['autoMode'] == "PerServer"
                 end
               end
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.UserData.html
@@ -448,48 +415,48 @@ module Fog
               #   * fullName: string **REQUIRED**
               #   * orgName: string **REQUIRED**
               #   * productID: string **REQUIRED**
-              raise ArgumentError, 'userData->computerName is required when using Sysprep identity' unless identity['Sysprep']['userData'].key?('computerName')
-              raise ArgumentError, 'userData->fullName is required when using Sysprep identity' unless identity['Sysprep']['userData'].key?('fullName')
-              raise ArgumentError, 'userData->orgName is required when using Sysprep identity' unless identity['Sysprep']['userData'].key?('orgName')
-              raise ArgumentError, 'userData->productId is required when using Sysprep identity' unless identity['Sysprep']['userData'].key?('productId')
+              raise ArgumentError, "userData->computerName is required when using Sysprep identity" unless identity['Sysprep']['userData'].key?('computerName')
+              raise ArgumentError, "userData->fullName is required when using Sysprep identity" unless identity['Sysprep']['userData'].key?('fullName')
+              raise ArgumentError, "userData->orgName is required when using Sysprep identity" unless identity['Sysprep']['userData'].key?('orgName')
+              raise ArgumentError, "userData->productId is required when using Sysprep identity" unless identity['Sysprep']['userData'].key?('productId')
               custom_userData = RbVmomi::VIM.CustomizationUserData(
-                fullName: identity['Sysprep']['userData']['fullName'],
-                orgName: identity['Sysprep']['userData']['orgName'],
-                productId: identity['Sysprep']['userData']['productId'],
-                computerName: RbVmomi::VIM.CustomizationFixedName(name: identity['Sysprep']['userData']['computerName'])
+                :fullName => identity['Sysprep']['userData']['fullName'],
+                :orgName => identity['Sysprep']['userData']['orgName'],
+                :productId => identity['Sysprep']['userData']['productId'],
+                :computerName => RbVmomi::VIM.CustomizationFixedName(:name => identity['Sysprep']['userData']['computerName'])
               )
 
-              custom_identity = RbVmomi::VIM::CustomizationSysprep(
-                guiUnattended: custom_guiUnattended,
-                identification: custom_identification,
-                userData: custom_userData
+              custom_identity = RbVmomi::VIM::CustomizationSysprep(          
+                :guiUnattended => custom_guiUnattended,
+                :identification => custom_identification,
+                :userData => custom_userData
               )
               custom_identity.guiRunOnce = cust_guirunonce if defined?(cust_guirunonce)
               custom_identity.licenseFilePrintData = custom_licenseFilePrintData if defined?(custom_licenseFilePrintData)
-            elsif identity.key?('SysprepText')
+            elsif identity.key?("SysprepText")
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.SysprepText.html
               # Fields:
               #   * value: string **REQUIRED**
-              raise ArgumentError, 'SysprepText -> value is required when using SysprepText identity' unless identity['SysprepText'].key?('value')
-              custom_identity = RbVmomi::VIM::CustomizationSysprepText(value: identity['SysprepText']['value'])
+              raise ArgumentError, "SysprepText -> value is required when using SysprepText identity" unless identity['SysprepText'].key?('value')
+              custom_identity = RbVmomi::VIM::CustomizationSysprepText(:value => identity['SysprepText']['value'])
             else
-              raise ArgumentError, 'At least one of the following valid identities must be supplied: LinuxPrep, Sysprep, SysprepText'
+              raise ArgumentError, "At least one of the following valid identities must be supplied: LinuxPrep, Sysprep, SysprepText"
             end
 
-            if custom_spec.key?('nicSettingMap')
+            if custom_spec.key?("nicSettingMap")
               # custom_spec['nicSettingMap'] is an array of adapater mappings:
               # custom_spec['nicSettingMap'][0]['macAddress']
               # custom_spec['nicSettingMap'][0]['adapter']['ip']
-              # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.AdapterMapping.html
+              #https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.AdapterMapping.html
               # Fields:
               #   * adapter: CustomizationIPSettings **REQUIRED**
               #   * macAddress: string
-              raise ArgumentError, 'At least one nicSettingMap is required when using nicSettingMap' if custom_spec['nicSettingMap'].empty?
-              raise ArgumentError, 'Adapter is required when using nicSettingMap' unless custom_spec['nicSettingMap'][0].key?('adapter')
-
-              custom_nicSettingMap = []
+              raise ArgumentError, "At least one nicSettingMap is required when using nicSettingMap" unless custom_spec['nicSettingMap'].length > 0
+              raise ArgumentError, "Adapter is required when using nicSettingMap" unless custom_spec['nicSettingMap'][0].key?('adapter')
+              
+              custom_nicSettingMap = [] 
               # need to go through array here for each apapter
-              custom_spec['nicSettingMap'].each do |nic|
+              custom_spec['nicSettingMap'].each do | nic |
                 # https://pubs.vmware.com/vsphere-55/index.jsp?topic=%2Fcom.vmware.wssdk.apiref.doc%2Fvim.vm.customization.IPSettings.html
                 # Fields:
                 #   * dnsDomain: string
@@ -501,12 +468,12 @@ module Fog
                 #   * secondaryWINS: string
                 #   * subnetMask: string - Required if assigning static IP
                 if nic['adapter'].key?('ip')
-                  raise ArgumentError, 'SubnetMask is required when assigning static IP when using nicSettingMap -> Adapter' unless nic['adapter'].key?('subnetMask')
-                  custom_ip = RbVmomi::VIM.CustomizationFixedIp(ipAddress: nic['adapter']['ip'])
+                  raise ArgumentError, "SubnetMask is required when assigning static IP when using nicSettingMap -> Adapter" unless nic['adapter'].key?('subnetMask')
+                  custom_ip = RbVmomi::VIM.CustomizationFixedIp(:ipAddress => nic['adapter']['ip'])
                 else
-                  custom_ip = RbVmomi::VIM::CustomizationDhcpIpGenerator.new
+                  custom_ip = RbVmomi::VIM::CustomizationDhcpIpGenerator.new()
                 end
-                custom_adapter = RbVmomi::VIM.CustomizationIPSettings(ip: custom_ip)
+                custom_adapter = RbVmomi::VIM.CustomizationIPSettings(:ip => custom_ip)
                 custom_adapter.dnsDomain = nic['adapter']['dnsDomain'] if nic['adapter'].key?('dnsDomain')
                 custom_adapter.dnsServerList = nic['adapter']['dnsServerList'] if nic['adapter'].key?('dnsServerList')
                 custom_adapter.gateway = nic['adapter']['gateway'] if nic['adapter'].key?('gateway')
@@ -516,18 +483,18 @@ module Fog
                   #   * gateway: array of string
                   #   * ip: CustomizationIpV6Generator[] **Required if setting static IP **
                   if nic['adapter']['ipV6Spec'].key?('ipAddress')
-                    raise ArgumentError, 'SubnetMask is required when assigning static IPv6 when using nicSettingMap -> Adapter -> ipV6Spec' unless nic['adapter']['ipV6Spec'].key?('subnetMask')
+                    raise ArgumentError, "SubnetMask is required when assigning static IPv6 when using nicSettingMap -> Adapter -> ipV6Spec" unless nic['adapter']['ipV6Spec'].key?('subnetMask')
                     # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.FixedIpV6.html
                     #   * ipAddress: string **REQUIRED**
                     #   * subnetMask: int **REQUIRED**
                     custom_ipv6 = RbVmomi::VIM.CustomizationFixedIpV6(
-                      ipAddress: nic['adapter']['ipV6Spec']['ipAddress'],
-                      subnetMask: nic['adapter']['ipV6Spec']['subnetMask']
+                      :ipAddress => nic['adapter']['ipV6Spec']['ipAddress'],
+                      :subnetMask => nic['adapter']['ipV6Spec']['subnetMask']
                     )
                   else
-                    custom_ipv6 = RbVmomi::VIM::CustomizationDhcpIpV6Generator.new
+                    custom_ipv6 = RbVmomi::VIM::CustomizationDhcpIpV6Generator.new()
                   end
-                  custom_ipv6Spec = RbVmomi::VIM.CustomizationIPSettingsIpV6AddressSpec(ip: custom_ipv6)
+                  custom_ipv6Spec = RbVmomi::VIM.CustomizationIPSettingsIpV6AddressSpec(:ip => custom_ipv6)
                   custom_ipv6Spec.gateway = nic['adapter']['ipV6Spec']['gateway'] if nic['adapter']['ipV6Spec'].key?('gateway')
                   custom_adapter.ipV6Spec = custom_ipv6Spec
                 end
@@ -536,45 +503,45 @@ module Fog
                   # Fields:
                   #   netBIOS: string matching: 'disableNetBIOS','enableNetBIOS' or 'enableNetBIOSViaDhcp' ** REQUIRED **
                   #
-                  raise ArgumentError, "Unsupported NetBIOSMode, supported modes are : 'disableNetBIOS','enableNetBIOS' or 'enableNetBIOSViaDhcp'" unless %w[disableNetBIOS enableNetBIOS enableNetBIOSViaDhcp].include? nic['adapter']['netBIOS']
+                  raise ArgumentError, "Unsupported NetBIOSMode, supported modes are : 'disableNetBIOS','enableNetBIOS' or 'enableNetBIOSViaDhcp'" unless ['disableNetBIOS','enableNetBIOS','enableNetBIOSViaDhcp'].include? nic['adapter']['netBIOS']
                   custom_adapter.netBIOS = RbVmomi::VIM.CustomizationNetBIOSMode(nic['adapter']['netBIOS'])
                 end
                 custom_adapter.primaryWINS = nic['adapter']['primaryWINS'] if nic['adapter'].key?('primaryWINS')
                 custom_adapter.secondaryWINS = nic['adapter']['secondaryWINS'] if nic['adapter'].key?('secondaryWINS')
                 custom_adapter.subnetMask = nic['adapter']['subnetMask'] if nic['adapter'].key?('subnetMask')
 
-                custom_adapter_mapping = RbVmomi::VIM::CustomizationAdapterMapping(adapter: custom_adapter)
+                custom_adapter_mapping = RbVmomi::VIM::CustomizationAdapterMapping(:adapter => custom_adapter)
                 custom_adapter_mapping.macAddress = nic['macAddress'] if nic.key?('macAddress')
-
+                
                 # build the adapters array
                 custom_nicSettingMap << custom_adapter_mapping
               end
-            end
-
-            if custom_spec.key?('options')
+            end  
+                      
+            if custom_spec.key?("options") 
               # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Options.html
               # this currently doesn't have any Linux options, just windows
               # Fields:
               #   * changeSID: boolean **REQUIRED**
               #   * deleteAccounts: boolean **REQUIRED** **note deleteAccounts is deprecated as of VI API 2.5 so can be ignored
               #   * reboot: CustomizationSysprepRebootOption: (string) one of following 'noreboot', reboot' or 'shutdown' (defaults to reboot)
-              raise ArgumentError, 'changeSID id required when using Windows Options' unless custom_spec['options'].key?('changeSID')
-              raise ArgumentError, 'deleteAccounts id required when using Windows Options' unless custom_spec['options'].key?('deleteAccounts')
+              raise ArgumentError, "changeSID id required when using Windows Options" unless custom_spec['options'].key?('changeSID')
+              raise ArgumentError, "deleteAccounts id required when using Windows Options" unless custom_spec['options'].key?('deleteAccounts')
               custom_options = RbVmomi::VIM::CustomizationWinOptions(
-                changeSID: custom_spec['options']['changeSID'],
-                deleteAccounts: custom_spec['options']['deleteAccounts']
+                :changeSID => custom_spec['options']['changeSID'],
+                :deleteAccounts => custom_spec['options']['deleteAccounts']
               )
               if custom_spec['options'].key?('reboot')
-                raise ArgumentError, "Unsupported reboot option, supported options are : 'noreboot', 'reboot' or 'shutdown'" unless %w[noreboot reboot shutdown].include? custom_spec['options']['reboot']
+                raise ArgumentError, "Unsupported reboot option, supported options are : 'noreboot', 'reboot' or 'shutdown'" unless ['noreboot','reboot','shutdown'].include? custom_spec['options']['reboot']
                 custom_options.reboot = RBVmomi::VIM.CustomizationSysprepRebootOption(custom_spec['options']['reboot'])
               end
             end
-            custom_options ||= nil
-
+            custom_options ||=nil  
+            
             # https://pubs.vmware.com/vsphere-55/index.jsp#com.vmware.wssdk.apiref.doc/vim.vm.customization.Specification.html
             customization_spec = RbVmomi::VIM::CustomizationSpec(
-              globalIPSettings: custom_globalIPSettings,
-              identity: custom_identity
+              :globalIPSettings => custom_globalIPSettings,
+              :identity         => custom_identity
             )
             customization_spec.encryptionKey = custom_encryptionKey if defined?(custom_encryptionKey)
             customization_spec.nicSettingMap = custom_nicSettingMap if defined?(custom_nicSettingMap)
@@ -583,11 +550,11 @@ module Fog
           end
           customization_spec ||= nil
 
-          relocation_spec = nil
-          if options['linked_clone']
+          relocation_spec=nil
+          if ( options['linked_clone'] )
             # Storage DRS does not support vSphere linked clones.
             # http://www.vmware.com/files/pdf/techpaper/vsphere-storage-drs-interoperability.pdf
-            raise ArgumentError, 'linked clones are not supported on storage pods' unless options.key?('storage_pod')
+            raise ArgumentError, "linked clones are not supported on storage pods" unless options.key?('storage_pod')
             # cribbed heavily from the rbvmomi clone_vm.rb
             # this chunk of code reconfigures the disk of the clone source to be read only,
             # and then creates a delta disk on top of that, this is required by the API in order to create
@@ -595,110 +562,106 @@ module Fog
             disks = vm_mob_ref.config.hardware.device.select do |vm_device|
               vm_device.class == RbVmomi::VIM::VirtualDisk
             end
-            disks.select { |vm_device| vm_device.backing.parent.nil? }.each do |disk|
+            disks.select{|vm_device| vm_device.backing.parent == nil}.each do |disk|
               disk_spec = {
-                deviceChange: [
+                :deviceChange => [
                   {
-                    operation: :remove,
-                    device: disk
+                    :operation => :remove,
+                    :device => disk
                   },
                   {
-                    operation: :add,
-                    fileOperation: :create,
-                    device: disk.dup.tap do |disk_backing|
-                      disk_backing.backing = disk_backing.backing.dup
-                      disk_backing.backing.fileName = "[#{disk.backing.datastore.name}]"
+                    :operation => :add,
+                    :fileOperation => :create,
+                    :device => disk.dup.tap{|disk_backing|
+                      disk_backing.backing = disk_backing.backing.dup;
+                      disk_backing.backing.fileName = "[#{disk.backing.datastore.name}]";
                       disk_backing.backing.parent = disk.backing
-                    end
+                    }
                   }
                 ]
               }
-              vm_mob_ref.ReconfigVM_Task(spec: disk_spec).wait_for_completion
+              vm_mob_ref.ReconfigVM_Task(:spec => disk_spec).wait_for_completion
             end
             # Next, create a Relocation Spec instance
-            relocation_spec = RbVmomi::VIM.VirtualMachineRelocateSpec(datastore: datastore_obj,
-                                                                      pool: resource_pool,
-                                                                      host: host,
-                                                                      diskMoveType: :moveChildMostDiskBacking)
+            relocation_spec = RbVmomi::VIM.VirtualMachineRelocateSpec(:datastore => datastore_obj,
+                                                                      :pool => resource_pool,
+                                                                      :host => host,
+                                                                      :diskMoveType => :moveChildMostDiskBacking)
           else
-            relocation_spec = RbVmomi::VIM.VirtualMachineRelocateSpec(pool: resource_pool,
-                                                                      host: host,
-                                                                      transform: options['transform'] || 'sparse')
-            unless options.key?('storage_pod') && datastore_obj.nil?
+            relocation_spec = RbVmomi::VIM.VirtualMachineRelocateSpec(:pool => resource_pool,
+                                                                      :host => host,
+                                                                      :transform => options['transform'] || 'sparse')
+            unless options.key?('storage_pod') and datastore_obj.nil?
               relocation_spec[:datastore] = datastore_obj
             end
           end
-          # relocate templates is not supported by fog-vsphere when vm is cloned on a storage pod
-          unless options.key?('storage_pod')
-            relocation_spec[:disk] = relocate_template_volumes_specs(vm_mob_ref, options['volumes'], options['datacenter'])
-          end
           # And the clone specification
-          clone_spec = RbVmomi::VIM.VirtualMachineCloneSpec(location: relocation_spec,
-                                                            config: virtual_machine_config_spec,
-                                                            customization: customization_spec,
-                                                            powerOn: options.key?('power_on') ? options['power_on'] : true,
-                                                            template: false)
+          clone_spec = RbVmomi::VIM.VirtualMachineCloneSpec(:location => relocation_spec,
+                                                            :config => virtual_machine_config_spec,
+                                                            :customization => customization_spec,
+                                                            :powerOn  => options.key?('power_on') ? options['power_on'] : true,
+                                                            :template => false)
 
           # Perform the actual Clone Task
           # Clone VM on a storage pod
-          if options.key?('storage_pod') && !options['storage_pod'].nil?
-            raise ArgumentError, 'need to use at least vsphere revision 5.0 or greater to use storage pods' unless @vsphere_rev.to_f >= 5
-            pod_spec = RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
-              storagePod: get_raw_storage_pod(options['storage_pod'], options['datacenter'])
+          if options.key?('storage_pod') and !options['storage_pod'].nil?
+            raise ArgumentError, "need to use at least vsphere revision 5.0 or greater to use storage pods" unless @vsphere_rev.to_f >= 5
+            pod_spec     = RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
+              :storagePod => get_raw_storage_pod(options['storage_pod'], options['datacenter']),
             )
             storage_spec = RbVmomi::VIM::StoragePlacementSpec.new(
-              type: 'clone',
-              folder: dest_folder,
-              resourcePool: resource_pool,
-              podSelectionSpec: pod_spec,
-              cloneSpec: clone_spec,
-              cloneName: options['name'],
-              vm: vm_mob_ref
+              :type => 'clone',
+              :folder => dest_folder,
+              :resourcePool => resource_pool,
+              :podSelectionSpec => pod_spec,
+              :cloneSpec => clone_spec,
+              :cloneName => options['name'],
+              :vm => vm_mob_ref,
             )
-            srm = connection.serviceContent.storageResourceManager
-            result = srm.RecommendDatastores(storageSpec: storage_spec)
+            srm = @connection.serviceContent.storageResourceManager
+            result = srm.RecommendDatastores(:storageSpec => storage_spec)
 
             # if result array contains recommendation, we can apply it
             if key = result.recommendations.first.key
-              task = srm.ApplyStorageDrsRecommendation_Task(key: [key])
-              if options.fetch('wait', true)
+              task = srm.ApplyStorageDrsRecommendation_Task(:key => [key])
+              if options.fetch('wait', true) then
                 result = task.wait_for_completion
                 new_vm = result.vm
               else
                 new_vm = nil
-                Fog.wait_for(150, 15) do
+                Fog.wait_for(150, 15) {
                   begin
-                    (new_vm = dest_folder.find(options['name'], RbVmomi::VIM::VirtualMachine)) || raise(Fog::Vsphere::Errors::NotFound)
+                    new_vm = dest_folder.find(options['name'], RbVmomi::VIM::VirtualMachine) or raise Fog::Vsphere::Errors::NotFound
                   rescue Fog::Vsphere::Errors::NotFound
                     new_vm = nil
                   end
-                end
+                }
                 raise Fog::Vsphere::Errors::NotFound unless new_vm
               end
             end
           else
-            task = vm_mob_ref.CloneVM_Task(folder: dest_folder,
-                                           name: options['name'],
-                                           spec: clone_spec)
+            task = vm_mob_ref.CloneVM_Task(:folder => dest_folder,
+                                         :name => options['name'],
+                                         :spec => clone_spec)
             # Waiting for the VM to complete allows us to get the VirtulMachine
             # object of the new machine when it's done.  It is HIGHLY recommended
             # to set 'wait' => true if your app wants to wait.  Otherwise, you're
             # going to have to reload the server model over and over which
             # generates a lot of time consuming API calls to vmware.
-            if options.fetch('wait', true)
+            if options.fetch('wait', true) then
               # REVISIT: It would be awesome to call a block passed to this
               # request to notify the application how far along in the process we
               # are.  I'm thinking of updating a progress bar, etc...
               new_vm = task.wait_for_completion
             else
               new_vm = nil
-              Fog.wait_for(150, 15) do
+              Fog.wait_for(150, 15) {
                 begin
-                  (new_vm = dest_folder.find(options['name'], RbVmomi::VIM::VirtualMachine)) || raise(Fog::Vsphere::Errors::NotFound)
+                  new_vm = dest_folder.find(options['name'], RbVmomi::VIM::VirtualMachine) or raise Fog::Vsphere::Errors::NotFound
                 rescue Fog::Vsphere::Errors::NotFound
                   new_vm = nil
                 end
-              end
+              }
               raise Fog::Vsphere::Errors::NotFound unless new_vm
             end
           end
@@ -714,71 +677,52 @@ module Fog
         # Build up the network config spec for simple case:
         # simple case: apply just the network_label, nic_type and network_adapter_device_key
         def modify_template_nics_simple_spec(network_label, nic_type, network_adapter_device_key, datacenter)
-          config_spec_operation = RbVmomi::VIM::VirtualDeviceConfigSpecOperation('edit')
-          # Get the portgroup and handle it from there.
-          network = get_raw_network(network_label, datacenter)
-          nic_backing_info = if network.is_a? RbVmomi::VIM::DistributedVirtualPortgroup
-                               # Create the NIC backing for the distributed virtual portgroup
-                               RbVmomi::VIM::VirtualEthernetCardDistributedVirtualPortBackingInfo(
-                                 port: RbVmomi::VIM::DistributedVirtualSwitchPortConnection(
-                                   portgroupKey: network.key,
-                                   switchUuid: network.config.distributedVirtualSwitch.uuid
-                                 )
-                               )
-                             else
-                               # Otherwise it's a non distributed port group
-                               RbVmomi::VIM::VirtualEthernetCardNetworkBackingInfo(deviceName: network_label)
-                             end
-          connectable = RbVmomi::VIM::VirtualDeviceConnectInfo(
-            allowGuestControl: true,
-            connected: true,
-            startConnected: true
-          )
-          device = RbVmomi::VIM.public_send nic_type.to_s,
-                                            backing: nic_backing_info,
-                                            deviceInfo: RbVmomi::VIM::Description(label: 'Network adapter 1', summary: network_label),
-                                            key: network_adapter_device_key,
-                                            connectable: connectable
-          device_spec = RbVmomi::VIM::VirtualDeviceConfigSpec(
-            operation: config_spec_operation,
-            device: device
-          )
-          device_spec
+            config_spec_operation = RbVmomi::VIM::VirtualDeviceConfigSpecOperation('edit')
+            # Get the portgroup and handle it from there.
+            network = get_raw_network(network_label, datacenter)
+            if ( network.kind_of? RbVmomi::VIM::DistributedVirtualPortgroup)
+                # Create the NIC backing for the distributed virtual portgroup
+                nic_backing_info = RbVmomi::VIM::VirtualEthernetCardDistributedVirtualPortBackingInfo(
+                    :port => RbVmomi::VIM::DistributedVirtualSwitchPortConnection( 
+                                                                                  :portgroupKey => network.key,
+                                                                                  :switchUuid => network.config.distributedVirtualSwitch.uuid
+                                                                                 ) 
+                )
+            else
+                # Otherwise it's a non distributed port group
+                nic_backing_info = RbVmomi::VIM::VirtualEthernetCardNetworkBackingInfo(:deviceName => network_label)
+            end
+            connectable = RbVmomi::VIM::VirtualDeviceConnectInfo(
+              :allowGuestControl => true,
+              :connected => true,
+              :startConnected => true)
+            device = RbVmomi::VIM.public_send "#{nic_type}",
+              :backing => nic_backing_info,
+              :deviceInfo => RbVmomi::VIM::Description(:label => "Network adapter 1", :summary => network_label),
+              :key => network_adapter_device_key,
+              :connectable => connectable
+            device_spec = RbVmomi::VIM::VirtualDeviceConfigSpec(
+              :operation => config_spec_operation,
+              :device => device)
+            return device_spec
         end
 
-        def modify_template_nics_specs(vm_mob_ref, nics, datacenter)
-          specs = []
-          template_nics = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualEthernetCard)
-          modified_nics = nics.take(template_nics.size)
-          new_nics      = nics.drop(template_nics.size)
 
-          template_nics.zip(modified_nics).each do |template_nic, new_nic|
-            if new_nic
-              backing = create_nic_backing(new_nic, datacenter: datacenter)
-              template_nic.backing = backing
-              template_nic.addressType = 'generated'
-              template_nic.macAddress = nil
-              connectable = RbVmomi::VIM::VirtualDeviceConnectInfo(
-                allowGuestControl: true,
-                connected: true,
-                startConnected: true
-              )
-              template_nic.connectable = connectable
-              specs << {
-                operation: :edit,
-                device: template_nic
-              }
-            else
-              interface = Fog::Compute::Vsphere::Interface.new(raw_to_hash(template_nic))
-              specs << create_interface(interface, interface.key, :remove, datacenter: datacenter)
-            end
+        def modify_template_nics_specs(template_path, new_nics, datacenter)
+          template_nics = list_vm_interfaces(template_path, datacenter).map do |old_attributes|
+            Fog::Compute::Vsphere::Interface.new(old_attributes)
+          end
+          specs = []
+
+          template_nics.each do |interface|
+            specs << create_interface(interface, interface.key, :remove, :datacenter => datacenter)
           end
 
           new_nics.each do |interface|
-            specs << create_interface(interface, 0, :add, datacenter: datacenter)
+            specs << create_interface(interface, 0, :add, :datacenter => datacenter)
           end
 
-          specs
+          return specs
         end
 
         def modify_template_volumes_specs(vm_mob_ref, volumes)
@@ -796,28 +740,15 @@ module Fog
               end
               template_volume.backing.diskMode = new_volume.mode
               template_volume.backing.thinProvisioned = new_volume.thin
-              specs << { operation: :edit, device: template_volume }
+              specs << { :operation => :edit, :device  => template_volume }
             else
-              specs << { operation: :remove,
-                         fileOperation: :destroy,
-                         device: template_volume }
+              specs << { :operation => :remove,
+                         :fileOperation => :destroy,
+                         :device  => template_volume }
             end
           end
-          specs.concat(new_volumes.map { |volume| create_disk(volume) })
-          specs
-        end
-
-        def relocate_template_volumes_specs(vm_mob_ref, volumes, datacenter)
-          template_volumes = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualDisk)
-          modified_volumes = volumes.take(template_volumes.size)
-
-          specs = []
-          template_volumes.zip(modified_volumes).each do |template_volume, new_volume|
-            if new_volume && new_volume.datastore && new_volume.datastore != template_volume.backing.datastore.name
-              specs << { diskId: template_volume.key, datastore: get_raw_datastore(new_volume.datastore, datacenter) }
-            end
-          end
-          specs
+          specs.concat(new_volumes.map { |volume| create_disk(volume, volumes.index(volume)) })
+          return specs
         end
       end
 
@@ -826,23 +757,25 @@ module Fog
         def vm_clone(options = {})
           # Option handling TODO Needs better method of checking
           options = vm_clone_check_options(options)
-          notfound = -> { raise Fog::Compute::Vsphere::NotFound, 'Could not find VM template' }
+          notfound = lambda { raise Fog::Compute::Vsphere::NotFound, "Could not find VM template" }
           template = list_virtual_machines.find(notfound) do |vm|
-            vm['name'] == options['template_path'].split('/')[-1]
+            vm['name'] == options['template_path'].split("/")[-1]
           end
 
           # generate a random id
-          id = [8, 4, 4, 4, 12].map { |i| Fog::Mock.random_hex(i) }.join('-')
-          new_vm = template.clone.merge('name' => options['name'],
-                                        'id' => id,
-                                        'instance_uuid' => id,
-                                        'path' => "/Datacenters/#{options['datacenter']}/#{options['dest_folder'] ? options['dest_folder'] + '/' : ''}#{options['name']}")
-          data[:servers][id] = new_vm
+          id = [8,4,4,4,12].map{|i| Fog::Mock.random_hex(i)}.join("-")
+          new_vm = template.clone.merge({
+            "name" => options['name'],
+            "id" => id,
+            "instance_uuid" => id,
+            "path" => "/Datacenters/#{options['datacenter']}/#{options['dest_folder'] ? options['dest_folder']+"/" : ""}#{options['name']}"
+          })
+          self.data[:servers][id] = new_vm
 
           {
             'vm_ref'   => "vm-#{Fog::Mock.random_numbers(3)}",
             'new_vm'   => new_vm,
-            'task_ref' => "task-#{Fog::Mock.random_numbers(4)}"
+            'task_ref' => "task-#{Fog::Mock.random_numbers(4)}",
           }
         end
       end

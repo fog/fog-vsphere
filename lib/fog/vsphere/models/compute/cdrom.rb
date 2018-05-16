@@ -5,14 +5,14 @@ module Fog
         identity :key
 
         attribute :filename
-        attribute :name, default: 'CD-/DVD-ROM Drive'
+        attribute :name, :default => "CD-/DVD-ROM Drive"
         attribute :controller_key
         attribute :unit_number
         attribute :start_connected
         attribute :allow_guest_control
         attribute :connected
 
-        has_one_identity :server, :servers, aliases: :instance_uuid
+        has_one_identity :server, :servers, :aliases => :instance_uuid
 
         def to_s
           name
@@ -29,17 +29,17 @@ module Fog
           requires :instance_uuid
 
           if unit_number.nil?
-            used_unit_numbers = server.cdroms.map(&:unit_number)
+            used_unit_numbers = server.cdroms.map { |cdrom| cdrom.unit_number }
             max_unit_number = used_unit_numbers.max
 
-            self.unit_number = if max_unit_number > server.cdroms.size
-                                 # If the max ID exceeds the number of cdroms, there must be a hole in the range. Find a hole and use it.
-                                 max_unit_number.times.to_a.find { |i| used_unit_numbers.exclude?(i) }
-                               else
-                                 max_unit_number + 1
-                               end
+            if max_unit_number > server.cdroms.size
+              # If the max ID exceeds the number of cdroms, there must be a hole in the range. Find a hole and use it.
+              self.unit_number = max_unit_number.times.to_a.find { |i| used_unit_numbers.exclude?(i) }
+            else
+              self.unit_number = max_unit_number + 1
+            end
           else
-            if server.cdroms.any? { |cdrom| cdrom.unit_number == unit_number && cdrom.id != id }
+            if server.cdroms.any? { |cdrom| cdrom.unit_number == self.unit_number && cdrom.id != self.id }
               raise "A cdrom already exists with that unit_number, so we can't save the new cdrom"
             end
           end

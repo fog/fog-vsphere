@@ -13,13 +13,13 @@ module Fog
         # Pass :recursive => true to get a Servers object that searches for VM names recursively
         def vms(options = {})
           return [] if type.to_s != 'vm'
-          service.servers(folder: path, datacenter: datacenter, recursive: options[:recursive])
+          service.servers(:folder => path, :datacenter => datacenter, :recursive => options[:recursive])
         end
 
         def to_s
           name
         end
-
+        
         def destroy
           service.folder_destroy(path, datacenter)
         end

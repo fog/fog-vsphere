@@ -13,7 +13,7 @@ class Vsphere < Fog::Bin
       @@connections ||= Hash.new do |hash, key|
         hash[key] = case key
                     when :compute
-                      Fog::Compute.new(provider: 'Vsphere')
+                      Fog::Compute.new(:provider => 'Vsphere')
                     else
                       raise ArgumentError, "Unrecognized service: #{key.inspect}"
                     end

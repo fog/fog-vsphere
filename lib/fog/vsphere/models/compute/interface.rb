@@ -5,12 +5,11 @@ module Fog
         SAVE_MUTEX = Mutex.new
 
         identity :mac
-        alias id mac
+        alias_method :id, :mac
 
         attribute :network
         attribute :name
         attribute :status
-        attribute :connected
         attribute :summary
         attribute :type
         attribute :key
@@ -21,12 +20,12 @@ module Fog
           # Assign server first to prevent race condition with persisted?
           self.server_id = attributes.delete(:server_id)
 
-          if attributes.key? :type
-            if attributes[:type].is_a? String
-              attributes[:type] = Fog::Vsphere.class_from_string(attributes[:type], 'RbVmomi::VIM')
+          if attributes.key? :type then
+            if attributes[:type].is_a? String then
+              attributes[:type] = Fog::Vsphere.class_from_string(attributes[:type], "RbVmomi::VIM")
             end
           else
-            attributes[:type] = Fog::Vsphere.class_from_string('VirtualE1000', 'RbVmomi::VIM')
+            attributes[:type] = Fog::Vsphere.class_from_string("VirtualE1000", "RbVmomi::VIM")
           end
 
           super defaults.merge(attributes)
@@ -44,11 +43,11 @@ module Fog
         def destroy
           requires :server_id, :key, :type
 
-          service.destroy_vm_interface(server_id, key: key, type: type)
+          service.destroy_vm_interface(server_id, :key => key, :type => type)
         end
 
         def save
-          raise Fog::Errors::Error, 'Resaving an existing object may create a duplicate' if persisted?
+          raise Fog::Errors::Error.new('Resaving an existing object may create a duplicate') if persisted?
           requires :server_id, :type, :network
 
           # Our approach of finding the newly created interface is rough.  We assume that the :key value always increments
@@ -78,12 +77,12 @@ module Fog
         private
 
         def defaults
-          default_type = Fog.credentials[:default_nic_type] || RbVmomi::VIM::VirtualE1000
+          default_type=Fog.credentials[:default_nic_type] || RbVmomi::VIM::VirtualE1000
           {
-            name: 'Network adapter',
-            network: 'VM Network',
-            summary: 'VM Network',
-            type: Fog::Vsphere.class_from_string(default_type, 'RbVmomi::VIM')
+            :name=>"Network adapter",
+            :network=>"VM Network",
+            :summary=>"VM Network",
+            :type=> Fog::Vsphere.class_from_string(default_type, "RbVmomi::VIM"),
           }
         end
       end

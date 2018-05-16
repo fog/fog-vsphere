@@ -5,7 +5,7 @@ module Fog
   module Compute
     class Vsphere
       class Snapshots < Fog::Collection
-        attribute :server_id, alias: :instance_uuid
+        attribute :server_id, :alias => :instance_uuid
         attribute :parent_snapshot
         model Fog::Compute::Vsphere::Snapshot
 
@@ -19,11 +19,7 @@ module Fog
         end
 
         def get(snapshot_ref)
-          all.each do |snapshot|
-            snapshot = snapshot.get_child(snapshot_ref)
-            return snapshot if snapshot
-          end
-          nil
+          all.find { |snapshot| snapshot.get_child(snapshot_ref) }
         end
       end
     end

@@ -4,12 +4,12 @@ module Fog
       class Interfacetype < Fog::Model
         identity :id
 
-        #        attribute :class
+#        attribute :class
         attribute :name
         attribute :datacenter
         attribute :servertype
 
-        def initialize(attributes = {})
+        def initialize(attributes={} )
           super attributes
         end
 
