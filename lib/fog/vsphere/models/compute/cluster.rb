@@ -11,36 +11,36 @@ module Fog
         attribute :overall_status
         attribute :full_path
 
-        def resource_pools(filters = {})
-          attributes[:resource_pools] ||= id.nil? ? [] : service.resource_pools({
-            service: service,
-            cluster: full_path,
-            datacenter: datacenter
-          }.merge(filters))
+        def resource_pools(filters = { })
+          self.attributes[:resource_pools] ||= id.nil? ? [] : service.resource_pools({
+                                                                                          :service => service,
+                                                                                          :cluster    => name,
+                                                                                          :datacenter => datacenter
+                                                                                        }.merge(filters))
         end
 
-        def datastores(filters = {})
-          attributes[:datastores] ||= id.nil? ? [] : service.datastores({
-            service: service,
-            cluster: full_path,
-            datacenter: datacenter
-          }.merge(filters))
+        def datastores(filters = { })
+          self.attributes[:datastores] ||= id.nil? ? [] : service.datastores({
+                                                                                          :service => service,
+                                                                                          :cluster    => name,
+                                                                                          :datacenter => datacenter
+                                                                                        }.merge(filters))
         end
 
-        def networks(filters = {})
-          attributes[:networks] ||= id.nil? ? [] : service.networks({
-            service: service,
-            cluster: full_path,
-            datacenter: datacenter
-          }.merge(filters))
+        def networks(filters = { })
+          self.attributes[:networks] ||= id.nil? ? [] : service.networks({
+                                                                                          :service => service,
+                                                                                          :cluster    => name,
+                                                                                          :datacenter => datacenter
+                                                                                        }.merge(filters))
         end
 
         def rules
-          service.rules(datacenter: datacenter, cluster: full_path)
+          service.rules(:datacenter => datacenter, :cluster => name)
         end
 
         def hosts
-          service.hosts(datacenter: datacenter, cluster: full_path)
+          service.hosts(:datacenter => datacenter, :cluster => name)
         end
 
         def to_s

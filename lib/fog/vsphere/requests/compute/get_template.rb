@@ -8,7 +8,8 @@ module Fog
       end
 
       class Mock
-        def get_template(id, datacenter_name = nil); end
+        def get_template(id, datacenter_name = nil)
+        end
       end
     end
   end

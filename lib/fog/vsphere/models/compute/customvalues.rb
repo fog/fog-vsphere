@@ -8,12 +8,12 @@ module Fog
 
         attr_accessor :vm
 
-        def all(_filters = {})
+        def all(filters = {})
           requires :vm
           case vm
-          when Fog::Compute::Vsphere::Server
-            load service.list_vm_customvalues(vm.id)
-          else
+            when Fog::Compute::Vsphere::Server
+              load service.list_vm_customvalues(vm.id)
+            else
             raise 'customvalues should have vm'
           end
         end
@@ -21,11 +21,11 @@ module Fog
         def get(key)
           requires :vm
           case vm
-          when Fog::Compute::Vsphere::Server
-            load service.list_vm_customvalues(vm.id)
-          else
+            when Fog::Compute::Vsphere::Server
+              load service.list_vm_customvalues(vm.id)
+            else
             raise 'customvalues should have vm'
-          end.find { |cv| cv.key == key }
+          end.find { | cv | cv.key == key }
         end
      end
     end

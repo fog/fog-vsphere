@@ -8,19 +8,19 @@ module Fog
 
         attribute :server_id
 
-        def all(_filters = {})
+        def all(filters = {})
           requires :server_id
 
           case server
-          when Fog::Compute::Vsphere::Server
-            load service.list_vm_interfaces(server.id)
-          when Fog::Compute::Vsphere::Template
-            load service.list_template_interfaces(server.id)
-          else
+            when Fog::Compute::Vsphere::Server
+              load service.list_vm_interfaces(server.id)
+            when Fog::Compute::Vsphere::Template
+              load service.list_template_interfaces(server.id)
+            else
             raise 'interfaces should have vm or template'
           end
 
-          each { |interface| interface.server_id = server.id }
+          self.each { |interface| interface.server_id = server.id }
           self
         end
 
@@ -28,23 +28,25 @@ module Fog
           requires :server_id
 
           case server
-          when Fog::Compute::Vsphere::Server
-            interface = service.get_vm_interface(server.id, key: id, mac: id, name: id)
-          when Fog::Compute::Vsphere::Template
-            interface = service.get_template_interfaces(server.id, key: id, mac: id, name: id)
-          else
+            when Fog::Compute::Vsphere::Server
+              interface = service.get_vm_interface(server.id, :key => id, :mac=> id, :name => id)
+            when Fog::Compute::Vsphere::Template
+              interface = service.get_template_interfaces(server.id, :key => id, :mac=> id, :name => id)
+            else
 
             raise 'interfaces should have vm or template'
           end
 
           if interface
-            Fog::Compute::Vsphere::Interface.new(interface.merge(server_id: server.id, service: service))
+            Fog::Compute::Vsphere::Interface.new(interface.merge(:server_id => server.id, :service => service))
+          else
+            nil
           end
         end
 
         def new(attributes = {})
           if server_id
-            super({ server_id: server_id }.merge(attributes))
+            super({ :server_id => server_id  }.merge(attributes))
           else
             super
           end

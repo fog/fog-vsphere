@@ -1,98 +1,5 @@
-## v2.1.1
-* fixes an issue where networks of type DVPort cannot be listed (#137)
-
-## v2.1.0
-* fixes two issues that broke vm cloning (#134, #135)
-* performance of host listing was improved (#131)
-* networks have a vlan property (#129)
-
-## v2.0.1
-
-* Ensure views are destroyed after use (#122)
-* rescue nil for retrieving vm.config.instanceUuid (#123)
-
-## v2.0.0
-
-* Drop support for ruby versions < 2.0.0
-* Fix regex issue when folder contains the datacenter name (#120)
-* add more attributes to host model (#119)
-* Fixes listing resource pools for clusters nested in folders (#118)
-* Add requests to host (#116)
-* Fix interface code in VM clone (#115)
-
-## v1.13.1
-
-* Fix typo of local variable name in clone operation (#114)
-
-## v1.13.0
-
-* Add ability to change boot order on VM clone (#110)
-* Support cloning volumes in different datastore (#107)
-* Add ability to generate new mac addresses on VM clone (#109)
-* Fix list_compute_resources error when folder nested inside datacenter level (#100)
-* Updated list_clusters to have an optional param or allow filtering on datacenter (#102)
-* Add check option for vm_migrate
-* Add vm_relocate request
-
-## v1.12.0
-
-* Add existing state validation for power on/off requests
-* Add ability for server to acquire WebMKS ticket
-
-## v1.11.3
-
-* Fix issue when cloning and interface is in boot order
-* Add connected attribute to interface
-
-## v1.11.2
-
-* Prevent failing when cloning from template to different cluster
-
-## v1.11.1
-
-* Use key to identify dvPort Group
-
-## v1.11.0
-
-* Add ability to query subresource pools
-* Fix `snapshots.get(id)` when no snapshot is found
-* Add `vm_remove_snapshot` request, use in `snapshot.destroy`
-* Fix `snapshots.get` for non-root snapshot
-* Add `vm_revert_snapshot` request and `revert` method to `snapshot`
-
-## v1.10.0
-
-* Add request to rename VM
-
-## v1.9.2
-
-* Properly escape regex characters in DC names for `list_clusters`
-
-## v1.9.1
-
-* Ensure connection has not been closed before using
-
-## v1.9.0
-
-* Add :connectable option to `update_vm_interface`
-* Add ability to detach volume from VM
-
-## v1.8.0
-
-* Add `suspend` to server model
-* Add `vm_suspend` to compute request
-
-## v1.7.1
-
-* Send all options to VM migrate request
-* Fix VM clone with resource pool
-* Remove obsolete index argument to create_disk call
-* Fix error when creating volume using the wrong key name
-
 ## v1.7.0
 
-* Update volumes when `save` is called on Server
-* Add the ability to update the size of attached virtual disks
 * Improve mocks for folders and networks
 
 ## v1.6.0
@@ -105,17 +12,15 @@
 
 ## v1.5.1
 
-* Move volume key generation to volume model
-* Set defaults more reliably for SCSI
+* Removed for hotfix
 
 ## v1.5.0
 
 * Rename the get_spec method in create_rule to get_group_spec
-* Change modify_vm_controller to follow changes made to create_controller
 
 ## v1.4.0
 
-* Add ability for VMs to have multiple SCSI controllers
+* Removed for hotfix
 
 ## v1.3.0
 

@@ -4,11 +4,11 @@ module Fog
       class Real
         def set_vm_customvalue(vm_id, key, value)
           vm_ref = get_vm_ref(vm_id)
-          vm_ref.setCustomValue(key: key, value: value)
+          vm_ref.setCustomValue(:key => key, :value => value)
         end
       end
       class Mock
-        def set_vm_customvalue(_vm_id, _key, _value)
+        def set_vm_customvalue(vm_id, key, value)
           nil
         end
       end

@@ -8,7 +8,7 @@ module Fog
         attr_accessor :datacenter, :cluster
 
         def all(filters = {})
-          load service.list_resource_pools(filters.merge(datacenter: datacenter, cluster: cluster))
+          load service.list_resource_pools(filters.merge(:datacenter => datacenter, :cluster => cluster))
         end
 
         def get(id)

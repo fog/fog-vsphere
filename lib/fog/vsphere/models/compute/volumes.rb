@@ -8,19 +8,19 @@ module Fog
 
         model Fog::Compute::Vsphere::Volume
 
-        def all(_filters = {})
+        def all(filters = {})
           requires :server_id
 
           case server
-          when Fog::Compute::Vsphere::Server
-            load service.list_vm_volumes(server.id)
-          when Fog::Compute::Vsphere::Template
-            load service.list_template_volumes(server.id)
-          else
-            raise 'volumes should have vm or template'
+            when Fog::Compute::Vsphere::Server
+              load service.list_vm_volumes(server.id)
+            when Fog::Compute::Vsphere::Template
+              load service.list_template_volumes(server.id)
+            else
+              raise 'volumes should have vm or template'
             end
 
-          each { |volume| volume.server = server }
+          self.each { |volume| volume.server_id = server.id }
           self
         end
 
@@ -31,9 +31,9 @@ module Fog
         def new(attributes = {})
           if server_id
             # Default to the root volume datastore if one is not configured.
-            datastore = !attributes.key?(:datastore) && any? ? first.datastore : nil
+            datastore = ! attributes.key?(:datastore) && self.any? ? self.first.datastore : nil
 
-            super({ server_id: server_id, datastore: datastore }.merge!(attributes))
+            super({ :server_id => server_id, :datastore => datastore }.merge!(attributes))
           else
             super
           end

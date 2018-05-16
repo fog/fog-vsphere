@@ -4,7 +4,7 @@ module Fog
       class Real
         def revert_to_snapshot(snapshot)
           unless Snapshot === snapshot
-            raise ArgumentError, 'snapshot is a required parameter'
+            fail ArgumentError, 'snapshot is a required parameter'
           end
 
           task = snapshot.mo_ref.RevertToSnapshot_Task
@@ -18,7 +18,7 @@ module Fog
 
       class Mock
         def revert_to_snapshot(snapshot)
-          raise ArgumentError, 'snapshot is a required parameter' if snapshot.nil?
+          fail ArgumentError, 'snapshot is a required parameter' if snapshot.nil?
 
           {
             'state' => 'success'

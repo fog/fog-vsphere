@@ -11,16 +11,19 @@ module Fog
         protected
 
         def get_raw_datastore(name, datacenter_name)
-          get_raw_datastores(datacenter_name).detect { |ds| ds.name == name }
-        end
+          dc = find_raw_datacenter(datacenter_name)
 
-        def get_raw_datastores(datacenter_name)
-          list_container_view(datacenter_name, 'Datastore', :datastoreFolder)
+          @connection.serviceContent.viewManager.CreateContainerView({
+            :container  => dc.datastoreFolder,
+            :type       =>  ["Datastore"],
+            :recursive  => true
+          }).view.select{|ds| ds.name == name}.first
         end
       end
 
       class Mock
-        def get_datastore(name, datacenter_name); end
+        def get_datastore(name, datacenter_name)
+        end
       end
     end
   end

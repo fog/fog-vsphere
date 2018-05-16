@@ -2,13 +2,13 @@ module Fog
   module Compute
     class Vsphere
       class Real
-        def list_datastores(filters = {})
+        def list_datastores(filters = { })
           datacenter_name = filters[:datacenter]
           cluster_name = filters.fetch(:cluster, nil)
           # default to show all datastores
           only_active = filters[:accessible] || false
           raw_datastores(datacenter_name, cluster_name).map do |datastore|
-            next if only_active && !datastore.summary.accessible
+            next if only_active and !datastore.summary.accessible
             datastore_attributes(datastore, datacenter_name)
           end.compact
         end
@@ -20,19 +20,18 @@ module Fog
             get_raw_cluster(cluster, datacenter_name).datastore
           end
         end
-
         protected
 
-        def datastore_attributes(datastore, datacenter)
+        def datastore_attributes datastore, datacenter
           {
-            id: managed_obj_id(datastore),
-            name: datastore.name,
-            accessible: datastore.summary.accessible,
-            type: datastore.summary.type,
-            freespace: datastore.summary.freeSpace,
-            capacity: datastore.summary.capacity,
-            uncommitted: datastore.summary.uncommitted,
-            datacenter: datacenter
+            :id          => managed_obj_id(datastore),
+            :name        => datastore.name,
+            :accessible  => datastore.summary.accessible,
+            :type        => datastore.summary.type,
+            :freespace   => datastore.summary.freeSpace,
+            :capacity    => datastore.summary.capacity,
+            :uncommitted => datastore.summary.uncommitted,
+            :datacenter  => datacenter,
           }
         end
       end
@@ -41,11 +40,11 @@ module Fog
           datacenter_name = filters[:datacenter]
           cluster_name = filters.fetch(:cluster, nil)
           if cluster_name.nil?
-            data[:datastores].values.select { |d| d['datacenter'] == datacenter_name } ||
-              raise(Fog::Compute::Vsphere::NotFound)
+            self.data[:datastores].values.select { |d| d['datacenter'] == datacenter_name } or
+              raise Fog::Compute::Vsphere::NotFound
           else
-            data[:datastores].values.select { |d| d['datacenter'] == datacenter_name && d['cluster'].include?(cluster_name) } ||
-              raise(Fog::Compute::Vsphere::NotFound)
+            self.data[:datastores].values.select { |d| d['datacenter'] == datacenter_name && d['cluster'].include?(cluster_name) } or
+              raise Fog::Compute::Vsphere::NotFound
           end
         end
       end

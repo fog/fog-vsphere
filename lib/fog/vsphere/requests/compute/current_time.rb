@@ -3,7 +3,7 @@ module Fog
     class Vsphere
       class Real
         def current_time
-          current_time = connection.serviceInstance.CurrentTime
+          current_time = @connection.serviceInstance.CurrentTime
           { 'current_time' => current_time }
         end
       end
