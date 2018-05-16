@@ -295,14 +295,10 @@ module Fog
         def save
           requires :name, :cluster, :datacenter
           if persisted?
-            vm_rename if attribute_changed?(:name)
-            vm_reconfig_cpus if attribute_changed?(:cpus) || attribute_changed?(:corespersocket)
-            vm_reconfig_memory if attribute_changed?(:memory_mb)
-            vm_reconfig_volumes if attribute_changed?(:volumes)
+            service.update_vm(self)
           else
             self.id = service.create_vm(attributes)
           end
-          @old = nil
           reload
         end
 
@@ -373,14 +369,6 @@ module Fog
               Fog::Compute::Vsphere::SCSIController.new
             ]
           end
-        end
-
-        def attribute_changed?(attr)
-          attributes.reject { |k, v| old.attributes[k] == v }.key?(attr)
-        end
-
-        def old
-          @old ||= dup.reload
         end
       end
     end

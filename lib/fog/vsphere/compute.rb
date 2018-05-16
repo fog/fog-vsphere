@@ -83,6 +83,7 @@ module Fog
       request :get_folder
       request :list_folders
       request :create_vm
+      request :update_vm
       request :list_vm_interfaces
       request :modify_vm_interface
       request :modify_vm_volume
