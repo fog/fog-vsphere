@@ -28,16 +28,15 @@ module Fog
           when String
             # only the one will do
             proc do |n|
-              (n.name == name) &&
-                (n.class.to_s == 'DistributedVirtualPortgroup') &&
+              n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && (n.name == name || n.key == name) &&
                 (n.config.distributedVirtualSwitch.name == distributedswitch)
             end
           when :dvs
             # the first distributed virtual switch will do - selected by network - gives control to vsphere
-            proc { |n| (n.name == name) && (n.class.to_s == 'DistributedVirtualPortgroup') }
+            proc { |n| (n.name == name || n.key == name) && (n.class.to_s == 'DistributedVirtualPortgroup') }
           else
             # the first matching network will do, seems like the non-distributed networks come first
-            proc { |n| (n.name == name) }
+            proc { |n| (n.name == name || (n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && n.key == name)) }
           end
         end
       end
