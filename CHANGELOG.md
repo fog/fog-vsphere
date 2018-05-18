@@ -1,3 +1,7 @@
+## v2.2.0
+* vm interface updating needs a datacenter as option (#140)
+* improve vm saving to use a single api call and support network changes (#142)
+
 ## v2.1.1
 * fixes an issue where networks of type DVPort cannot be listed (#137)
 
