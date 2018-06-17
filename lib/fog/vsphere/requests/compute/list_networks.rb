@@ -7,41 +7,83 @@ module Fog
           cluster_name = filters.fetch(:cluster, nil)
           # default to show all networks
           only_active = filters[:accessible] || false
-          raw_networks(datacenter_name, cluster_name).map do |network|
-            next if only_active && !network.summary.accessible
-            network_attributes(network, datacenter_name)
-          end.compact
-        end
 
-        def raw_networks(datacenter_name, cluster = nil)
-          if cluster.nil?
-            find_raw_datacenter(datacenter_name).network
-          else
-            get_raw_cluster(cluster, datacenter_name).network
+          dc = find_raw_datacenter(datacenter_name)
+
+          results = property_collector_results(network_filter_spec(dc))
+
+          dvswitches = results.select { |result| result.obj.is_a?(RbVmomi::VIM::DistributedVirtualSwitch) }.each_with_object({}) do |dvswitch, obj|
+            obj[dvswitch.obj._ref] = dvswitch['summary.name']
           end
+
+          if cluster_name
+            only_cluster = true
+            cluster = get_raw_cluster(cluster_name, datacenter_name)
+            cluster_networks = cluster.network.map(&:_ref)
+          end
+
+          results.select { |result| result.obj.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) || result.obj.is_a?(RbVmomi::VIM::Network) }.map do |network|
+            next if cluster_name && !cluster_networks.include?(network.obj._ref)
+            next if only_active && !network['summary.accessible']
+            if network.obj.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup)
+              map_attrs_to_hash(network, network_dvportgroup_attribute_mapping).merge(
+                vlanid: raw_network_vlan(network['config.defaultPortConfig']),
+                virtualswitch: dvswitches[network['config.distributedVirtualSwitch']._ref]
+              )
+            else
+              map_attrs_to_hash(network, network_attribute_mapping).merge(
+                id: managed_obj_id(network.obj)
+              )
+            end.merge(
+              datacenter: datacenter_name,
+              _ref: network.obj._ref
+            )
+          end.compact
         end
 
         protected
 
-        def network_attributes(network, datacenter)
-          if network.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup)
-            id = network.key
-            virtualswitch = network.config.distributedVirtualSwitch.name
-            vlanid = raw_network_vlan(network.config.defaultPortConfig)
-          else
-            id = managed_obj_id(network)
-            virtualswitch = nil
-            vlanid = nil
-          end
-          {
-            id: id,
-            name: network.name,
-            accessible: network.summary.accessible,
-            datacenter: datacenter,
-            virtualswitch: virtualswitch,
-            vlanid: vlanid
-          }
+        def network_attribute_mapping
+           {
+             name: 'name',
+             accessible: 'summary.accessible'
+           }
         end
+
+        def network_dvportgroup_attribute_mapping
+          network_attribute_mapping.merge(
+            id: 'config.key'
+          )
+        end
+
+        def folder_traversal_spec
+          RbVmomi::VIM.TraversalSpec(
+            :name => 'FolderTraversalSpec',
+            :type => 'Folder',
+            :path => 'childEntity',
+            :skip => false,
+            :selectSet => [
+              RbVmomi::VIM.SelectionSpec(:name => 'FolderTraversalSpec')
+            ]
+          )
+        end
+
+        def network_filter_spec(obj)
+         RbVmomi::VIM.PropertyFilterSpec(
+           :objectSet => [
+             :obj => obj.networkFolder,
+             :skip => true,
+             :selectSet => [
+               folder_traversal_spec
+             ]
+           ],
+           :propSet => [
+             { :type => 'DistributedVirtualSwitch', :pathSet => ['summary.name'] },
+             { :type => 'Network', :pathSet => network_attribute_mapping.values },
+             { :type => 'DistributedVirtualPortgroup', :pathSet => network_dvportgroup_attribute_mapping.values + ['config.defaultPortConfig', 'config.distributedVirtualSwitch'] }
+           ]
+         )
+       end
 
         private
 
@@ -59,6 +101,7 @@ module Fog
           end
         end
       end
+
       class Mock
         def list_networks(filters)
           datacenter_name = filters[:datacenter]
