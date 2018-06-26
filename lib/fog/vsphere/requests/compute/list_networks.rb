@@ -17,7 +17,6 @@ module Fog
           end
 
           if cluster_name
-            only_cluster = true
             cluster = get_raw_cluster(cluster_name, datacenter_name)
             cluster_networks = cluster.network.map(&:_ref)
           end
@@ -44,10 +43,10 @@ module Fog
         protected
 
         def network_attribute_mapping
-           {
-             name: 'name',
-             accessible: 'summary.accessible'
-           }
+          {
+            name: 'name',
+            accessible: 'summary.accessible'
+          }
         end
 
         def network_dvportgroup_attribute_mapping
@@ -58,32 +57,32 @@ module Fog
 
         def folder_traversal_spec
           RbVmomi::VIM.TraversalSpec(
-            :name => 'FolderTraversalSpec',
-            :type => 'Folder',
-            :path => 'childEntity',
-            :skip => false,
-            :selectSet => [
-              RbVmomi::VIM.SelectionSpec(:name => 'FolderTraversalSpec')
+            name: 'FolderTraversalSpec',
+            type: 'Folder',
+            path: 'childEntity',
+            skip: false,
+            selectSet: [
+              RbVmomi::VIM.SelectionSpec(name: 'FolderTraversalSpec')
             ]
           )
         end
 
         def network_filter_spec(obj)
-         RbVmomi::VIM.PropertyFilterSpec(
-           :objectSet => [
-             :obj => obj.networkFolder,
-             :skip => true,
-             :selectSet => [
-               folder_traversal_spec
-             ]
-           ],
-           :propSet => [
-             { :type => 'DistributedVirtualSwitch', :pathSet => ['summary.name'] },
-             { :type => 'Network', :pathSet => network_attribute_mapping.values },
-             { :type => 'DistributedVirtualPortgroup', :pathSet => network_dvportgroup_attribute_mapping.values + ['config.defaultPortConfig', 'config.distributedVirtualSwitch'] }
-           ]
-         )
-       end
+          RbVmomi::VIM.PropertyFilterSpec(
+            objectSet: [
+              obj: obj.networkFolder,
+              skip: true,
+              selectSet: [
+                folder_traversal_spec
+              ]
+            ],
+            propSet: [
+              { type: 'DistributedVirtualSwitch', pathSet: ['summary.name'] },
+              { type: 'Network', pathSet: network_attribute_mapping.values },
+              { type: 'DistributedVirtualPortgroup', pathSet: network_dvportgroup_attribute_mapping.values + ['config.defaultPortConfig', 'config.distributedVirtualSwitch'] }
+            ]
+          )
+        end
 
         private
 
