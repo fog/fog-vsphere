@@ -8,9 +8,7 @@ module Fog
             list_datacenters.map { |dc| list_clusters(datacenter: dc[:name]) }.flatten
           else
             raw_clusters(datacenter_name).map do |cluster|
-              if cluster.instance_of? RbVmomi::VIM::ClusterComputeResource
-                cluster_attributes(cluster, datacenter_name)
-              end
+              cluster_attributes(cluster, datacenter_name)
             end.compact
           end
         end
