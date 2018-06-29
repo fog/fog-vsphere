@@ -28,6 +28,7 @@ module Fog
         end
       end
 
+      # rubocop:disable ClassLength
       class Real
         include Shared
 
@@ -803,6 +804,7 @@ module Fog
                          device: template_volume }
             end
           end
+          new_volumes.map { |volume| volume.unit_number = volumes.index(volume) < 7 ? volumes.index(volume) : volumes.index(volume) + 1 }
           specs.concat(new_volumes.map { |volume| create_disk(volume) })
           specs
         end
@@ -821,6 +823,7 @@ module Fog
         end
       end
 
+      # rubocop:enable ClassLength
       class Mock
         include Shared
         def vm_clone(options = {})
