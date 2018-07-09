@@ -1,3 +1,8 @@
+## v2.3.0
+* set volume unit_number when cloning a vm (#151)
+* add unclustered esxi hosts back to cluster selection (#149)
+* reduce the time required to list networks (#145)
+
 ## v2.2.0
 * vm interface updating needs a datacenter as option (#140)
 * improve vm saving to use a single api call and support network changes (#142)
