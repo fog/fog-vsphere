@@ -344,7 +344,14 @@ module Fog
 
         def initialize_volumes
           if attributes[:volumes] && attributes[:volumes].is_a?(Array)
-            attributes[:volumes].map! { |vol| vol.is_a?(Hash) ? service.volumes.new({ server: self }.merge(vol)) : vol }
+            attributes[:volumes].map! do |vol|
+              if vol.is_a?(Hash)
+                service.volumes.new({ server: self }.merge(vol))
+              else
+                vol.server = self
+                vol
+              end
+            end
           end
         end
 
