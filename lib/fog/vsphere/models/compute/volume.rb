@@ -98,6 +98,7 @@ module Fog
         end
 
         def set_unit_number
+          requires :server
           # When adding volumes to vsphere, if our unit_number is 7 or higher, vsphere will increment the unit_number
           # This is due to SCSI ID 7 being reserved for the pvscsi controller
           # When referring to a volume that already added using a unit_id of 7 or higher, we must refer to the actual SCSI ID
