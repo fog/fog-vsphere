@@ -173,7 +173,7 @@ module Fog
             )
           elsif raw_network.is_a? RbVmomi::VIM::OpaqueNetwork
             RbVmomi::VIM.VirtualEthernetCardOpaqueNetworkBackingInfo(
-              opaqueNetworkType: 'nsx.LogicalSwitch',
+              opaqueNetworkType: raw_network.summary.opaqueNetworkType,
               opaqueNetworkId: raw_network.summary.opaqueNetworkId
             )
 
