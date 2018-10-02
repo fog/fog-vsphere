@@ -61,11 +61,19 @@ module Fog
 
         private
 
+        # rubocop:disable Style/ConditionalAssignment
         def raw_to_hash(nic)
+          if nic.backing.respond_to?(:network)
+            network = nic.backing.network.name
+          elsif nic.backing.respond_to?(:port)
+            network = nic.backing.port.portgroupKey
+          else
+            network = nil
+          end
           {
             name: nic.deviceInfo.label,
             mac: nic.macAddress,
-            network: nic.backing.respond_to?('network') ? nic.backing.network.name : nic.backing.port.portgroupKey,
+            network: network,
             status: nic.connectable.status,
             connected: nic.connectable.connected,
             summary: nic.deviceInfo.summary,
@@ -73,6 +81,7 @@ module Fog
             key: nic.key
           }
         end
+        # rubocop:enable Style/ConditionalAssignment
       end
 
       class Mock
