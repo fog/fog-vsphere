@@ -52,7 +52,7 @@ module Fog
             name: folder.name,
             parent: folder.parent.name,
             datacenter: datacenter_name,
-            type: folder_type(folder),
+            type: folder_type(folder.childType),
             path: folder_path(folder)
           }
         end
@@ -61,8 +61,7 @@ module Fog
           '/' + folder.path.map(&:last).join('/')
         end
 
-        def folder_type(folder)
-          types = folder.childType
+        def folder_type(types)
           return :vm        if types.include?('VirtualMachine')
           return :network   if types.include?('Network')
           return :datastore if types.include?('Datastore')
