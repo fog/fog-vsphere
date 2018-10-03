@@ -3,9 +3,9 @@ module Fog
     class Vsphere
       class Real
         def get_datastore(name, datacenter_name)
-          datastore = get_raw_datastore(name, datacenter_name)
+          datastore = list_datastores(datacenter: datacenter_name).detect { |ds| ds[:name] == name }
           raise(Fog::Compute::Vsphere::NotFound) unless datastore
-          datastore_attributes(datastore, datacenter_name)
+          datastore
         end
 
         protected

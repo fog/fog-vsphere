@@ -62,7 +62,7 @@ module Fog
 
         def compute_resource_datastore_traversal_spec
           RbVmomi::VIM.TraversalSpec(
-            name: 'computeResourceHostTraversalSpec',
+            name: 'computeResourceDatastoreTraversalSpec',
             type: 'ComputeResource',
             path: 'datastore',
             skip: false

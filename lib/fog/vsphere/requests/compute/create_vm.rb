@@ -31,7 +31,7 @@ module Fog
                    get_raw_host(attributes[:host], attributes[:cluster], attributes[:datacenter])
                  end
           # if any volume has a storage_pod set, we deploy the vm on a storage pod instead of the defined datastores
-          pod = get_storage_pod(attributes)
+          pod = get_storage_pod_from_volumes(attributes)
           vm = if pod
                  create_vm_on_storage_pod(pod, vm_cfg, vmFolder, resource_pool, attributes[:datacenter], host)
                else
@@ -73,7 +73,7 @@ module Fog
 
         # check if a storage pool is set on any of the volumes and return the first result found or nil
         # return early if vsphere revision is lower than 5 as this is not supported
-        def get_storage_pod(attributes)
+        def get_storage_pod_from_volumes(attributes)
           return unless @vsphere_rev.to_f >= 5
           volume = attributes[:volumes].detect { |volume| !(volume.storage_pod.nil? || volume.storage_pod.empty?) }
           volume.storage_pod if volume
@@ -83,7 +83,7 @@ module Fog
         # by default we prefer to keep it at the same place the (first) vmdk is located
         # if we deploy the vm on a storage pool, we have to return an empty string
         def vm_path_name(attributes)
-          return '' if get_storage_pod(attributes)
+          return '' if get_storage_pod_from_volumes(attributes)
           datastore = attributes[:volumes].first.datastore unless attributes[:volumes].empty?
           datastore ||= 'datastore1'
           "[#{datastore}]"
@@ -100,7 +100,7 @@ module Fog
           end
 
           if (disks = attributes[:volumes])
-            devices << disks.map { |disk| create_disk(disk, :add, storage_pod: get_storage_pod(attributes)) }
+            devices << disks.map { |disk| create_disk(disk, :add, storage_pod: get_storage_pod_from_volumes(attributes)) }
           end
 
           if (cdroms = attributes[:cdroms])

@@ -4,26 +4,45 @@ module Fog
       class Real
         def list_storage_pods(filters = {})
           datacenter_name = filters[:datacenter]
-          raw_storage_pods(datacenter_name).map do |storage_pod|
-            storage_pod_attributes(storage_pod, datacenter_name)
-          end.compact
-        end
 
-        private
+          dc = find_raw_datacenter(datacenter_name)
 
-        def raw_storage_pods(datacenter_name)
-          list_container_view(datacenter_name, 'StoragePod')
+          storage_pods = property_collector_results(storage_pod_filter_spec(dc))
+
+          storage_pods.map do |storage_pod|
+            map_attrs_to_hash(storage_pod, storage_pod_attribute_mapping).merge(
+              datacenter: datacenter_name,
+              id: managed_obj_id(storage_pod.obj)
+            )
+          end
         end
 
         protected
 
-        def storage_pod_attributes(storage_pod, datacenter)
+        def storage_pod_filter_spec(obj)
+          RbVmomi::VIM.PropertyFilterSpec(
+            objectSet: [
+              obj: obj.datastoreFolder,
+              skip: true,
+              selectSet: [
+                folder_traversal_spec
+              ]
+            ],
+            propSet: storage_pod_filter_prop_set
+          )
+        end
+
+        def storage_pod_filter_prop_set
+          [
+            { type: 'StoragePod', pathSet: storage_pod_attribute_mapping.values }
+          ]
+        end
+
+        def storage_pod_attribute_mapping
           {
-            id: managed_obj_id(storage_pod),
-            name: storage_pod.name,
-            freespace: storage_pod.summary.freeSpace,
-            capacity: storage_pod.summary.capacity,
-            datacenter: datacenter
+            name: 'name',
+            freespace: 'summary.freeSpace',
+            capacity: 'summary.capacity'
           }
         end
       end
