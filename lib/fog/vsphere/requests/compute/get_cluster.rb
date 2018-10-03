@@ -10,8 +10,12 @@ module Fog
 
         protected
 
-        def get_raw_cluster(name, datacenter_name)
-          dc = find_raw_datacenter(datacenter_name)
+        def get_raw_cluster(name, datacenter_name_or_obj)
+          dc = if datacenter_name_or_obj.is_a?(String)
+                 find_raw_datacenter(datacenter_name_or_obj)
+               else
+                 datacenter_name_or_obj
+               end
           dc.find_compute_resource(name)
         end
       end

@@ -7,32 +7,76 @@ module Fog
           cluster_name = filters.fetch(:cluster, nil)
           # default to show all datastores
           only_active = filters[:accessible] || false
-          raw_datastores(datacenter_name, cluster_name).map do |datastore|
-            next if only_active && !datastore.summary.accessible
-            datastore_attributes(datastore, datacenter_name)
-          end.compact
-        end
 
-        def raw_datastores(datacenter_name, cluster = nil)
-          if cluster.nil?
-            find_raw_datacenter(datacenter_name).datastore
-          else
-            get_raw_cluster(cluster, datacenter_name).datastore
-          end
+          dc = find_raw_datacenter(datacenter_name)
+
+          datastores = if cluster_name
+                         cluster = get_raw_cluster(cluster_name, dc)
+                         property_collector_results(datastore_cluster_filter_spec(cluster))
+                       else
+                         property_collector_results(datastore_filter_spec(dc))
+                       end
+
+          datastores.map do |datastore|
+            next if only_active && !datastore['summary.accessible']
+            map_attrs_to_hash(datastore, datastore_attribute_mapping).merge(
+              datacenter: datacenter_name,
+              id: managed_obj_id(datastore.obj)
+            )
+          end.compact
         end
 
         protected
 
-        def datastore_attributes(datastore, datacenter)
+        def datastore_filter_spec(obj)
+          RbVmomi::VIM.PropertyFilterSpec(
+            objectSet: [
+              obj: obj.datastoreFolder,
+              skip: true,
+              selectSet: [
+                folder_traversal_spec
+              ]
+            ],
+            propSet: datastore_filter_prop_set
+          )
+        end
+
+        def datastore_cluster_filter_spec(obj)
+          RbVmomi::VIM.PropertyFilterSpec(
+            objectSet: [
+              obj: obj,
+              skip: true,
+              selectSet: [
+                compute_resource_datastore_traversal_spec
+              ]
+            ],
+            propSet: datastore_filter_prop_set
+          )
+        end
+
+        def datastore_filter_prop_set
+          [
+            { type: 'Datastore', pathSet: datastore_attribute_mapping.values }
+          ]
+        end
+
+        def compute_resource_datastore_traversal_spec
+          RbVmomi::VIM.TraversalSpec(
+            name: 'computeResourceHostTraversalSpec',
+            type: 'ComputeResource',
+            path: 'datastore',
+            skip: false
+          )
+        end
+
+        def datastore_attribute_mapping
           {
-            id: managed_obj_id(datastore),
-            name: datastore.name,
-            accessible: datastore.summary.accessible,
-            type: datastore.summary.type,
-            freespace: datastore.summary.freeSpace,
-            capacity: datastore.summary.capacity,
-            uncommitted: datastore.summary.uncommitted,
-            datacenter: datacenter
+            name: 'summary.name',
+            accessible: 'summary.accessible',
+            type: 'summary.type',
+            freespace: 'summary.freeSpace',
+            capacity: 'summary.capacity',
+            uncommitted: 'summary.uncommitted'
           }
         end
       end
