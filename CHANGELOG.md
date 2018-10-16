@@ -1,3 +1,12 @@
+## v2.4.0
+* improve folder loading performance (#158)
+* improve storage pod loading performance (#160)
+* improve datastore loading performance (#159)
+* prevent hard fail on undefined legacy networks (#157)
+* add support to create vms on NSX-T networks (#153)
+* set the server for fog volume objects (#152)
+* add server guard to unit_number calculation (#152)
+
 ## v2.3.0
 * set volume unit_number when cloning a vm (#151)
 * add unclustered esxi hosts back to cluster selection (#149)
