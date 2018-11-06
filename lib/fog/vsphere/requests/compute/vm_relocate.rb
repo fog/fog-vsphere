@@ -2,22 +2,24 @@ module Fog
   module Compute
     class Vsphere
       class Real
-        # Clones a VM from a template or existing machine on your vSphere
-        # Server.
+        # Relocates a VM to different host or datastore.
         #
         # ==== Parameters
         # * options<~Hash>:
         #   * 'instance_uuid'<~String> - *REQUIRED* VM to relocate
-        #   * 'host'<~Array> - name of host and cluster which will run
-        #     the VM. Only works with clusters within same datacenter
-        #     as where vm is running.
-        #     Example: ['cluster_name_here','host_name_here']
+        #   * 'host'<~String> - name of host which will run the VM.
+        #   * 'cluster'<~String> - name of cluster where host is.
+        #     Only works with clusters within same datacenter as
+        #     where vm is running. Defaults to vm's host's cluster.
+        #   * 'datacenter'<~String> - name of datacenter where host is.
+        #     It must be same datacenter as where vm is running.
+        #     Defaults to vm's datacenter.
         #   * 'datastore'<~String> - name of datastore where VM will
-        #     located.
-        #   * 'resource_pool'<~Array> - The resource pool on your datacenter
+        #     be located.
+        #   * 'resource_pool'<~String> - The resource pool on your datacenter
         #     cluster you want to use. Only works with clusters within same
         #     datacenter as where vm is running.
-        #     Example: ['cluster_name_here','resource_pool_name_here']
+        #     Example: 'resource_pool_name_here'
         #   * 'disks'<~Array> - disks to relocate. Each disk is a
         #     hash with diskId wich is key attribute of volume,
         #     and datastore to relocate to. diskBackingInfo can be provided,
@@ -38,18 +40,16 @@ module Fog
             raise Fog::Vsphere::Errors::NotFound,
                   "Could not find VirtualMachine with instance uuid #{options['instance_uuid']}"
           end
-          datacenter = get_vm_datacenter(vm_mob_ref)
+          datacenter = options['datacenter'] || get_vm_datacenter(vm_mob_ref)
+          cluster_name = options['cluster'] || get_vm_cluster(vm_mob_ref)
 
-          options['host'] = get_raw_host(options['host'][1], options['host'][0], datacenter) if options['host']
+          options['host'] = get_raw_host(options['host'], cluster_name, datacenter) if options['host']
 
           options['datastore'] = get_raw_datastore(options['datastore'], datacenter) if options.key?('datastore')
 
-          if ( options.key?('resource_pool') && options['resource_pool'].is_a?(Array) && options['resource_pool'].length == 2 && options['resource_pool'][1] != 'Resources')
-            cluster_name = options['resource_pool'][0]
-            pool_name = options['resource_pool'][1]
-            resource_pool = get_raw_resource_pool(pool_name, cluster_name, datacenter)
-          elsif ( options.key?('resource_pool') && options['resource_pool'].is_a?(Array) && options['resource_pool'].length == 2 && options['resource_pool'][1] == 'Resources')
-            cluster_name = options['resource_pool'][0]
+          if options.key?('resource_pool') options['resource_pool'] != 'Resources'
+            resource_pool = get_raw_resource_pool(options['resource_pool'], cluster_name, datacenter)
+          elsif options['resource_pool'] == 'Resources'
             resource_pool = get_raw_resource_pool(nil, cluster_name, datacenter)
           end
 
@@ -78,6 +78,18 @@ module Fog
         def get_vm_datacenter(vm_mob_ref)
           parent = vm_mob_ref.parent
           until parent.is_a?(RbVmomi::VIM::Datacenter)
+            if vm_mob_ref.respond_to?(:parent)
+              parent = parent.parent
+            else
+              return
+            end
+          end
+          parent.name
+        end
+
+        def get_vm_cluster(vm_mob_ref)
+          parent = vm_mob_ref.runtime.host.parent
+          until parent.is_a?(RbVmomi::VIM::ClusterComputeResource)
             if vm_mob_ref.respond_to?(:parent)
               parent = parent.parent
             else
