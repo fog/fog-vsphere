@@ -9,26 +9,24 @@ module Fog
         #   * 'instance_uuid'<~String> - *REQUIRED* VM to relocate
         #   * 'host'<~String> - name of host which will run the VM.
         #   * 'cluster'<~String> - name of cluster where host is.
-        #     Only works with clusters within same datacenter as
-        #     where vm is running. Defaults to vm's host's cluster.
+        #       Only works with clusters within same datacenter as
+        #       where vm is running. Defaults to vm's host's cluster.
         #   * 'datacenter'<~String> - name of datacenter where host is.
-        #     It must be same datacenter as where vm is running.
-        #     Defaults to vm's datacenter.
+        #       It must be same datacenter as where vm is running.
+        #       Defaults to vm's datacenter.
         #   * 'datastore'<~String> - name of datastore where VM will
-        #     be located.
-        #   * 'resource_pool'<~String> - The resource pool on your datacenter
-        #     cluster you want to use. Only works with clusters within same
-        #     datacenter as where vm is running.
-        #     Example: 'resource_pool_name_here'
+        #       be located.
+        #   * 'pool'<~String> - name of pool which the VM should be
+        #       attached.
         #   * 'disks'<~Array> - disks to relocate. Each disk is a
-        #     hash with diskId wich is key attribute of volume,
-        #     and datastore to relocate to. diskBackingInfo can be provided,
-        #     with type FlatVer2 or SeSparse
-        #     Example: [{
-        #       'diskId' => 2000,
-        #       'datastore' => 'datastore_name',
-        #       'diskBackingInfo' => {'type' => 'FlatVer2', ...}
-        #     }]
+        #       hash with diskId wich is key attribute of volume,
+        #       and datastore to relocate to. diskBackingInfo can be provided,
+        #       with type FlatVer2 or SeSparse
+        #       Example: [{
+        #         'diskId' => 2000,
+        #         'datastore' => 'datastore_name',
+        #         'diskBackingInfo' => {'type' => 'FlatVer2', ...}
+        #       }]
         def vm_relocate(options = {})
           raise ArgumentError, 'instance_uuid is a required parameter' unless options.key? 'instance_uuid'
 
@@ -44,14 +42,7 @@ module Fog
           cluster_name = options['cluster'] || get_vm_cluster(vm_mob_ref)
 
           options['host'] = get_raw_host(options['host'], cluster_name, datacenter) if options['host']
-
           options['datastore'] = get_raw_datastore(options['datastore'], datacenter) if options.key?('datastore')
-
-          if options.key?('resource_pool') options['resource_pool'] != 'Resources'
-            resource_pool = get_raw_resource_pool(options['resource_pool'], cluster_name, datacenter)
-          elsif options['resource_pool'] == 'Resources'
-            resource_pool = get_raw_resource_pool(nil, cluster_name, datacenter)
-          end
 
           if options['disks']
             options['disks'] = options['disks'].map do |disk|
@@ -66,7 +57,7 @@ module Fog
 
           spec = RbVmomi::VIM::VirtualMachineRelocateSpec(
             datastore: options['datastore'],
-            pool: resource_pool,
+            pool: options['pool'],
             host: options['host'],
             disk: options['disks']
           )
