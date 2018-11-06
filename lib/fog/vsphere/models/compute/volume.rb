@@ -60,8 +60,6 @@ module Fog
           data = service.add_vm_volume(self)
 
           if data['task_state'] == 'success'
-            self.unit_number += 1 if unit_number >= 7
-
             # We have to query vSphere to get the volume attributes since the task handle doesn't include that info.
             created = server.volumes.all.find { |volume| volume.unit_number == self.unit_number }
 
