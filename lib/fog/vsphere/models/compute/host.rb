@@ -9,6 +9,7 @@ module Fog
         attribute :cpu_cores
         attribute :cpu_sockets
         attribute :cpu_threads
+        attribute :cpu_hz
         attribute :memory
         attribute :uuid
         attribute :ipaddress
