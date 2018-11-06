@@ -537,6 +537,7 @@ module Fog
                   cpu_cores: 20,
                   cpu_sockets: 2,
                   cpu_threads: 40,
+                  cpu_hz: 2_599_999_534,
                   memory: 824_597_241_856,
                   product_version: '6.0.0',
                   vm_ids: ['5032c8a5-9c5e-ba7a-3804-832a03e16381', '502916a3-b42e-17c7-43ce-b3206e9524dc']

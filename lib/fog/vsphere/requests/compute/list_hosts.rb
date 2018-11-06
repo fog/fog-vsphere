@@ -77,6 +77,7 @@ module Fog
             cpu_cores:       'hardware.cpuInfo.numCpuCores',
             cpu_sockets:     'hardware.cpuInfo.numCpuPackages',
             cpu_threads:     'hardware.cpuInfo.numCpuThreads',
+            cpu_hz:          'hardware.cpuInfo.hz',
             memory:          'hardware.memorySize',
             uuid:            'hardware.systemInfo.uuid',
             model:           'hardware.systemInfo.model',
