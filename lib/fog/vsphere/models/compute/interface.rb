@@ -44,7 +44,7 @@ module Fog
         def destroy
           requires :server_id, :key, :type
 
-          service.destroy_vm_interface(server_id, key: key, type: type)
+          service.destroy_vm_interface(server_id, key: key, type: type, datacenter: server.datacenter)
         end
 
         def save

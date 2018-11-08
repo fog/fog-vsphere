@@ -230,6 +230,7 @@ module Fog
 
         def update_interface(attrs)
           wait_for { !ready? } if interface_ready? attrs
+          attrs = attrs.merge(datacenter: datacenter) unless attrs.key? :datacenter
           service.update_vm_interface(id, attrs)
         end
 
