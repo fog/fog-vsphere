@@ -14,8 +14,9 @@ module Fog
           raw_datacenters.find { |d| d.name == name } || get_raw_datacenter(name)
         end
 
-        def get_raw_datacenter(name)
-          connection.serviceInstance.find_datacenter(name)
+        # @note RbVmomi takes path instead of name as argument to find datacenter
+        def get_raw_datacenter(path)
+          connection.serviceInstance.find_datacenter(path)
         end
       end
 
