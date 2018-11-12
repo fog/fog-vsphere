@@ -55,6 +55,7 @@ module Fog
           # and thus the highest :key value must correspond to the created interface.  Since this has an inherent race
           # condition we need to gate the saves.
           SAVE_MUTEX.synchronize do
+            attributes[:datacenter] = server.datacenter unless attributes.key?(:datacenter)
             data = service.add_vm_interface(server_id, attributes)
 
             if data['task_state'] == 'success'
