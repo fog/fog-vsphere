@@ -631,7 +631,9 @@ module Fog
           end
           # relocate templates is not supported by fog-vsphere when vm is cloned on a storage pod
           unless options.key?('storage_pod')
-            relocation_spec[:disk] = relocate_template_volumes_specs(vm_mob_ref, options['volumes'], options['datacenter'])
+            unless options['volumes'].blank?
+              relocation_spec[:disk] = relocate_template_volumes_specs(vm_mob_ref, options['volumes'], options['datacenter'])
+            end
           end
           # And the clone specification
           clone_spec = RbVmomi::VIM.VirtualMachineCloneSpec(location: relocation_spec,
