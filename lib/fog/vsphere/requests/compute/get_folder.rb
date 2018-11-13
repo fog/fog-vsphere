@@ -4,33 +4,32 @@ module Fog
       class Real
         def get_folder(path, datacenter_name, type = nil)
           type ||= 'vm'
-
           # Cycle through all types of folders.
-          case type
-          when 'vm', :vm
-            # if you're a vm then grab the VM.
-            folder = get_raw_vmfolder(path, datacenter_name)
-            raise(Fog::Compute::Vsphere::NotFound) unless folder
-            folder_attributes(folder, datacenter_name)
-          when 'network', :network
-            raise 'not implemented'
-          when 'datastore', :datastore
-            raise 'not implemented'
-          else
-            raise ArgumentError, "#{type} is unknown"
-          end
+          folder = get_raw_folder(path, datacenter_name, type)
+          raise(Fog::Compute::Vsphere::NotFound) unless folder
+          folder_attributes(folder, datacenter_name)
         end
 
         protected
 
-        def get_raw_vmfolder(path, datacenter_name)
+        def get_raw_folder(path, datacenter_name_or_obj, type)
           # The required path syntax - 'topfolder/subfolder
 
           # Clean up path to be relative since we're providing datacenter name
-          dc             = find_raw_datacenter(datacenter_name)
-          dc_root_folder = dc.vmFolder
+          dc = if datacenter_name_or_obj.is_a?(String)
+                 find_raw_datacenter(datacenter_name_or_obj)
+               else
+                 datacenter_name_or_obj
+               end
+
+          valid_types = %w[vm network datastore host]
+          raise ArgumentError, "#{type} is unknown" if type.blank?
+          raise "Invalid type (#{type}). Must be one of #{valid_types.join(', ')} " unless valid_types.include?(type.to_s)
+          meth = "#{type}Folder"
+          dc_root_folder = dc.send(meth)
+
           # Filter the root path for this datacenter not to be used."
-          dc_root_folder_path = dc_root_folder.path.map { |_id, name| name }.join('/')
+          dc_root_folder_path = dc_root_folder.path.map { |_, name| name }.join('/')
           paths = path.sub(/^\/?#{Regexp.quote(dc_root_folder_path)}\/?/, '').split('/')
 
           return dc_root_folder if paths.empty?
@@ -44,6 +43,10 @@ module Fog
             raise Fog::Compute::Vsphere::NotFound, "Could not descend into #{sub_folder}.  Please check your path. #{path}" unless sub
             sub
           end
+        end
+
+        def get_raw_vmfolder(path, datacenter_name)
+          get_raw_folder(path, datacenter_name, 'vm')
         end
 
         def folder_attributes(folder, datacenter_name)
@@ -65,6 +68,7 @@ module Fog
           return :vm        if types.include?('VirtualMachine')
           return :network   if types.include?('Network')
           return :datastore if types.include?('Datastore')
+          return :host      if types.include?('ComputeResource')
         end
       end
 
