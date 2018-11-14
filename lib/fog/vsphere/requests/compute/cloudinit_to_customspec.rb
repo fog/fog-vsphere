@@ -12,6 +12,7 @@ module Fog
           # identity expects an hash, REQUIRED
           # nicSettingMap expects an array
           # options expects an hash
+          # extraConfig expects a hash
 
           custom_spec['encryptionKey']    = user_data['encryptionKey'] if user_data.key?('encryptionKey')
           custom_spec['globalIPSettings'] = user_data['globalIPSettings'] if user_data.key?('globalIPSettings')
@@ -19,6 +20,7 @@ module Fog
           custom_spec['identity']         = { 'Sysprep' => { 'guiRunOnce' => { 'commandList' => user_data['runcmd'] } } } if user_data.key?('runcmd') && !user_data.key?('identity')
           custom_spec['nicSettingMap']    = user_data['nicSettingMap'] if user_data.key?('nicSettingMap')
           custom_spec['options']          = user_data['options'] if user_data.key?('options')
+          custom_spec['extraConfig']      = user_data['extraConfig'] if user_data.key?('extraConfig')
 
           # for backwards compatability
           # hostname expects a string, REQUIRED
@@ -50,6 +52,7 @@ module Fog
           custom_spec['identity']                     = user_data['identity'] if user_data.key?('identity')
           custom_spec['nicSettingMap']                = user_data['nicSettingMap'] if user_data.key?('nicSettingMap')
           custom_spec['options']                      = user_data['options'] if user_data.key?('options')
+          custom_spec['extraConfig']                  = user_data['extraConfig'] if user_data.key?('extraConfig')
           custom_spec['hostname']                     =  user_data['hostname'] if user_data.key?('hostname')
           custom_spec['ipsettings']                   =  { 'ip' => user_data['ip'] } if user_data.key?('ip')
           custom_spec['ipsettings']['subnetMask']     =  user_data['netmask'] if user_data.key?('netmask')
