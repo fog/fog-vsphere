@@ -10,6 +10,7 @@ Shindo.tests('Fog::Compute[:vsphere]', ['vsphere']) do
         @parent = @_ref = 'vm-123'
       end
 
+      # rubocop:disable Style/VariableName
       def collect!(*_pathSet)
         { '_ref' => 'vm-123', 'name' => 'fakevm' }
       end
