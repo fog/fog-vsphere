@@ -1,5 +1,5 @@
 require 'digest/sha2'
-
+# rubocop:disable Lint/RescueWithoutErrorClass
 module Fog
   module Compute
     class Vsphere < Fog::Service
@@ -182,6 +182,7 @@ module Fog
           props_to_attr_hash vm_mob_ref, props
         end
 
+        # rubocop:disable Metrics/MethodLength
         def props_to_attr_hash(vm_mob_ref, props)
           # NOTE: Object.tap is in 1.8.7 and later.
           # Here we create the hash object that this method returns, but first we need
@@ -249,6 +250,7 @@ module Fog
         # provides both real RbVmomi object and its name.
         # e.g.
         # [Datacenter("datacenter-2"), "dc-name"]
+        # rubocop:enable Metrics/MethodLength
         def parent_attribute(path, type)
           element = case type
                     when :datacenter
@@ -277,7 +279,7 @@ module Fog
 
       class Mock
         include Shared
-
+        # rubocop:disable Metrics/MethodLength
         def self.data
           @data ||= Hash.new do |hash, key|
             hash[key] = {
@@ -547,6 +549,7 @@ module Fog
           end
         end
 
+        # rubocop:enable Metrics/MethodLength
         def initialize(options = {})
           require 'rbvmomi'
           @vsphere_username = options[:vsphere_username]

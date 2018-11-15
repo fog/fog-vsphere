@@ -6,3 +6,36 @@ AllCops:
 
 Style/Documentation:
   Enabled: false
+
+HashSyntax:
+  Enabled: false # don't force 1.9 hash syntax
+
+Style/StringLiterals:
+  Enabled: false # dont't enforce
+
+Style/WordArray:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false # don't enforce this
+
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/CyclomaticComplexity:
+  Enabled : false
+
+Metrics/PerceivedComplexity:
+  Enabled: false
+
+Performance/Casecmp:
+  Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
+
+Metrics/MethodLength:
+  Max: 45

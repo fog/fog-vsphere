@@ -13,7 +13,7 @@ Shindo.tests('Fog::Compute[:vsphere] | vm_suspend request', ['vsphere']) do
   { true => 'suspend', false => 'standby_guest' }.each do |force, expected|
     tests("When 'force' => #{force}") do
       response = compute.vm_suspend('instance_uuid' => powered_on_vm, 'force' => force)
-      test('should return suspend_type of #{expected}') { response['suspend_type'] == expected }
+      test("should return suspend_type of #{expected}") { response['suspend_type'] == expected }
     end
   end
 

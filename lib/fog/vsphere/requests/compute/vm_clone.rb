@@ -93,6 +93,7 @@ module Fog
         #        existing disks as well as add or remove them. The
         #        resizing is applied only when the size is bigger then the
         #        in size in the template
+        # rubocop:disable Metrics/MethodLength
         def vm_clone(options = {})
           # Option handling
           options = vm_clone_check_options(options)
@@ -713,6 +714,7 @@ module Fog
             'task_ref'      => task._ref
           }
         end
+        # rubocop:enable Metrics/MethodLength
 
         # Build up the network config spec for simple case:
         # simple case: apply just the network_label, nic_type and network_adapter_device_key

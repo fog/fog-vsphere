@@ -1,3 +1,4 @@
+# rubocop:disable Lint/RescueWithoutErrorClass
 module Fog
   module Compute
     class Vsphere
