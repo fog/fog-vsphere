@@ -1,4 +1,16 @@
+## v2.5.0
+
+* Expose extraConfig from user_data for vm_clone #172
+* Support getting folder types other than vm folder #171
+* Vm_clone: ERROR if options['volumes'] is not specified #170
+* Patch attribute[:datacenter] for create interface #167
+* Add required datacenter param to all calls which may use get_vm_interface #165
+* Add option to relocate vm's datastore #164
+* Add cpu_hz attribute to host (#162)
+* Fix adding 8th volume to vm (#146)
+
 ## v2.4.0
+
 * improve folder loading performance (#158)
 * improve storage pod loading performance (#160)
 * improve datastore loading performance (#159)
@@ -8,18 +20,22 @@
 * add server guard to unit_number calculation (#152)
 
 ## v2.3.0
+
 * set volume unit_number when cloning a vm (#151)
 * add unclustered esxi hosts back to cluster selection (#149)
 * reduce the time required to list networks (#145)
 
 ## v2.2.0
+
 * vm interface updating needs a datacenter as option (#140)
 * improve vm saving to use a single api call and support network changes (#142)
 
 ## v2.1.1
+
 * fixes an issue where networks of type DVPort cannot be listed (#137)
 
 ## v2.1.0
+
 * fixes two issues that broke vm cloning (#134, #135)
 * performance of host listing was improved (#131)
 * networks have a vlan property (#129)
