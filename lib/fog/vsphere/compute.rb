@@ -199,12 +199,28 @@ module Fog
             # finished cloning.
             if attrs['hypervisor'].is_a?(RbVmomi::VIM::HostSystem)
               host = attrs['hypervisor']
+
+              # @note
+              #   - User might not have permission to access host
+              #   - i.e. host.name might raise NoPermission error
+              has_permission_to_access_host = true
+              begin
+                host.name
+              rescue RbVmomi::Fault => e
+                raise e unless e.message && e.message['NoPermission:']
+                has_permission_to_access_host = false
+              end
+
               attrs['datacenter'] = proc {
                 begin
-                           parent_attribute(host.path, :datacenter)[1]
-                         rescue
-                           nil
-                         end
+                  if has_permission_to_access_host
+                    parent_attribute(host.path, :datacenter)[1]
+                  else
+                    parent_attribute(vm_mob_ref.path, :datacenter)[1]
+                  end
+                rescue
+                  nil
+                end
               }
               attrs['cluster'] = proc {
                 begin
