@@ -1,5 +1,6 @@
 require 'digest/sha2'
 # rubocop:disable Lint/RescueWithoutErrorClass
+# rubocop:disable Metrics/ModuleLength
 module Fog
   module Compute
     class Vsphere < Fog::Service
