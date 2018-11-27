@@ -641,7 +641,7 @@ module Fog
                                                             config: virtual_machine_config_spec,
                                                             customization: customization_spec,
                                                             powerOn: options.key?('power_on') ? options['power_on'] : true,
-                                                            template: false)
+                                                            template: options.key?('template') ? options['template'] : false)
 
           # Perform the actual Clone Task
           # Clone VM on a storage pod
