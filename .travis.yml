@@ -1,6 +1,6 @@
 language: ruby
 sudo: false
-before_install: gem install bundler
+before_install: gem install bundler -v 1.17.3
 matrix:
   allow_failures:
     - rvm: jruby-head

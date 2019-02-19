@@ -23,7 +23,7 @@ module Fog
                end
 
           valid_types = %w[vm network datastore host]
-          raise ArgumentError, "#{type} is unknown" if type.blank?
+          raise ArgumentError, "#{type} is unknown" if type.nil? || type.empty?
           raise "Invalid type (#{type}). Must be one of #{valid_types.join(', ')} " unless valid_types.include?(type.to_s)
           meth = "#{type}Folder"
           dc_root_folder = dc.send(meth)
