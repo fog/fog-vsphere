@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def vm_reconfig_cpus(options = {})
           raise ArgumentError, 'cpus is a required parameter' unless options.key? 'cpus'

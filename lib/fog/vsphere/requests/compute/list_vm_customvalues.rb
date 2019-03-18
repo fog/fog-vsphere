@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_vm_customvalues(vm_id)
           get_vm_ref(vm_id).summary.customValue.map do |customvalue|

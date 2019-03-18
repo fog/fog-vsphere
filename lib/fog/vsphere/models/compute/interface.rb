@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Interface < Fog::Model
         SAVE_MUTEX = Mutex.new
 

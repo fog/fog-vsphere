@@ -1,8 +1,8 @@
 require 'fog/compute/models/server'
 
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Server < Fog::Compute::Server
         extend Fog::Deprecation
         deprecate(:ipaddress, :public_ip_address)
@@ -219,7 +219,7 @@ module Fog
         end
 
         def interface_ready?(attrs)
-          (attrs.is_a?(Hash) && attrs[:blocking]) || attrs.is_a?(Fog::Compute::Vsphere::Interface)
+          (attrs.is_a?(Hash) && attrs[:blocking]) || attrs.is_a?(Fog::Vsphere::Compute::Interface)
         end
 
         def add_interface(attrs)
@@ -365,16 +365,16 @@ module Fog
         def initialize_scsi_controllers
           if attributes[:scsi_controllers] && attributes[:scsi_controllers].is_a?(Array)
             attributes[:scsi_controllers].map! do |controller|
-              controller.is_a?(Hash) ? Fog::Compute::Vsphere::SCSIController.new(controller) : controller
+              controller.is_a?(Hash) ? Fog::Vsphere::Compute::SCSIController.new(controller) : controller
             end
           elsif attributes[:scsi_controller] && attributes[:scsi_controller].is_a?(Hash)
             attributes[:scsi_controllers] = [
-              Fog::Compute::Vsphere::SCSIController.new(attributes[:scsi_controller])
+              Fog::Vsphere::Compute::SCSIController.new(attributes[:scsi_controller])
             ]
           elsif attributes[:volumes] && attributes[:volumes].is_a?(Array) && !attributes[:volumes].empty?
             # Create a default scsi controller if there are any disks but no controller defined
             attributes[:scsi_controllers] = [
-              Fog::Compute::Vsphere::SCSIController.new
+              Fog::Vsphere::Compute::SCSIController.new
             ]
           end
         end

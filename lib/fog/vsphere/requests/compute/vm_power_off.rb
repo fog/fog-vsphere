@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def vm_power_off(options = {})
           options = { 'force' => false }.merge(options)

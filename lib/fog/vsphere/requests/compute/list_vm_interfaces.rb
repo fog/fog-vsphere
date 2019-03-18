@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         # => VirtualE1000(
         # addressType: "assigned",
@@ -44,7 +44,7 @@ module Fog
         def get_raw_interface(vm_id, options = {})
           raise ArgumentError, 'instance id is a required parameter' unless vm_id
 
-          if options.is_a? Fog::Compute::Vsphere::Interface
+          if options.is_a? Fog::Vsphere::Compute::Interface
             options
 
           else

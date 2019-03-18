@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def vm_revert_snapshot(vm_id, snapshot_id)
           vm = servers.get(vm_id)

@@ -18,12 +18,12 @@ Shindo.tests('Fog::Compute[:vsphere] | server model', ['vsphere']) do
       end
       test('snapshots') do
         test('responds') { server.respond_to? 'snapshots' }
-        test('returns successfully') { server.snapshots.is_a? Fog::Compute::Vsphere::Snapshots }
+        test('returns successfully') { server.snapshots.is_a? Fog::Vsphere::Compute::Snapshots }
       end
       test('find_snapshot') do
         test('responds') { server.respond_to? 'find_snapshot' }
         test('returns successfully') do
-          server.find_snapshot('snapshot-0101').is_a? Fog::Compute::Vsphere::Snapshot
+          server.find_snapshot('snapshot-0101').is_a? Fog::Vsphere::Compute::Snapshot
         end
         test('returns correct snapshot') do
           server.find_snapshot('snapshot-0101').ref == 'snapshot-0101'
@@ -39,7 +39,7 @@ Shindo.tests('Fog::Compute[:vsphere] | server model', ['vsphere']) do
         end
       end
       test('tickets') do
-        test('acquire ticket successfully') { server.acquire_ticket.is_a? Fog::Compute::Vsphere::Ticket }
+        test('acquire ticket successfully') { server.acquire_ticket.is_a? Fog::Vsphere::Compute::Ticket }
       end
     end
     tests('have attributes') do
@@ -69,6 +69,6 @@ Shindo.tests('Fog::Compute[:vsphere] | server model', ['vsphere']) do
         end
       end
     end
-    test('be a kind of Fog::Compute::Vsphere::Server') { server.is_a? Fog::Compute::Vsphere::Server }
+    test('be a kind of Fog::Vsphere::Compute::Server') { server.is_a? Fog::Vsphere::Compute::Server }
   end
 end

@@ -2,7 +2,7 @@ require 'ostruct'
 
 Shindo.tests('Fog::Compute[:vsphere] | update_vm request', 'vsphere') do
   compute = Fog::Compute[:vsphere]
-  server = Fog::Compute::Vsphere::Server.new
+  server = Fog::Vsphere::Compute::Server.new
 
   tests('UPDATE vm | The return value should') do
     response = compute.update_vm(server)

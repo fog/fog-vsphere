@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_vm_snapshots(vm_id, opts = {})
           vm_snapshot_info = get_vm_ref(vm_id).snapshot

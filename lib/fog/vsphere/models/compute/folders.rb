@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Folders < Fog::Collection
         autoload :Folder, File.expand_path('../folder', __FILE__)
 
-        model Fog::Compute::Vsphere::Folder
+        model Fog::Vsphere::Compute::Folder
         attr_accessor :datacenter, :type, :path
 
         def all(filters = {})

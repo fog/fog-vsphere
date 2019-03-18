@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def create_group(attributes = {})
           cluster = get_raw_cluster(attributes[:cluster], attributes[:datacenter])

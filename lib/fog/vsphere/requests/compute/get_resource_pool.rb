@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_resource_pool(name, cluster_name, datacenter_name)
           resource_pool = get_raw_resource_pool(name, cluster_name, datacenter_name)
-          raise(Fog::Compute::Vsphere::NotFound) unless resource_pool
+          raise(Fog::Vsphere::Compute::NotFound) unless resource_pool
           resource_pool_attributes(resource_pool, cluster_name, datacenter_name)
         end
 

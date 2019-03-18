@@ -5,7 +5,7 @@ Shindo.tests('Fog::Compute[:vsphere] | hosts collection', ['vsphere']) do
 
   tests('The hosts collection') do
     test('should not be empty') { !hosts.empty? }
-    test('should be a kind of Fog::Compute::Vsphere::Hosts') { hosts.is_a? Fog::Compute::Vsphere::Hosts }
+    test('should be a kind of Fog::Vsphere::Compute::Hosts') { hosts.is_a? Fog::Vsphere::Compute::Hosts }
     test('should get hosts') { hosts.get('host1.example.com').name == 'host1.example.com' }
   end
 end

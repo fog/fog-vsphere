@@ -1,11 +1,11 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Hosts < Fog::Collection
         attribute :datacenter
         attribute :cluster
 
-        model Fog::Compute::Vsphere::Host
+        model Fog::Vsphere::Compute::Host
 
         def all(_filters = {})
           requires :datacenter, :cluster
@@ -14,7 +14,7 @@ module Fog
 
         def get(name)
           all.find { |host| host.name == name } ||
-            raise(Fog::Compute::Vsphere::NotFound, "no such host #{name}")
+            raise(Fog::Vsphere::Compute::NotFound, "no such host #{name}")
         end
       end
     end

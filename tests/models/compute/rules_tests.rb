@@ -6,7 +6,7 @@ Shindo.tests('Fog::Compute[:vsphere] | rules collection', ['vsphere']) do
 
   tests('The rules collection') do
     test('should not be empty') { !rules.empty? }
-    test('should be a kind of Fog::Compute::Vsphere::Rules') { rules.is_a? Fog::Compute::Vsphere::Rules }
+    test('should be a kind of Fog::Vsphere::Compute::Rules') { rules.is_a? Fog::Vsphere::Compute::Rules }
     test('should get rules') { rules.get('anti-affinity-foo').key == 4242 }
     test('should destroy rules') { rules.first.destroy; rules.reload; rules.empty? }
     test('should create rules') do

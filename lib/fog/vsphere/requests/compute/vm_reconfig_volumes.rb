@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def vm_reconfig_volumes(options = {})
           raise ArgumentError, 'instance_uuid is a required parameter' unless options.key? 'instance_uuid'

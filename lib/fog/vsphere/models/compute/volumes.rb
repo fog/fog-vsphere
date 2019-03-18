@@ -1,20 +1,20 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Volumes < Fog::Collection
         autoload :Volume, File.expand_path('../volume', __FILE__)
 
         attribute :server_id
 
-        model Fog::Compute::Vsphere::Volume
+        model Fog::Vsphere::Compute::Volume
 
         def all(_filters = {})
           requires :server_id
 
           case server
-          when Fog::Compute::Vsphere::Server
+          when Fog::Vsphere::Compute::Server
             load service.list_vm_volumes(server.id)
-          when Fog::Compute::Vsphere::Template
+          when Fog::Vsphere::Compute::Template
             load service.list_template_volumes(server.id)
           else
             raise 'volumes should have vm or template'

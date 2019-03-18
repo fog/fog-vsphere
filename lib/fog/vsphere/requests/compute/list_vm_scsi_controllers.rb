@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_vm_scsi_controllers(vm_id)
           list_vm_scsi_controllers_raw(vm_id).map do |raw_controller|
-            Fog::Compute::Vsphere::SCSIController.new(raw_controller)
+            Fog::Vsphere::Compute::SCSIController.new(raw_controller)
           end
         end
 
@@ -21,7 +21,7 @@ module Fog
       end
       class Mock
         def list_vm_scsi_controllers(vm_id)
-          raise Fog::Compute::Vsphere::NotFound, 'VM not Found' unless data[:servers].key?(vm_id)
+          raise Fog::Vsphere::Compute::NotFound, 'VM not Found' unless data[:servers].key?(vm_id)
           return [] unless data[:servers][vm_id].key?('scsi_controllers')
           data[:servers][vm_id]['scsi_controllers'].map { |h| h.merge(server_id: vm_id) }
         end

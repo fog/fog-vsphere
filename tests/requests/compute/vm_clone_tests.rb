@@ -42,7 +42,7 @@ Shindo.tests('Fog::Compute[:vsphere] | vm_clone request', 'vsphere') do
 
   tests('When invalid input is presented') do
     raises(ArgumentError, 'it should raise ArgumentError') { compute.vm_clone(foo: 1) }
-    raises(Fog::Compute::Vsphere::NotFound, 'it should raise Fog::Compute::Vsphere::NotFound when the UUID is not a string') do
+    raises(Fog::Vsphere::Compute::NotFound, 'it should raise Fog::Vsphere::Compute::NotFound when the UUID is not a string') do
       pending # require 'guid'
       compute.vm_clone('instance_uuid' => Guid.from_s(template), 'name' => 'jefftestfoo')
     end

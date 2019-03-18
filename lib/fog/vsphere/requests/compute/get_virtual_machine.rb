@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_virtual_machine(id, datacenter_name = nil, folder = nil, recursive = false)
           # The larger the VM list the longer it will take if not searching based on UUID.
@@ -25,7 +25,7 @@ module Fog
                    raw_datacenters.map { |d| get_vm_by_name(id, d['name'], folder, recursive) }.compact.first
                  end
                end
-          vm ? vm : raise(Fog::Compute::Vsphere::NotFound, "#{id} was not found")
+          vm ? vm : raise(Fog::Vsphere::Compute::NotFound, "#{id} was not found")
         end
 
         def get_vm_by_name(name, dc, folder, recursive)
@@ -67,7 +67,7 @@ module Fog
                  # try to find based on VM name. May need to handle the path of the VM
                  list_virtual_machines('name' => id, 'datacenter' => datacenter_name).first
                end
-          vm ? vm : raise(Fog::Compute::Vsphere::NotFound, "#{id} was not found")
+          vm ? vm : raise(Fog::Vsphere::Compute::NotFound, "#{id} was not found")
         end
       end
     end

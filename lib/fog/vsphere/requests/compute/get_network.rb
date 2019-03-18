@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_network(name, datacenter_name)
           network = get_raw_network(name, datacenter_name)
-          raise(Fog::Compute::Vsphere::NotFound) unless network
+          raise(Fog::Vsphere::Compute::NotFound) unless network
           network_attributes(network, datacenter_name)
         end
 

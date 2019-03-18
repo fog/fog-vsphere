@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def vm_rename(options = {})
           raise ArgumentError, 'name is a required parameter' unless options.key? 'name'

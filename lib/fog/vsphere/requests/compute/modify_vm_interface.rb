@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def add_vm_interface(vmid, options = {})
           raise ArgumentError, 'instance id is a required parameter' unless vmid
@@ -49,10 +49,10 @@ module Fog
 
           elsif options[:key] && (options[:key] > 0)
             oldattributes = get_vm_interface(vmid, options)
-            Fog::Compute::Vsphere::Interface.new(oldattributes.merge(options))
+            Fog::Vsphere::Compute::Interface.new(oldattributes.merge(options))
 
           elsif options[:type] && options[:network]
-            Fog::Compute::Vsphere::Interface.new options
+            Fog::Vsphere::Compute::Interface.new options
 
           else
             raise ArgumentError, 'interface is a required parameter or pass options with type and network'

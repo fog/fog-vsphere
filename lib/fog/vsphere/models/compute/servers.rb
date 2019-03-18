@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Servers < Fog::Collection
         autoload :Server, File.expand_path('../server', __FILE__)
 
-        model Fog::Compute::Vsphere::Server
+        model Fog::Vsphere::Compute::Server
         attr_accessor :datacenter
         attr_accessor :network
         attr_accessor :cluster
@@ -29,7 +29,7 @@ module Fog
 
         def get(id, datacenter = nil)
           new service.get_virtual_machine id, datacenter, folder, recursive
-        rescue Fog::Compute::Vsphere::NotFound
+        rescue Fog::Vsphere::Compute::NotFound
           nil
         end
 

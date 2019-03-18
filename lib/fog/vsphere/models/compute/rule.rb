@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       # ClusterRuleInfo
       class Rule < Fog::Model
         identity :key

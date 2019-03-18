@@ -1,12 +1,12 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_folder(path, datacenter_name, type = nil)
           type ||= 'vm'
           # Cycle through all types of folders.
           folder = get_raw_folder(path, datacenter_name, type)
-          raise(Fog::Compute::Vsphere::NotFound) unless folder
+          raise(Fog::Vsphere::Compute::NotFound) unless folder
           folder_attributes(folder, datacenter_name)
         end
 
@@ -40,7 +40,7 @@ module Fog
             # VIM::Folder#inventory since that returns _all_ managed objects of
             # a certain type _and_ their properties.
             sub = last_returned_folder.find(sub_folder, RbVmomi::VIM::Folder)
-            raise Fog::Compute::Vsphere::NotFound, "Could not descend into #{sub_folder}.  Please check your path. #{path}" unless sub
+            raise Fog::Vsphere::Compute::NotFound, "Could not descend into #{sub_folder}.  Please check your path. #{path}" unless sub
             sub
           end
         end
@@ -75,7 +75,7 @@ module Fog
       class Mock
         def get_folder(path, datacenter_name, _type = nil)
           data[:folders].values.find { |f| (f['datacenter'] == datacenter_name) && f['path'].end_with?(path) } ||
-            raise(Fog::Compute::Vsphere::NotFound)
+            raise(Fog::Vsphere::Compute::NotFound)
         end
       end
     end

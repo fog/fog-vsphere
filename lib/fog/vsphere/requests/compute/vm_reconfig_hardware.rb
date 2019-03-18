@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def vm_reconfig_hardware(options = {})
           raise ArgumentError, 'hardware_spec is a required parameter' unless options.key? 'hardware_spec'

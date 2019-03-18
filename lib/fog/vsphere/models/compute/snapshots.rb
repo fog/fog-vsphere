@@ -2,12 +2,12 @@ require 'fog/core/collection'
 require 'fog/vsphere/models/compute/snapshot'
 
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Snapshots < Fog::Collection
         attribute :server_id, alias: :instance_uuid
         attribute :parent_snapshot
-        model Fog::Compute::Vsphere::Snapshot
+        model Fog::Vsphere::Compute::Snapshot
 
         def all(filters = {})
           if parent_snapshot

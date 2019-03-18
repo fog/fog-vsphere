@@ -2,7 +2,7 @@ Shindo.tests('Fog::Compute[:vsphere] | revert_to_snapshot request', ['vsphere'])
   compute = Fog::Compute[:vsphere]
 
   tests('The response should') do
-    response = compute.revert_to_snapshot(Fog::Compute::Vsphere::Snapshot.new(service: 1))
+    response = compute.revert_to_snapshot(Fog::Vsphere::Compute::Snapshot.new(service: 1))
     test('be a kind of Hash') { response.is_a? Hash }
     test('should have a task_state key') { response.key? 'state' }
   end

@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def upload_iso_check_options(options)
           default_options = {
@@ -11,8 +11,8 @@ module Fog
           required_options.each do |param|
             raise ArgumentError, "#{required_options.join(', ')} are required" unless options.key? param
           end
-          raise Fog::Compute::Vsphere::NotFound, "Datacenter #{options['datacenter']} Doesn't Exist!" unless get_datacenter(options['datacenter'])
-          raise Fog::Compute::Vsphere::NotFound, "Datastore #{options['datastore']} Doesn't Exist!" unless get_raw_datastore(options['datastore'], options['datacenter'])
+          raise Fog::Vsphere::Compute::NotFound, "Datacenter #{options['datacenter']} Doesn't Exist!" unless get_datacenter(options['datacenter'])
+          raise Fog::Vsphere::Compute::NotFound, "Datastore #{options['datastore']} Doesn't Exist!" unless get_raw_datastore(options['datastore'], options['datacenter'])
           options
         end
 

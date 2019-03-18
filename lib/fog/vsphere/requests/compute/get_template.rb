@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_template(id, datacenter_name = nil)
           convert_vm_mob_ref_to_attr_hash(get_vm_ref(id, datacenter_name))

@@ -4,7 +4,7 @@ require 'fog/vsphere/models/compute/server'
 
 class TestServer < Minitest::Test
   def test_tools_installed
-    server = Fog::Compute::Vsphere::Server.new
+    server = Fog::Vsphere::Compute::Server.new
     server.tools_state = 'toolsNotRunning'
     server.tools_version = 'guestToolsNotInstalled'
 

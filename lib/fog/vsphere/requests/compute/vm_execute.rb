@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         # NOTE: you must be using vsphere_rev 5.0 or greater to use this functionality
         # e.g. Fog::Compute.new(provider: "vsphere", vsphere_rev: "5.5", etc)
