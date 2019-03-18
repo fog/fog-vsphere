@@ -1,6 +1,3 @@
-require 'fog/core/collection'
-require 'fog/vsphere/models/compute/storage_pod'
-
 module Fog
   module Compute
     class Vsphere

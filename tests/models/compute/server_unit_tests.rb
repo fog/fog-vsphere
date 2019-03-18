@@ -1,6 +1,6 @@
 require_relative '../../helper'
 
-require 'fog/vsphere/models/compute/server'
+# require 'fog/compute/vsphere/models/server'
 
 class TestServer < Minitest::Test
   def test_tools_installed

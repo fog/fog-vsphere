@@ -2,7 +2,7 @@ require 'fog/core'
 
 module Fog
   module Compute
-    autoload :Vsphere, File.expand_path('../vsphere/compute.rb', __FILE__)
+    autoload :Vsphere, File.expand_path('../compute/vsphere.rb', __FILE__)
   end
 
   module Vsphere

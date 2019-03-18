@@ -9,7 +9,7 @@ module Fog
       recognizes :vsphere_rev, :vsphere_ssl, :vsphere_expected_pubkey_hash
       recognizes :vsphere_debug
 
-      model_path 'fog/vsphere/models/compute'
+      model_path 'fog/compute/vsphere/models'
       model :server
       collection :servers
       model :servertype
@@ -53,7 +53,7 @@ module Fog
       model :ticket
       collection :tickets
 
-      request_path 'fog/vsphere/requests/compute'
+      request_path 'fog/compute/vsphere/requests'
       request :current_time
       request :cloudinit_to_customspec
       request :list_virtual_machines
