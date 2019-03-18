@@ -23,4 +23,8 @@ module Fog
       nil
     end
   end
+
+  module Compute
+    Vsphere = ::Fog::Vsphere::Compute
+  end
 end
