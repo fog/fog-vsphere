@@ -33,7 +33,7 @@ module Fog
             end
           when :dvs
             # the first distributed virtual switch will do - selected by network - gives control to vsphere
-            proc { |n| (n.name == name || n.key == name) && (n.class.to_s == 'DistributedVirtualPortgroup') }
+            proc { |n| n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && (n.name == name || n.key == name) }
           else
             # the first matching network will do, seems like the non-distributed networks come first
             proc { |n| (n.name == name || (n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && n.key == name)) }
