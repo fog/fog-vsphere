@@ -25,6 +25,7 @@ module Fog
           data[:clusters].find { |c| c[:name] == name && c[:datacenter] == datacenter_name } ||
             raise(Fog::Compute::Vsphere::NotFound)
         end
+        alias get_raw_cluster get_cluster
       end
     end
   end
