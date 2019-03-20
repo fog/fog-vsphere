@@ -1,3 +1,12 @@
+## v3.0.0
+
+* Change module namespace to Fog::Vsphere::Compute (#192)
+* Update ruby string method to prevent traceback (#189)
+* Allow builds with rbvmomi 2.0.0+ (#187)
+* Raise error in case path and cluster do not exist (#183)
+* Update vm_clone template to not always be false (#180)
+* fetch datacenter by vm_mob_ref.path if user does not have permission to access hosts (#176)
+
 ## v2.5.0
 
 * Expose extraConfig from user_data for vm_clone #172
