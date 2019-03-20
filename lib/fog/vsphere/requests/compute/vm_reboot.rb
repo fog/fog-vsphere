@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def vm_reboot(options = {})
           options = { 'force' => false }.merge(options)

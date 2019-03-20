@@ -1,17 +1,17 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Interfacetypes < Fog::Collection
         autoload :Interfacetype, File.expand_path('../interfacetype', __FILE__)
 
-        model Fog::Compute::Vsphere::Interfacetype
+        model Fog::Vsphere::Compute::Interfacetype
         attr_accessor :datacenter
         attr_accessor :servertype
 
         def all(filters = {})
           requires :servertype
           case servertype
-          when Fog::Compute::Vsphere::Servertype
+          when Fog::Vsphere::Compute::Servertype
             load service.list_interface_types(filters.merge(datacenter: datacenter,
                                                             servertype: servertype.id))
           else
@@ -23,7 +23,7 @@ module Fog
           requires :servertype
           requires :datacenter
           new service.get_interface_type id, servertype, datacenter
-        rescue Fog::Compute::Vsphere::NotFound
+        rescue Fog::Vsphere::Compute::NotFound
           nil
         end
       end

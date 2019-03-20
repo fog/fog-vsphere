@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       module Shared
         private
 
@@ -20,12 +20,12 @@ module Fog
             raise ArgumentError, "#{required_options.join(', ')} are required" unless options.key? param
           end
           raise ArgumentError, 'cluster option is required' unless options['resource_pool'][0]
-          raise Fog::Compute::Vsphere::NotFound, "Datacenter #{options['datacenter']} Doesn't Exist!" unless get_datacenter(options['datacenter'])
-          raise Fog::Compute::Vsphere::NotFound, "Template #{options['template_path']} Doesn't Exist!" unless get_virtual_machine(options['template_path'], options['datacenter'])
-          raise Fog::Compute::Vsphere::NotFound, "Cluster #{options['resource_pool'][0]} Doesn't Exist in the DC!" unless get_raw_cluster(options["resource_pool"][0], options['datacenter'])
+          raise Fog::Vsphere::Compute::NotFound, "Datacenter #{options['datacenter']} Doesn't Exist!" unless get_datacenter(options['datacenter'])
+          raise Fog::Vsphere::Compute::NotFound, "Template #{options['template_path']} Doesn't Exist!" unless get_virtual_machine(options['template_path'], options['datacenter'])
+          raise Fog::Vsphere::Compute::NotFound, "Cluster #{options['resource_pool'][0]} Doesn't Exist in the DC!" unless get_raw_cluster(options["resource_pool"][0], options['datacenter'])
           raise ArgumentError, 'path option is required' unless options.fetch('dest_folder', '/')
           if options.key?('storage_pod') && !options['storage_pod'].nil? && !get_raw_storage_pod(options['storage_pod'], options['datacenter'])
-            raise Fog::Compute::Vsphere::NotFound, "Storage Pod #{options['storage_pod']} Doesn't Exist!"
+            raise Fog::Vsphere::Compute::NotFound, "Storage Pod #{options['storage_pod']} Doesn't Exist!"
           end
           options
         end
@@ -777,7 +777,7 @@ module Fog
                 device: template_nic
               }
             else
-              interface = Fog::Compute::Vsphere::Interface.new(raw_to_hash(template_nic))
+              interface = Fog::Vsphere::Compute::Interface.new(raw_to_hash(template_nic))
               specs << create_interface(interface, interface.key, :remove, datacenter: datacenter)
             end
           end
@@ -836,7 +836,7 @@ module Fog
         def vm_clone(options = {})
           # Option handling TODO Needs better method of checking
           options = vm_clone_check_options(options)
-          notfound = -> { raise Fog::Compute::Vsphere::NotFound, 'Could not find VM template' }
+          notfound = -> { raise Fog::Vsphere::Compute::NotFound, 'Could not find VM template' }
           template = list_virtual_machines.find(notfound) do |vm|
             vm['name'] == options['template_path'].split('/')[-1]
           end

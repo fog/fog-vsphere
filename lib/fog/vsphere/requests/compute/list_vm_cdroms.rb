@@ -1,7 +1,7 @@
 # rubocop:disable Lint/RescueWithoutErrorClass
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_vm_cdroms(vm_id)
           get_vm_ref(vm_id).config.hardware.device.select { |hw| hw.class == RbVmomi::VIM::VirtualCdrom }.map do |cdrom|
@@ -25,7 +25,7 @@ module Fog
       end
       class Mock
         def list_vm_cdroms(vm_id)
-          raise Fog::Compute::Vsphere::NotFound, 'VM not Found' unless data[:servers].key?(vm_id)
+          raise Fog::Vsphere::Compute::NotFound, 'VM not Found' unless data[:servers].key?(vm_id)
           return [] unless data[:servers][vm_id].key?('cdroms')
           data[:servers][vm_id]['cdroms'].map { |h| h.merge(instance_uuid: vm_id) }
         end

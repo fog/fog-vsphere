@@ -2,8 +2,8 @@ require 'digest/sha2'
 # rubocop:disable Lint/RescueWithoutErrorClass
 # rubocop:disable Metrics/ModuleLength
 module Fog
-  module Compute
-    class Vsphere < Fog::Service
+  module Vsphere
+    class Compute < Fog::Service
       requires :vsphere_username, :vsphere_password, :vsphere_server
       recognizes :vsphere_port, :vsphere_path, :vsphere_ns
       recognizes :vsphere_rev, :vsphere_ssl, :vsphere_expected_pubkey_hash

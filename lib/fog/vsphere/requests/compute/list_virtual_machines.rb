@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_virtual_machines(options = {})
           # Listing all VM's can be quite slow and expensive.  Try and optimize

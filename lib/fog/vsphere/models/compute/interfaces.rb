@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Interfaces < Fog::Collection
         autoload :Interface, File.expand_path('../interface', __FILE__)
 
-        model Fog::Compute::Vsphere::Interface
+        model Fog::Vsphere::Compute::Interface
 
         attribute :server_id
 
@@ -12,9 +12,9 @@ module Fog
           requires :server_id
 
           case server
-          when Fog::Compute::Vsphere::Server
+          when Fog::Vsphere::Compute::Server
             load service.list_vm_interfaces(server.id)
-          when Fog::Compute::Vsphere::Template
+          when Fog::Vsphere::Compute::Template
             load service.list_template_interfaces(server.id)
           else
             raise 'interfaces should have vm or template'
@@ -28,9 +28,9 @@ module Fog
           requires :server_id
 
           case server
-          when Fog::Compute::Vsphere::Server
+          when Fog::Vsphere::Compute::Server
             interface = service.get_vm_interface(server.id, key: id, mac: id, name: id, datacenter: server.datacenter)
-          when Fog::Compute::Vsphere::Template
+          when Fog::Vsphere::Compute::Template
             interface = service.get_template_interfaces(server.id, key: id, mac: id, name: id)
           else
 
@@ -38,7 +38,7 @@ module Fog
           end
 
           if interface
-            Fog::Compute::Vsphere::Interface.new(interface.merge(server_id: server.id, service: service))
+            Fog::Vsphere::Compute::Interface.new(interface.merge(server_id: server.id, service: service))
           end
         end
 

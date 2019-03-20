@@ -94,6 +94,10 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 159
 
+Naming/FileName:
+  Exclude:
+    - 'lib/fog-vsphere.rb'
+
 # Offense count: 10
 Style/CaseEquality:
   Exclude:

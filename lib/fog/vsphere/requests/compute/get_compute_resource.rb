@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_compute_resource(name, datacenter_name)
           compute_resource = get_raw_compute_resource(name, datacenter_name)
-          raise(Fog::Compute::Vsphere::NotFound) unless compute_resource
+          raise(Fog::Vsphere::Compute::NotFound) unless compute_resource
           compute_resource_attributes(compute_resource, datacenter_name)
         end
 

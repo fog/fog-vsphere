@@ -2,10 +2,10 @@ require 'fog/core/collection'
 require 'fog/vsphere/models/compute/storage_pod'
 
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class StoragePods < Fog::Collection
-        model Fog::Compute::Vsphere::StoragePod
+        model Fog::Vsphere::Compute::StoragePod
         attribute :datacenter
 
         def all(filters = {})

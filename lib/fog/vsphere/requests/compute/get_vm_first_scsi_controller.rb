@@ -1,10 +1,10 @@
 
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_vm_first_scsi_controller(vm_id)
-          Fog::Compute::Vsphere::SCSIController.new(get_vm_first_scsi_controller_raw(vm_id))
+          Fog::Vsphere::Compute::SCSIController.new(get_vm_first_scsi_controller_raw(vm_id))
         end
 
         def get_vm_first_scsi_controller_raw(vm_id)

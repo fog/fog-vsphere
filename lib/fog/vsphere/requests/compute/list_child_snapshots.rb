@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_child_snapshots(snapshot, opts = {})
           normalized_snapshot = Hash === snapshot ?

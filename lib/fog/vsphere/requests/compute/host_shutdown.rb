@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def host_shutdown(name, cluster_name, datacenter_name, force = false)
           host_ref = get_host(name, cluster_name, datacenter_name)

@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Volume < Fog::Model
         DISK_SIZE_TO_GB = 1_048_576
         identity :id
@@ -64,7 +64,7 @@ module Fog
             created = server.volumes.all.find { |volume| volume.unit_number == self.unit_number }
 
             # example of "created" =>
-            #   <Fog::Compute::Vsphere::Volume
+            #   <Fog::Vsphere::Compute::Volume
             #     id="6000C295-576f-0e2d-5b70-c778cd108b3a",
             #     datastore="datastore1",
             #     storage_pod=nil,

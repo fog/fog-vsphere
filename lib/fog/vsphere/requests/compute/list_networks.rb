@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_networks(filters = {})
           datacenter_name = filters[:datacenter]
@@ -107,10 +107,10 @@ module Fog
           cluster_name = filters.fetch(:cluster, nil)
           if cluster_name.nil?
             data[:networks].values.select { |d| d['datacenter'] == datacenter_name } ||
-              raise(Fog::Compute::Vsphere::NotFound)
+              raise(Fog::Vsphere::Compute::NotFound)
           else
             data[:networks].values.select { |d| d['datacenter'] == datacenter_name && d['cluster'].include?(cluster_name) } ||
-              raise(Fog::Compute::Vsphere::NotFound)
+              raise(Fog::Vsphere::Compute::NotFound)
           end
         end
       end

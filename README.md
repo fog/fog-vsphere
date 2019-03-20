@@ -26,6 +26,12 @@ Or install it yourself as:
 gem install fog-vsphere
 ```
 
+## Upgrading
+
+In version 3.0.0 we have changed the namespacing of `Compute` service.
+`Fog::Compute::Vsphere` became `Fog::Vsphere::Compute` as recommended by fog-core.
+We hope we are not causing any issues as `Fog::Compute[:vsphere]` is only public API.
+
 ## Usage
 
 To connect to your vSphere instance with Fog vSphere:
@@ -67,7 +73,7 @@ compute.list_virtual_machines
 
 # List a VM's SCSI controllers
 compute.list_vm_scsi_controllers('ab589f9a-af35-428e-9690-9b96587d86f3')
-#=> [<Fog::Compute::Vsphere::SCSIController
+#=> [<Fog::Vsphere::Compute::SCSIController
 #=>   shared_bus='noSharing',
 #=>   type='VirtualLsiLogicController',
 #=>   unit_number=7,

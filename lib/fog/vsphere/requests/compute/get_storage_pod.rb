@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_storage_pod(name, datacenter_name)
           storage_pod = list_storage_pods(datacenter: datacenter_name).detect { |pod| pod[:name] == name }
-          raise(Fog::Compute::Vsphere::NotFound) unless storage_pod
+          raise(Fog::Vsphere::Compute::NotFound) unless storage_pod
           storage_pod
         end
 

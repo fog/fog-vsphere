@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def host_start_maintenance(name, cluster_name, datacenter_name, timeout = 0, evacuate_powered_off_vms = false)
           host_ref = get_host(name, cluster_name, datacenter_name)

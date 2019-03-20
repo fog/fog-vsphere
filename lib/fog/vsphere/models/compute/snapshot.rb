@@ -1,8 +1,8 @@
 require 'fog/compute/models/server'
 
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Snapshot < Fog::Model
         identity  :ref
         attribute :server_id

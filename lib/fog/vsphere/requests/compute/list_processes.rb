@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_processes(vm_id, opts)
           vm = get_vm_ref(vm_id)

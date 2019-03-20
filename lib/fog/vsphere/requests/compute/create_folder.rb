@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def create_folder(datacenter, path, name)
           # Path cannot be nil but it can be an empty string

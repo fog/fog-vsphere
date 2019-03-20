@@ -1,10 +1,6 @@
 require 'fog/core'
 
 module Fog
-  module Compute
-    autoload :Vsphere, File.expand_path('../vsphere/compute.rb', __FILE__)
-  end
-
   module Vsphere
     extend Fog::Provider
 
@@ -13,6 +9,8 @@ module Fog
       class SecurityError < ServiceError; end
       class NotFound < ServiceError; end
     end
+
+    autoload :Compute, File.expand_path('../vsphere/compute', __FILE__)
 
     service(:compute, 'Compute')
 

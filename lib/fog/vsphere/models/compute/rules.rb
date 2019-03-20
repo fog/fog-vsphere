@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Rules < Fog::Collection
         autoload :Rule, File.expand_path('../rule', __FILE__)
 
-        model Fog::Compute::Vsphere::Rule
+        model Fog::Vsphere::Compute::Rule
         attribute :datacenter
         attribute :cluster
 
@@ -15,7 +15,7 @@ module Fog
 
         def get(key_or_name)
           all.find { |rule| [rule.key, rule.name].include? key_or_name } ||
-            raise(Fog::Compute::Vsphere::NotFound, "no such rule #{key_or_name}")
+            raise(Fog::Vsphere::Compute::NotFound, "no such rule #{key_or_name}")
         end
 
         # Pass datacenter/cluster to every new rule

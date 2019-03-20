@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_server_types(filters = {})
           datacenter_name = filters[:datacenter]

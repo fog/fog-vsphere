@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_clusters(filters = {})
           datacenter_name = filters[:datacenter] if filters.key? :datacenter

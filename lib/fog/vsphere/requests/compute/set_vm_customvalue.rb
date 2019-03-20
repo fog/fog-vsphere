@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def set_vm_customvalue(vm_id, key, value)
           vm_ref = get_vm_ref(vm_id)

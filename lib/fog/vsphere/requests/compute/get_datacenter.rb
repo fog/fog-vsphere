@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_datacenter(name)
           dc = find_raw_datacenter(name)
-          raise(Fog::Compute::Vsphere::NotFound) unless dc
+          raise(Fog::Vsphere::Compute::NotFound) unless dc
           { name: dc.name, status: dc.overallStatus, path: raw_getpathmo(dc) }
         end
 
@@ -23,7 +23,7 @@ module Fog
       class Mock
         def get_datacenter(name)
           dc = data[:datacenters][name]
-          raise(Fog::Compute::Vsphere::NotFound) unless dc
+          raise(Fog::Vsphere::Compute::NotFound) unless dc
           dc
         end
       end

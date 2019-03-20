@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_resource_pools(filters = {})
           datacenter_name = filters[:datacenter]

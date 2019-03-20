@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Clusters < Fog::Collection
         autoload :Cluster, File.expand_path('../cluster', __FILE__)
 
-        model Fog::Compute::Vsphere::Cluster
+        model Fog::Vsphere::Compute::Cluster
         attr_accessor :datacenter
 
         def all(filters = {})

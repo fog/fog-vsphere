@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def revert_to_snapshot(snapshot)
           unless Snapshot === snapshot

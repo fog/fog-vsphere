@@ -3,7 +3,7 @@ class Vsphere < Fog::Bin
     def class_for(key)
       case key
       when :compute
-        Fog::Compute::Vsphere
+        Fog::Vsphere::Compute
       else
         raise ArgumentError, "Unrecognized service: #{key}"
       end

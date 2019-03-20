@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def get_server_type(id, datacenter, _filter = {})
           server_type = get_raw_server_type(id, datacenter)
-          raise(Fog::Compute::Vsphere::NotFound) unless server_type
+          raise(Fog::Vsphere::Compute::NotFound) unless server_type
           server_type_attributes(server_type, datacenter)
         end
 
@@ -12,9 +12,9 @@ module Fog
 
         def get_raw_server_type(id, datacenter, _filter = {})
           types = raw_server_types(datacenter)
-          raise(Fog::Compute::Vsphere::NotFound) unless types
+          raise(Fog::Vsphere::Compute::NotFound) unless types
           types = types.select { |servertype| servertype.id == id }.first
-          raise(Fog::Compute::Vsphere::NotFound) unless types
+          raise(Fog::Vsphere::Compute::NotFound) unless types
           types
         end
       end

@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Networks < Fog::Collection
         autoload :Network, File.expand_path('../network', __FILE__)
 
-        model Fog::Compute::Vsphere::Network
+        model Fog::Vsphere::Compute::Network
         attr_accessor :datacenter, :cluster
 
         def all(filters = {})

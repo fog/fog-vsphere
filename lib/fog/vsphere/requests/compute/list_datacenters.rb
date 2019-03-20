@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_datacenters(_filters = {})
           raw_datacenters.map do |dc|

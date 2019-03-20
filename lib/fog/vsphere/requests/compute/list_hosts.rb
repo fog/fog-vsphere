@@ -1,7 +1,7 @@
 # rubocop:disable Lint/RescueWithoutErrorClass
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_hosts(filters = {})
           cluster = get_raw_cluster(filters[:cluster], filters[:datacenter])

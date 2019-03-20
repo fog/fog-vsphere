@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def add_vm_volume(volume)
           vm_reconfig_hardware('instance_uuid' => volume.server_id, 'hardware_spec' => { 'deviceChange' => [create_disk(volume, :add)] })

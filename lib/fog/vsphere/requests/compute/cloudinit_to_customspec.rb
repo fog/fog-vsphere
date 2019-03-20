@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def cloudinit_to_customspec(user_data)
           raise ArgumentError, "user_data can't be nil" if user_data.nil?

@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Customvalue < Fog::Model
         attribute :value
         attribute :key

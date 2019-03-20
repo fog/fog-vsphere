@@ -1,8 +1,8 @@
 require 'fog/compute/models/server'
 
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Process < Fog::Model
         attribute :cmd_line
         attribute :end_time

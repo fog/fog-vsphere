@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def vm_remove_snapshot(vm_id, snapshot_id, remove_children = false)
           vm = servers.get(vm_id)

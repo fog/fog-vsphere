@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def folder_destroy(path, datacenter_name)
           folder = get_raw_vmfolder(path, datacenter_name)

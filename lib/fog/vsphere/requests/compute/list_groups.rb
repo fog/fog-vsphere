@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Real
         def list_groups(filters = {})
           cluster = get_raw_cluster(filters[:cluster], filters[:datacenter])

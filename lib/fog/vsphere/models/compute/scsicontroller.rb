@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class SCSIController < Fog::Model
         attribute :shared_bus
         attribute :type

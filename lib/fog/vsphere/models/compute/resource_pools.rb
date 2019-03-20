@@ -1,10 +1,10 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class ResourcePools < Fog::Collection
         autoload :ResourcePool, File.expand_path('../resource_pool', __FILE__)
 
-        model Fog::Compute::Vsphere::ResourcePool
+        model Fog::Vsphere::Compute::ResourcePool
         attr_accessor :datacenter, :cluster
 
         def all(filters = {})

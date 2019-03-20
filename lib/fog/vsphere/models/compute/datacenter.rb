@@ -1,6 +1,6 @@
 module Fog
-  module Compute
-    class Vsphere
+  module Vsphere
+    class Compute
       class Datacenter < Fog::Model
         identity :id
         attribute :name
