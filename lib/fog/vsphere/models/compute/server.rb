@@ -50,6 +50,7 @@ module Fog
         attribute :cpuHotAddEnabled
         attribute :memoryHotAddEnabled
         attribute :firmware
+        attribute :boot_order
         attribute :annotation
 
         def initialize(attributes = {})
