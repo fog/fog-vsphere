@@ -164,6 +164,7 @@ module Fog
           cpuHotAddEnabled: 'config.cpuHotAddEnabled',
           memoryHotAddEnabled: 'config.memoryHotAddEnabled',
           firmware: 'config.firmware',
+          boot_order: 'config.bootOptions.bootOrder',
           annotation: 'config.annotation'
         }.freeze
 
@@ -198,6 +199,8 @@ module Fog
             attrs['mo_ref'] = vm_mob_ref._ref
             # The name method "magically" appears after a VM is ready and
             # finished cloning.
+            attrs['boot_order'] = parse_boot_order(attrs['boot_order'])
+
             if attrs['hypervisor'].is_a?(RbVmomi::VIM::HostSystem)
               host = attrs['hypervisor']
 
@@ -282,6 +285,24 @@ module Fog
           path.select { |x| x[0].is_a? element }.flatten
         rescue
           nil
+        end
+
+        # Maps RbVmomi boot order values to fog understandable strings.
+        # Result is uniqued, what effectively means that the order is defined by the first occurence.
+        def parse_boot_order(vm_boot_devs)
+          return unless vm_boot_devs.is_a?(Array)
+          vm_boot_devs.map do |vm_boot_dev|
+            case vm_boot_dev
+            when RbVmomi::VIM::VirtualMachineBootOptionsBootableEthernetDevice
+              'network'
+            when RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice
+              'disk'
+            when RbVmomi::VIM::VirtualMachineBootOptionsBootableCdromDevice
+              'cdrom'
+            when RbVmomi::VIM::VirtualMachineBootOptionsBootableFloppyDevice
+              'floppy'
+            end
+          end.compact.uniq
         end
 
         # returns vmware managed obj id string
