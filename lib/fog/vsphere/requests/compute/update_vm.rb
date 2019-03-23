@@ -21,20 +21,24 @@ module Fog
           spec[:memoryMB] = attributes[:memory_mb]
 
           # Volumes
-          device_change.concat(update_vm_volumes_specs(vm_mob_ref, server.volumes))
+          vm_volumes = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualDisk)
+          device_change.concat(update_vm_volumes_specs(vm_volumes, server.volumes))
 
           # Networks
-          device_change.concat(update_vm_interfaces_specs(vm_mob_ref, server.interfaces, datacenter))
+          vm_nics = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualEthernetCard)
+          device_change.concat(update_vm_interfaces_specs(vm_nics, server.interfaces, datacenter))
 
           spec[:deviceChange] = device_change unless device_change.empty?
+          if attributes.key?(:boot_order) || attributes.key?(:boot_retry)
+            spec[:bootOptions] = update_boot_options(attributes, vm_nics, vm_volumes)
+          end
 
           vm_reconfig_hardware('instance_uuid' => attributes[:instance_uuid], 'hardware_spec' => spec) unless spec.empty?
         end
 
         private
 
-        def update_vm_interfaces_specs(vm_mob_ref, fog_interfaces, datacenter)
-          vm_nics = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualEthernetCard)
+        def update_vm_interfaces_specs(vm_nics, fog_interfaces, datacenter)
           modified_nics = fog_interfaces.to_a.take(vm_nics.size)
           new_nics = fog_interfaces.to_a.drop(vm_nics.size)
 
@@ -61,8 +65,7 @@ module Fog
           specs
         end
 
-        def update_vm_volumes_specs(vm_mob_ref, volumes)
-          vm_volumes = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualDisk)
+        def update_vm_volumes_specs(vm_volumes, volumes)
           modified_volumes = volumes.to_a.take(vm_volumes.size)
           new_volumes = volumes.to_a.drop(vm_volumes.size)
 
@@ -81,6 +84,23 @@ module Fog
           specs.concat(new_volumes.map { |volume| create_disk(volume) }) if new_volumes.any?
 
           specs
+        end
+
+        def update_boot_options(attributes, vm_nics, vm_volumes)
+          # NOTE: you must be using vsphere_rev 5.0 or greater to set boot_order
+          # e.g. Fog::Compute.new(provider: "vsphere", vsphere_rev: "5.5", etc)
+          options = {}
+          if (@vsphere_rev.to_f >= 5) && attributes[:boot_order]
+            options[:bootOrder] = boot_order(attributes[:boot_order], vm_nics, vm_volumes)
+          end
+
+          # Set attributes[:boot_retry] to a delay in miliseconds to enable boot retries
+          if attributes[:boot_retry]
+            options[:bootRetryEnabled] = true
+            options[:bootRetryDelay]   = attributes[:boot_retry]
+          end
+
+          options.empty? ? nil : RbVmomi::VIM::VirtualMachineBootOptions.new(options)
         end
 
         def update_volume_attributes(vm_volume, fog_volume)

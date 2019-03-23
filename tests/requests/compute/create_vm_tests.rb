@@ -62,17 +62,13 @@ describe Fog::Vsphere::Compute::Real do
       RbVmomi::VIM::VirtualMachineBootOptionsBootableEthernetDevice.expects(:new).with(deviceKey: 4002).returns(nwrk_boot3)
 
       expect(
-        compute.send(:boot_order, { boot_order: ['network'], interfaces: networks }, {})
+        compute.send(:boot_order, ['network'], networks, [])
       ).must_equal([nwrk_boot1, nwrk_boot2, nwrk_boot3])
     end
 
     it 'adds all disks in order for disk boot' do
-      disk_devs = [
-        { device: stub('key' => 23) },
-        { device: stub('key' => 12) },
-        { device: stub('key' => 34) }
-      ]
-      disk_devs.each { |d| d[:device].expects('is_a?').with(RbVmomi::VIM::VirtualDisk).returns(true) }
+      disk_devs = [stub('key' => 23), stub('key' => 12), stub('key' => 34)]
+      disk_devs.each { |d| d.stubs('is_a?').with(RbVmomi::VIM::VirtualDisk).returns(true) }
       disk_boot1 = stub
       disk_boot2 = stub
       disk_boot3 = stub
@@ -82,7 +78,7 @@ describe Fog::Vsphere::Compute::Real do
       RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice.expects(:new).with(deviceKey: 34).returns(disk_boot3)
 
       expect(
-        compute.send(:boot_order, { boot_order: ['disk'] }, deviceChange: disk_devs)
+        compute.send(:boot_order, ['disk'], [], disk_devs)
       ).must_equal([disk_boot1, disk_boot2, disk_boot3])
     end
   end

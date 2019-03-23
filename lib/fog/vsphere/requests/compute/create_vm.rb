@@ -114,7 +114,8 @@ module Fog
           # e.g. Fog::Compute.new(provider: "vsphere", vsphere_rev: "5.5", etc)
           options = {}
           if (@vsphere_rev.to_f >= 5) && attributes[:boot_order]
-            options[:bootOrder] = boot_order(attributes, vm_cfg)
+            disks = vm_cfg[:deviceChange].map { |dev| dev[:device] }.select { |dev| dev.is_a? RbVmomi::VIM::VirtualDisk }
+            options[:bootOrder] = boot_order(attributes[:boot_order], attributes[:interfaces], disks)
           end
 
           # Set attributes[:boot_retry] to a delay in miliseconds to enable boot retries
@@ -126,39 +127,38 @@ module Fog
           options.empty? ? nil : RbVmomi::VIM::VirtualMachineBootOptions.new(options)
         end
 
-        def boot_order(attributes, vm_cfg)
+        def boot_order(fog_boot_order, nics, disks)
           # attributes[:boot_order] may be an array like this ['network', 'disk']
           # stating, that we want to prefer network boots over disk boots
-          boot_order = []
-          attributes[:boot_order].each do |boot_device|
+          vm_boot_order = []
+          fog_boot_order.each do |boot_device|
             case boot_device
             when 'network'
-              if nics = attributes[:interfaces]
+              if nics
                 # key is based on 4000 + the interface index
                 # we allow booting from all network interfaces, the first interface has the highest priority
                 nics.each do |nic|
-                  boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableEthernetDevice.new(
+                  vm_boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableEthernetDevice.new(
                     deviceKey: 4000 + nics.index(nic)
                   )
                 end
               end
             when 'disk'
-              disks = vm_cfg[:deviceChange].map { |dev| dev[:device] }.select { |dev| dev.is_a? RbVmomi::VIM::VirtualDisk }
               disks.each do |disk|
                 # we allow booting from all harddisks, the first disk has the highest priority
-                boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice.new(
+                vm_boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableDiskDevice.new(
                   deviceKey: disk.key
                 )
               end
             when 'cdrom'
-              boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableCdromDevice.new
+              vm_boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableCdromDevice.new
             when 'floppy'
-              boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableFloppyDevice.new
+              vm_boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableFloppyDevice.new
             else
               raise "failed to create boot device because \"#{boot_device}\" is unknown"
             end
           end
-          boot_order
+          vm_boot_order
         end
 
         def create_nic_backing(nic, attributes)
