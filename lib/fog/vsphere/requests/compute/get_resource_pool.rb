@@ -11,9 +11,7 @@ module Fog
         protected
 
         def get_raw_resource_pool(name, cluster_name, datacenter_name)
-          dc      = find_raw_datacenter(datacenter_name)
-          cluster = dc.find_compute_resource(cluster_name)
-          name.nil? ? cluster.resourcePool : cluster.resourcePool.traverse(name)
+          shared_request.get_raw_resource_pool(name, cluster_name, datacenter_name)
         end
       end
 

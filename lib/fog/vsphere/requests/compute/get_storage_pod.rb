@@ -11,11 +11,7 @@ module Fog
         protected
 
         def get_raw_storage_pod(name, datacenter_name)
-          raw_storage_pods(datacenter_name).detect { |pod| pod.name == name }
-        end
-
-        def raw_storage_pods(datacenter_name)
-          list_container_view(datacenter_name, 'StoragePod')
+          shared_request.get_raw_storage_pod(name, datacenter_name)
         end
       end
 

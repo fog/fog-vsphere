@@ -11,11 +11,7 @@ module Fog
         protected
 
         def get_raw_datastore(name, datacenter_name)
-          get_raw_datastores(datacenter_name).detect { |ds| ds.name == name }
-        end
-
-        def get_raw_datastores(datacenter_name)
-          list_container_view(datacenter_name, 'Datastore', :datastoreFolder)
+          shared_request.get_raw_datastore(name, datacenter_name)
         end
       end
 
