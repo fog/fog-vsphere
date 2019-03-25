@@ -15,7 +15,8 @@ module Fog
         #    uuid: "6000C29c-a47d-4cd9-5249-c371de775f06",
         #    writeThrough: false
         #  ),
-        #  capacityInKB: 8388608,
+        #  capacityInKB: 8388608,       # rev <= 5.5
+        #  capacityInBytes: 8589934592, # rev >= 5.5
         #  controllerKey: 1000,
         #  deviceInfo: Description(
         #    dynamicProperty: [],
@@ -44,7 +45,7 @@ module Fog
                              rescue
                                (nil)
                              end),
-              size: vol.capacityInKB,
+              size: vsphere_rev.to_f > 5.5 ? vol.capacityInBytes / 1024 : vol.capacityInKB,
               name: vol.deviceInfo.label,
               key: vol.key,
               unit_number: vol.unitNumber,

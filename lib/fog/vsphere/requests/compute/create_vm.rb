@@ -243,9 +243,15 @@ module Fog
           disk.set_unit_number
           disk.set_key
 
+          size_def =  if vsphere_rev.to_f > 5.5
+                        { capacityInBytes: disk.size * 1024 }
+                      else
+                        { capacityInKB: disk.size }
+                      end
+
           payload = {
             operation: operation,
-            device: RbVmomi::VIM.VirtualDisk(
+            device: RbVmomi::VIM.VirtualDisk(size_def.merge(
               key: disk.key,
               backing: RbVmomi::VIM.VirtualDiskFlatVer2BackingInfo(
                 fileName: options[:filename] || datastore,
@@ -253,9 +259,8 @@ module Fog
                 thinProvisioned: disk.thin
               ),
               controllerKey: disk.controller_key,
-              unitNumber: disk.unit_number,
-              capacityInKB: disk.size
-            )
+              unitNumber: disk.unit_number
+            ))
           }
           file_operation = options[:file_operation] || (:create if operation == :add)
           payload[:fileOperation] = file_operation if file_operation
