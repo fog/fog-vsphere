@@ -1,0 +1,1 @@
+<env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><FindChild xmlns="urn:vim25"><_this type="SearchIndex">SearchIndex</_this><entity type="Folder">group-h4</entity><name>ESXiHost</name></FindChild></env:Body></env:Envelope>

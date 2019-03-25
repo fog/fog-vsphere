@@ -1,0 +1,1 @@
+<env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><Login xmlns="urn:vim25"><_this type="SessionManager">SessionManager</_this><userName>Administrator@example.com</userName><password>password</password></Login></env:Body></env:Envelope>
