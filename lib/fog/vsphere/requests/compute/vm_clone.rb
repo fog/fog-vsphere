@@ -161,7 +161,7 @@ module Fog
             device_change << modify_template_nics_simple_spec(options['network_label'], options['nic_type'], options['network_adapter_device_key'], options['datacenter'])
           end
           if disks = options['volumes']
-            device_change.concat(modify_template_volumes_specs(vm_mob_ref, options['volumes']))
+            device_change.concat(modify_template_volumes_specs(vm_mob_ref, options['volumes'], default_storage_pod: options['storage_pod']))
           end
           virtual_machine_config_spec.deviceChange = device_change if device_change.any?
           # Options['numCPUs'] or Options['memoryMB']
@@ -786,7 +786,7 @@ module Fog
           specs
         end
 
-        def modify_template_volumes_specs(vm_mob_ref, volumes)
+        def modify_template_volumes_specs(vm_mob_ref, volumes, default_storage_pod: nil)
           template_volumes = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualDisk)
           modified_volumes = volumes.take(template_volumes.size)
           new_volumes      = volumes.drop(template_volumes.size)
@@ -794,6 +794,9 @@ module Fog
           specs = []
           template_volumes.zip(modified_volumes).each do |template_volume, new_volume|
             if new_volume
+              # copy identifiers to fog device to mark them as used
+              new_volume.unit_number = template_volume.unitNumber
+              new_volume.key = template_volume.key
               # updated the attribtues on the existing volume
               # it's not allowed to reduce the size of the volume when cloning
               if new_volume.size > template_volume.capacityInKB
@@ -808,8 +811,7 @@ module Fog
                          device: template_volume }
             end
           end
-          new_volumes.map { |volume| volume.unit_number = volumes.index(volume) < 7 ? volumes.index(volume) : volumes.index(volume) + 1 }
-          specs.concat(new_volumes.map { |volume| create_disk(volume) })
+          specs.concat(new_volumes.map { |volume| create_disk(volume, :add, storage_pod: default_storage_pod) })
           specs
         end
 
