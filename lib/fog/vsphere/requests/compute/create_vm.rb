@@ -178,7 +178,7 @@ module Fog
             )
 
           else
-            RbVmomi::VIM.VirtualEthernetCardNetworkBackingInfo(deviceName: nic.network)
+            RbVmomi::VIM.VirtualEthernetCardNetworkBackingInfo(deviceName: raw_network.name)
           end
         end
 

@@ -31,7 +31,7 @@ module Fog
               )
             else
               map_attrs_to_hash(network, network_attribute_mapping).merge(
-                id: managed_obj_id(network.obj)
+                id: network.obj._ref
               )
             end.merge(
               datacenter: datacenter_name,
