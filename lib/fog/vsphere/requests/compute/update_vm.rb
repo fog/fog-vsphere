@@ -92,11 +92,14 @@ module Fog
         def nic_backing_different?(one, two)
           return true if one.class != two.class
 
-          return true if one.is_a?(RbVmomi::VIM::VirtualEthernetCardDistributedVirtualPortBackingInfo) && (one.port.portgroupKey != two.port.portgroupKey || one.port.switchUuid != two.port.switchUuid)
-
-          return true if one.is_a?(RbVmomi::VIM::VirtualEthernetCardNetworkBackingInfo) && one.deviceName != two.deviceName && one.deviceType != twp.device
-
-          false
+          case one
+          when RbVmomi::VIM::VirtualEthernetCardDistributedVirtualPortBackingInfo
+            one.port.portgroupKey != two.port.portgroupKey || one.port.switchUuid != two.port.switchUuid
+          when RbVmomi::VIM::VirtualEthernetCardNetworkBackingInfo
+            one.deviceName != two.deviceName
+          else
+            false
+          end
         end
       end
 
