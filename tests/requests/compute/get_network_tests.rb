@@ -23,10 +23,10 @@ Shindo.tests('Fog::Compute[:vsphere] | get_network request', ['vsphere']) do
 
   def fake_networks
     [
-      OpenStruct.new(name: 'non-dvs'),
-      make_fake_dvs(name: 'web1', dvs_name: 'dvs5', key: '4001'),
-      make_fake_dvs(name: 'web1', dvs_name: 'dvs11', key: '4001'),
-      make_fake_dvs(name: 'other', dvs_name: 'other', key: '4001')
+      OpenStruct.new(_ref: 'network-1', name: 'non-dvs'),
+      make_fake_dvs(_ref: 'network-2', name: 'web1', dvs_name: 'dvs5', key: '4001'),
+      make_fake_dvs(_ref: 'network-3', name: 'web1', dvs_name: 'dvs11', key: '4001'),
+      make_fake_dvs(_ref: 'network-4', name: 'other', dvs_name: 'other', key: '4001')
     ]
   end
 
