@@ -634,7 +634,7 @@ module Fog
             end
           end
           # relocate templates is not supported by fog-vsphere when vm is cloned on a storage pod
-          unless options.key?('storage_pod') && !options['volumes']
+          unless options.key?('storage_pod') || !options['volumes']
             unless options['volumes'].empty?
               relocation_spec[:disk] = relocate_template_volumes_specs(vm_mob_ref, options['volumes'], options['datacenter'])
             end
