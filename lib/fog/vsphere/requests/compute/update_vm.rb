@@ -20,6 +20,10 @@ module Fog
           # Memory
           spec[:memoryMB] = attributes[:memory_mb]
 
+          # HotAdd
+          spec[:cpuHotAddEnabled] = attributes[:cpuHotAddEnabled]
+          spec[:memoryHotAddEnabled] = attributes[:memoryHotAddEnabled]
+
           # Volumes
           device_change.concat(update_vm_volumes_specs(vm_mob_ref, server.volumes))
 
