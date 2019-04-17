@@ -14,6 +14,15 @@ module Fog
           finder = choose_finder(ref_or_name, distributedswitch)
           get_all_raw_networks(datacenter_name).find { |n| finder.call(n) }
         end
+
+        def network_attributes(network, datacenter_name)
+          {
+            id: managed_obj_id(network),
+            name: network.name,
+            datacenter: datacenter_name,
+            vlanid: nil
+          }
+        end
       end
 
       module Shared

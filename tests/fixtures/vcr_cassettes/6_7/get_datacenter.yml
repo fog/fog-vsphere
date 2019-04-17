@@ -1,0 +1,498 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Folder</type><pathSet>childEntity</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Folder">group-d1</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:14 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '666'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Folder">group-d1</obj><propSet><name>childEntity</name><val xsi:type="ArrayOfManagedObjectReference"><ManagedObjectReference type="Datacenter" xsi:type="ManagedObjectReference">datacenter-2</ManagedObjectReference></val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:14 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Datacenter</type><pathSet>name</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Datacenter">datacenter-2</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:14 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '538'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Datacenter">datacenter-2</obj><propSet><name>name</name><val xsi:type="xsd:string">BRQ</val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:16 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Datacenter</type><pathSet>name</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Datacenter">datacenter-2</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:16 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '538'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Datacenter">datacenter-2</obj><propSet><name>name</name><val xsi:type="xsd:string">BRQ</val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:17 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Datacenter</type><pathSet>overallStatus</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Datacenter">datacenter-2</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:17 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '557'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Datacenter">datacenter-2</obj><propSet><name>overallStatus</name><val xsi:type="ManagedEntityStatus">gray</val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:17 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Datacenter</type><pathSet>parent</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Datacenter">datacenter-2</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:17 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '571'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Datacenter">datacenter-2</obj><propSet><name>parent</name><val type="Folder" xsi:type="ManagedObjectReference">group-d1</val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:19 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Datacenter</type><pathSet>parent</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Datacenter">datacenter-2</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:18 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '571'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Datacenter">datacenter-2</obj><propSet><name>parent</name><val type="Folder" xsi:type="ManagedObjectReference">group-d1</val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:21 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Folder</type><pathSet>name</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Folder">group-d1</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:20 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '538'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Folder">group-d1</obj><propSet><name>name</name><val xsi:type="xsd:string">Datacenters</val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:23 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Folder</type><pathSet>name</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Folder">group-d1</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:23 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '538'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Folder">group-d1</obj><propSet><name>name</name><val xsi:type="xsd:string">Datacenters</val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:24 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>Datacenter</type><pathSet>name</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="Datacenter">datacenter-2</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="abc1d5132f9e906b015d27321c7be479b4241303"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Tue, 16 Apr 2019 13:59:24 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '538'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="Datacenter">datacenter-2</obj><propSet><name>name</name><val xsi:type="xsd:string">BRQ</val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version:
+  recorded_at: Tue, 16 Apr 2019 13:59:26 GMT
+recorded_with: VCR 4.0.0

@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/fog/fog-vsphere'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0")
+  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(tests?|spec|features)/}) }
   spec.test_files    = spec.files.grep(%r{^tests\/})
 
   spec.require_paths = ['lib']
@@ -31,4 +31,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '~> 0.50.0'
   spec.add_development_dependency 'mocha', '~> 1.8'
   spec.add_development_dependency 'shindo', '~> 0.3'
+  spec.add_development_dependency 'webmock', '~> 3.5'
+  spec.add_development_dependency 'vcr', '~> 4.0'
 end
