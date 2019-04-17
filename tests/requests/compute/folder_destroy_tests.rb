@@ -17,3 +17,23 @@ Shindo.tests('Fog::Compute[:vsphere] | folder_destroy request', ['vsphere']) do
     end
   end
 end
+
+require_relative '../../test_helper'
+
+describe Fog::Vsphere::Compute::Real do
+  include Fog::Vsphere::TestHelper
+
+  before { Fog.unmock! }
+  after { Fog.mock! }
+
+  let(:compute) { prepare_compute }
+
+  describe '#folder_destroy' do
+    it 'destroys folder' do
+      with_webmock_cassette('folder_destroy') do
+        result = compute.folder_destroy('TestFolder', 'BRQ')
+        assert_equal result['task_state'], 'success'
+      end
+    end
+  end
+end

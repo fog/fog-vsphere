@@ -53,3 +53,26 @@ Shindo.tests('Fog::Compute[:vsphere] | get_network request', ['vsphere']) do
     end
   end
 end
+
+require_relative '../../test_helper'
+
+describe Fog::Vsphere::Compute::Real do
+  include Fog::Vsphere::TestHelper
+
+  before { Fog.unmock! }
+  after { Fog.mock! }
+
+  let(:compute) { prepare_compute }
+
+  describe '#get_network' do
+    it 'gets network by name or ref' do
+      with_webmock_cassette('get_network') do
+        network = compute.get_network('InternalNetwork', 'BRQ')
+        assert_equal(network[:name], 'InternalNetwork')
+
+        network = compute.get_network('network-12', 'BRQ')
+        assert_equal(network[:id], 'network-12')
+      end
+    end
+  end
+end
