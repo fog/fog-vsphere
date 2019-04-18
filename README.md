@@ -87,6 +87,7 @@ There is a lot more you can do as well! We are working on providing better docum
 ## Contributing
 
 To contribute to this project, add an issue or pull request. For more info on what that means or how to do it, see [this guide](https://guides.github.com/activities/contributing-to-open-source/#contributing) from GitHub.
+For more details see [CONTRIBUTING.md file](CONTRIBUTING.md)
 
 [climate-image]: https://codeclimate.com/github/fog/fog-vsphere.svg
 [climate-url]: https://codeclimate.com/github/fog/fog-vsphere

@@ -22,3 +22,4 @@ tmp
 mkmf.log
 gemfiles/*.lock
 .*.swp
+tests/vsphere_config.yml
