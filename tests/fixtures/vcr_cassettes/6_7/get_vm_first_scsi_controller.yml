@@ -1,0 +1,111 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><FindByUuid
+        xmlns="urn:vim25"><_this type="SearchIndex">SearchIndex</_this><uuid>52d810bd-077b-368d-a86f-0b2ad84269f8</uuid><vmSearch>1</vmSearch><instanceUuid>1</instanceUuid></FindByUuid></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="2da975e61be85346b62d8f5d4814878b7216244f"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 18 Apr 2019 17:23:34 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '436'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <FindByUuidResponse xmlns="urn:vim25"><returnval type="VirtualMachine">vm-22</returnval></FindByUuidResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version: 
+  recorded_at: Thu, 18 Apr 2019 17:23:35 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">propertyCollector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>VirtualMachine</type><pathSet>config</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="VirtualMachine">vm-22</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/6.7
+      Cookie:
+      - vmware_soap_session="2da975e61be85346b62d8f5d4814878b7216244f"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Thu, 18 Apr 2019 17:23:34 GMT
+      Cache-Control:
+      - no-cache
+      Connection:
+      - Keep-Alive
+      Content-Type:
+      - text/xml; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      X-Frame-Options:
+      - DENY
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="VirtualMachine">vm-22</obj><propSet><name>config</name><val xsi:type="VirtualMachineConfigInfo"><changeVersion>2019-04-09T11:43:16.576892Z</changeVersion><modified>1970-01-01T00:00:00Z</modified><name>DC1</name><guestFullName>Microsoft Windows Server 2016 (64-bit)</guestFullName><version>vmx-11</version><uuid>564d88d6-2aea-1c8e-826e-1f0dbc536ae6</uuid><createDate>2019-01-24T14:32:57.981331Z</createDate><instanceUuid>52d810bd-077b-368d-a86f-0b2ad84269f8</instanceUuid><npivTemporaryDisabled>true</npivTemporaryDisabled><locationId>564d88d6-2aea-1c8e-826e-1f0dbc536ae6</locationId><template>false</template><guestId>windows9Server64Guest</guestId><alternateGuestName></alternateGuestName><annotation></annotation><files><vmPathName>[storage1] DC1/DC1.vmx</vmPathName><snapshotDirectory>[storage1] DC1/</snapshotDirectory><suspendDirectory>[storage1] DC1/</suspendDirectory><logDirectory>[storage1] DC1/</logDirectory></files><tools><toolsVersion>10304</toolsVersion><toolsInstallType>guestToolsTypeMSI</toolsInstallType><afterPowerOn>true</afterPowerOn><afterResume>true</afterResume><beforeGuestStandby>true</beforeGuestStandby><beforeGuestShutdown>true</beforeGuestShutdown><toolsUpgradePolicy>manual</toolsUpgradePolicy><syncTimeWithHost>false</syncTimeWithHost><lastInstallInfo><counter>1</counter></lastInstallInfo></tools><flags><disableAcceleration>false</disableAcceleration><enableLogging>true</enableLogging><useToe>false</useToe><runWithDebugInfo>false</runWithDebugInfo><monitorType>release</monitorType><htSharing>any</htSharing><snapshotDisabled>false</snapshotDisabled><snapshotLocked>false</snapshotLocked><diskUuidEnabled>true</diskUuidEnabled><virtualMmuUsage>automatic</virtualMmuUsage><virtualExecUsage>hvAuto</virtualExecUsage><snapshotPowerOffBehavior>powerOff</snapshotPowerOffBehavior><recordReplayEnabled>false</recordReplayEnabled><faultToleranceType>unset</faultToleranceType><cbrcCacheEnabled>false</cbrcCacheEnabled><vvtdEnabled>false</vvtdEnabled><vbsEnabled>false</vbsEnabled></flags><defaultPowerOps><powerOffType>soft</powerOffType><suspendType>soft</suspendType><resetType>soft</resetType><defaultPowerOffType>soft</defaultPowerOffType><defaultSuspendType>hard</defaultSuspendType><defaultResetType>soft</defaultResetType><standbyAction>checkpoint</standbyAction></defaultPowerOps><hardware><numCPU>2</numCPU><numCoresPerSocket>1</numCoresPerSocket><memoryMB>4096</memoryMB><virtualICH7MPresent>false</virtualICH7MPresent><virtualSMCPresent>false</virtualSMCPresent><device xsi:type="VirtualIDEController"><key>200</key><deviceInfo><label>IDE 0</label><summary>IDE 0</summary></deviceInfo><busNumber>0</busNumber></device><device xsi:type="VirtualIDEController"><key>201</key><deviceInfo><label>IDE 1</label><summary>IDE 1</summary></deviceInfo><busNumber>1</busNumber></device><device xsi:type="VirtualPS2Controller"><key>300</key><deviceInfo><label>PS2 controller 0</label><summary>PS2 controller 0</summary></deviceInfo><busNumber>0</busNumber><device>600</device><device>700</device></device><device xsi:type="VirtualPCIController"><key>100</key><deviceInfo><label>PCI controller 0</label><summary>PCI controller 0</summary></deviceInfo><busNumber>0</busNumber><device>500</device><device>12000</device><device>14000</device><device>1000</device><device>15000</device><device>4000</device><device>4001</device></device><device xsi:type="VirtualSIOController"><key>400</key><deviceInfo><label>SIO controller 0</label><summary>SIO controller 0</summary></deviceInfo><busNumber>0</busNumber></device><device xsi:type="VirtualKeyboard"><key>600</key><deviceInfo><label>Keyboard </label><summary>Keyboard</summary></deviceInfo><controllerKey>300</controllerKey><unitNumber>0</unitNumber></device><device xsi:type="VirtualPointingDevice"><key>700</key><deviceInfo><label>Pointing device</label><summary>Pointing device; Device</summary></deviceInfo><backing xsi:type="VirtualPointingDeviceDeviceBackingInfo"><deviceName></deviceName><useAutoDetect>false</useAutoDetect><hostPointingDevice>autodetect</hostPointingDevice></backing><controllerKey>300</controllerKey><unitNumber>1</unitNumber></device><device xsi:type="VirtualMachineVideoCard"><key>500</key><deviceInfo><label>Video card </label><summary>Video card</summary></deviceInfo><controllerKey>100</controllerKey><unitNumber>0</unitNumber><videoRamSizeInKB>4096</videoRamSizeInKB><numDisplays>1</numDisplays><useAutoDetect>false</useAutoDetect><enable3DSupport>false</enable3DSupport><use3dRenderer>automatic</use3dRenderer><graphicsMemorySizeInKB>262144</graphicsMemorySizeInKB></device><device xsi:type="VirtualMachineVMCIDevice"><key>12000</key><deviceInfo><label>VMCI device</label><summary>Device on the virtual machine PCI bus that provides support for the virtual machine communication interface</summary></deviceInfo><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>32</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>17</unitNumber><id>-1135383834</id><allowUnrestrictedCommunication>false</allowUnrestrictedCommunication><filterEnable>true</filterEnable></device><device xsi:type="VirtualUSBXHCIController"><key>14000</key><deviceInfo><label>USB xHCI controller </label><summary>USB xHCI controller</summary></deviceInfo><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>224</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>23</unitNumber><busNumber>0</busNumber><autoConnectDevices>false</autoConnectDevices></device><device xsi:type="VirtualLsiLogicSASController"><key>1000</key><deviceInfo><label>SCSI controller 0</label><summary>LSI Logic SAS</summary></deviceInfo><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>160</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>3</unitNumber><busNumber>0</busNumber><device>2000</device><hotAddRemove>true</hotAddRemove><sharedBus>noSharing</sharedBus><scsiCtlrUnitNumber>7</scsiCtlrUnitNumber></device><device xsi:type="VirtualAHCIController"><key>15000</key><deviceInfo><label>SATA controller 0</label><summary>AHCI</summary></deviceInfo><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>33</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>24</unitNumber><busNumber>0</busNumber><device>16000</device></device><device xsi:type="VirtualCdrom"><key>16000</key><deviceInfo><label>CD/DVD drive 1</label><summary>ISO [storage1] Installations/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO</summary></deviceInfo><backing xsi:type="VirtualCdromIsoBackingInfo"><fileName>[storage1] Installations/Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO</fileName><datastore type="Datastore">datastore-10</datastore></backing><connectable><startConnected>true</startConnected><allowGuestControl>true</allowGuestControl><connected>true</connected><status>ok</status></connectable><controllerKey>15000</controllerKey><unitNumber>0</unitNumber></device><device xsi:type="VirtualDisk"><key>2000</key><deviceInfo><label>Hard disk 1</label><summary>62,914,560 KB</summary></deviceInfo><backing xsi:type="VirtualDiskFlatVer2BackingInfo"><fileName>[storage1] DC1/DC1.vmdk</fileName><datastore type="Datastore">datastore-10</datastore><backingObjectId></backingObjectId><diskMode>persistent</diskMode><split>false</split><writeThrough>false</writeThrough><thinProvisioned>false</thinProvisioned><uuid>6000C295-8cfd-1ccc-e886-475a84e1f37d</uuid><contentId>73427c5fcbe18b98431ee5fe63097b0c</contentId><digestEnabled>false</digestEnabled><sharing>sharingNone</sharing></backing><controllerKey>1000</controllerKey><unitNumber>0</unitNumber><capacityInKB>62914560</capacityInKB><capacityInBytes>64424509440</capacityInBytes><shares><shares>1000</shares><level>normal</level></shares><storageIOAllocation><limit>-1</limit><shares><shares>1000</shares><level>normal</level></shares><reservation>0</reservation></storageIOAllocation><diskObjectId>3-2000</diskObjectId><nativeUnmanagedLinkedClone>false</nativeUnmanagedLinkedClone></device><device xsi:type="VirtualE1000e"><key>4000</key><deviceInfo><label>Network adapter 1</label><summary>VM Network</summary></deviceInfo><backing xsi:type="VirtualEthernetCardNetworkBackingInfo"><deviceName>VM Network</deviceName><useAutoDetect>false</useAutoDetect><network type="Network">network-13</network></backing><connectable><migrateConnect>unset</migrateConnect><startConnected>true</startConnected><allowGuestControl>true</allowGuestControl><connected>true</connected><status>ok</status></connectable><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>192</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>7</unitNumber><addressType>generated</addressType><macAddress>00:0c:29:53:6a:e6</macAddress><wakeOnLanEnabled>false</wakeOnLanEnabled><resourceAllocation><reservation>0</reservation><share><shares>50</shares><level>normal</level></share><limit>-1</limit></resourceAllocation><uptCompatibilityEnabled>false</uptCompatibilityEnabled></device><device xsi:type="VirtualE1000e"><key>4001</key><deviceInfo><label>Network adapter 2</label><summary>InternalNetwork</summary></deviceInfo><backing xsi:type="VirtualEthernetCardNetworkBackingInfo"><deviceName>InternalNetwork</deviceName><useAutoDetect>false</useAutoDetect><network type="Network">network-15</network></backing><connectable><migrateConnect>unset</migrateConnect><startConnected>true</startConnected><allowGuestControl>true</allowGuestControl><connected>true</connected><status>ok</status></connectable><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>256</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>8</unitNumber><addressType>assigned</addressType><macAddress>00:50:56:90:6d:7a</macAddress><wakeOnLanEnabled>true</wakeOnLanEnabled><resourceAllocation><reservation>0</reservation><share><shares>50</shares><level>normal</level></share><limit>-1</limit></resourceAllocation><uptCompatibilityEnabled>false</uptCompatibilityEnabled></device></hardware><cpuAllocation><reservation>0</reservation><limit>-1</limit><shares><shares>2000</shares><level>normal</level></shares></cpuAllocation><memoryAllocation><reservation>0</reservation><limit>-1</limit><shares><shares>40960</shares><level>normal</level></shares></memoryAllocation><latencySensitivity><level>normal</level></latencySensitivity><memoryHotAddEnabled>false</memoryHotAddEnabled><cpuHotAddEnabled>false</cpuHotAddEnabled><cpuHotRemoveEnabled>false</cpuHotRemoveEnabled><hotPlugMemoryLimit>4096</hotPlugMemoryLimit><hotPlugMemoryIncrementSize>0</hotPlugMemoryIncrementSize><extraConfig><key>nvram</key><value xsi:type="xsd:string">DC1.nvram</value></extraConfig><extraConfig><key>pciBridge0.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>svga.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge4.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge4.virtualDev</key><value xsi:type="xsd:string">pcieRootPort</value></extraConfig><extraConfig><key>pciBridge4.functions</key><value xsi:type="xsd:string">8</value></extraConfig><extraConfig><key>pciBridge5.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge5.virtualDev</key><value xsi:type="xsd:string">pcieRootPort</value></extraConfig><extraConfig><key>pciBridge5.functions</key><value xsi:type="xsd:string">8</value></extraConfig><extraConfig><key>pciBridge6.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge6.virtualDev</key><value xsi:type="xsd:string">pcieRootPort</value></extraConfig><extraConfig><key>pciBridge6.functions</key><value xsi:type="xsd:string">8</value></extraConfig><extraConfig><key>pciBridge7.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge7.virtualDev</key><value xsi:type="xsd:string">pcieRootPort</value></extraConfig><extraConfig><key>pciBridge7.functions</key><value xsi:type="xsd:string">8</value></extraConfig><extraConfig><key>hpet0.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>sched.cpu.latencySensitivity</key><value xsi:type="xsd:string">normal</value></extraConfig><extraConfig><key>disk.EnableUUID</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>numa.autosize.cookie</key><value xsi:type="xsd:string">20001</value></extraConfig><extraConfig><key>numa.autosize.vcpu.maxPerVirtualNode</key><value xsi:type="xsd:string">2</value></extraConfig><extraConfig><key>sched.swap.derivedName</key><value xsi:type="xsd:string">/vmfs/volumes/5c49ca9b-a707a914-97d0-6805ca0c6705/DC1/DC1-750e2789.vswp</value></extraConfig><extraConfig><key>scsi0:0.redo</key><value xsi:type="xsd:string"></value></extraConfig><extraConfig><key>pciBridge0.pciSlotNumber</key><value xsi:type="xsd:string">17</value></extraConfig><extraConfig><key>pciBridge4.pciSlotNumber</key><value xsi:type="xsd:string">21</value></extraConfig><extraConfig><key>pciBridge5.pciSlotNumber</key><value xsi:type="xsd:string">22</value></extraConfig><extraConfig><key>pciBridge6.pciSlotNumber</key><value xsi:type="xsd:string">23</value></extraConfig><extraConfig><key>pciBridge7.pciSlotNumber</key><value xsi:type="xsd:string">24</value></extraConfig><extraConfig><key>scsi0.pciSlotNumber</key><value xsi:type="xsd:string">160</value></extraConfig><extraConfig><key>ethernet0.pciSlotNumber</key><value xsi:type="xsd:string">192</value></extraConfig><extraConfig><key>usb_xhci.pciSlotNumber</key><value xsi:type="xsd:string">224</value></extraConfig><extraConfig><key>vmci0.pciSlotNumber</key><value xsi:type="xsd:string">32</value></extraConfig><extraConfig><key>sata0.pciSlotNumber</key><value xsi:type="xsd:string">33</value></extraConfig><extraConfig><key>scsi0.sasWWID</key><value xsi:type="xsd:string">50 05 05 66 2a ea 1c 80</value></extraConfig><extraConfig><key>ethernet0.generatedAddressOffset</key><value xsi:type="xsd:string">0</value></extraConfig><extraConfig><key>vm.genid</key><value xsi:type="xsd:string">305336515256366739</value></extraConfig><extraConfig><key>vm.genidX</key><value xsi:type="xsd:string">6674865700987541297</value></extraConfig><extraConfig><key>monitor.phys_bits_used</key><value xsi:type="xsd:string">42</value></extraConfig><extraConfig><key>vmotion.checkpointFBSize</key><value xsi:type="xsd:string">4194304</value></extraConfig><extraConfig><key>vmotion.checkpointSVGAPrimarySize</key><value xsi:type="xsd:string">4194304</value></extraConfig><extraConfig><key>softPowerOff</key><value xsi:type="xsd:string">FALSE</value></extraConfig><extraConfig><key>tools.remindInstall</key><value xsi:type="xsd:string">FALSE</value></extraConfig><extraConfig><key>toolsInstallManager.lastInstallError</key><value xsi:type="xsd:string">0</value></extraConfig><extraConfig><key>svga.guestBackedPrimaryAware</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>toolsInstallManager.updateCounter</key><value xsi:type="xsd:string">1</value></extraConfig><extraConfig><key>ethernet1.pciSlotNumber</key><value xsi:type="xsd:string">256</value></extraConfig><extraConfig><key>usb_xhci:4.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>usb_xhci:4.deviceType</key><value xsi:type="xsd:string">hid</value></extraConfig><extraConfig><key>usb_xhci:4.port</key><value xsi:type="xsd:string">4</value></extraConfig><extraConfig><key>usb_xhci:4.parent</key><value xsi:type="xsd:string">-1</value></extraConfig><extraConfig><key>vmware.tools.internalversion</key><value xsi:type="xsd:string">10304</value></extraConfig><extraConfig><key>vmware.tools.requiredversion</key><value xsi:type="xsd:string">10304</value></extraConfig><extraConfig><key>migrate.hostLogState</key><value xsi:type="xsd:string">none</value></extraConfig><extraConfig><key>migrate.migrationId</key><value xsi:type="xsd:string">0</value></extraConfig><extraConfig><key>migrate.hostLog</key><value xsi:type="xsd:string">./DC1-750e2789.hlog</value></extraConfig><extraConfig><key>guestinfo.vmtools.buildNumber</key><value xsi:type="xsd:string">7253323</value></extraConfig><extraConfig><key>guestinfo.vmtools.description</key><value xsi:type="xsd:string">VMware Tools 10.2.0 build 7253323</value></extraConfig><extraConfig><key>guestinfo.vmtools.versionNumber</key><value xsi:type="xsd:string">10304</value></extraConfig><extraConfig><key>guestinfo.vmtools.versionString</key><value xsi:type="xsd:string">10.2.0</value></extraConfig><datastoreUrl><name>storage1</name><url>/vmfs/volumes/5c49ca9b-a707a914-97d0-6805ca0c6705</url></datastoreUrl><swapPlacement>inherit</swapPlacement><bootOptions><bootDelay>0</bootDelay><enterBIOSSetup>false</enterBIOSSetup><efiSecureBootEnabled>false</efiSecureBootEnabled><bootRetryEnabled>false</bootRetryEnabled><bootRetryDelay>10</bootRetryDelay><networkBootProtocol>ipv4</networkBootProtocol></bootOptions><vAssertsEnabled>false</vAssertsEnabled><changeTrackingEnabled>false</changeTrackingEnabled><firmware>bios</firmware><maxMksConnections>40</maxMksConnections><guestAutoLockEnabled>false</guestAutoLockEnabled><memoryReservationLockedToMax>false</memoryReservationLockedToMax><initialOverhead><initialMemoryReservation>61550592</initialMemoryReservation><initialSwapReservation>205807616</initialSwapReservation></initialOverhead><nestedHVEnabled>false</nestedHVEnabled><vPMCEnabled>false</vPMCEnabled><scheduledHardwareUpgradeInfo><upgradePolicy>never</upgradePolicy><scheduledHardwareUpgradeStatus>none</scheduledHardwareUpgradeStatus></scheduledHardwareUpgradeInfo><vFlashCacheReservation>0</vFlashCacheReservation><vmxConfigChecksum>Kb5if01Xz293NlhNv4J4+4x6Zng=</vmxConfigChecksum><messageBusTunnelEnabled>false</messageBusTunnelEnabled><guestIntegrityInfo><enabled>false</enabled></guestIntegrityInfo><migrateEncryption>opportunistic</migrateEncryption></val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+    http_version: 
+  recorded_at: Thu, 18 Apr 2019 17:23:35 GMT
+recorded_with: VCR 4.0.0
