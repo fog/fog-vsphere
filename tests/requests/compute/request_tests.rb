@@ -1,7 +1,7 @@
 require 'ostruct'
 
-Shindo.tests('Fog::Compute[:vsphere] | get_network request', ['vsphere']) do
-  compute = Fog::Compute[:vsphere]
+Shindo.tests('Fog::Vsphere::Requests::Compute::Request | shared request', ['vsphere']) do
+  request = Fog::Vsphere::Requests::Compute::Request.new(nil)
 
   before do
     mocha_setup
@@ -30,24 +30,24 @@ Shindo.tests('Fog::Compute[:vsphere] | get_network request', ['vsphere']) do
     ]
   end
 
-  tests('#choose_finder should') do
+  tests('#choose_network_finder should') do
     test('choose the network based on network name and dvs name') do
-      finder = compute.send(:choose_finder, 'web1', 'dvs11')
+      finder = request.send(:choose_network_finder, 'web1', 'dvs11')
       found_network = fake_networks.find { |n| finder.call(n) }
       found_network.name == 'web1' && found_network.dvs_name == 'dvs11'
     end
     test('choose the network based on network name and any dvs') do
-      finder = compute.send(:choose_finder, 'web1', :dvs)
+      finder = request.send(:choose_network_finder, 'web1', :dvs)
       found_network = fake_networks.find { |n| finder.call(n) }
       found_network.name == 'web1' && found_network.dvs_name == 'dvs5'
     end
     test('choose the network based on network name only') do
-      finder = compute.send(:choose_finder, 'other', nil)
+      finder = request.send(:choose_network_finder, 'other', nil)
       found_network = fake_networks.find { |n| finder.call(n) }
       found_network.name == 'other' && found_network.dvs_name == 'other'
     end
     test('choose the network based on network name only for non-dvs') do
-      finder = compute.send(:choose_finder, 'non-dvs', nil)
+      finder = request.send(:choose_network_finder, 'non-dvs', nil)
       found_network = fake_networks.find { |n| finder.call(n) }
       found_network.name == 'non-dvs' && found_network.class.name.to_s == 'OpenStruct'
     end

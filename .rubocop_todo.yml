@@ -39,6 +39,7 @@ Lint/UselessAssignment:
     - 'lib/fog/vsphere/compute.rb'
     - 'lib/fog/vsphere/models/compute/interfaces.rb'
     - 'lib/fog/vsphere/models/compute/volumes.rb'
+    - 'lib/fog/vsphere/requests/compute/request.rb'
     - 'lib/fog/vsphere/requests/compute/create_rule.rb'
     - 'lib/fog/vsphere/requests/compute/create_vm.rb'
     - 'lib/fog/vsphere/requests/compute/get_interface_type.rb'
@@ -191,7 +192,7 @@ Style/RedundantSelf:
 Style/RegexpLiteral:
   Exclude:
     - 'lib/fog/vsphere/requests/compute/create_folder.rb'
-    - 'lib/fog/vsphere/requests/compute/get_folder.rb'
+    - 'lib/fog/vsphere/requests/compute/request.rb'
     - 'lib/fog/vsphere/requests/compute/list_resource_pools.rb'
 
 # Offense count: 1

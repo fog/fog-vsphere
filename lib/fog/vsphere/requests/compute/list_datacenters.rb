@@ -24,18 +24,7 @@ module Fog
         end
 
         def raw_datacenters(folder = nil)
-          folder ||= connection.rootFolder
-          @raw_datacenters ||= get_raw_datacenters_from_folder folder
-        end
-
-        def get_raw_datacenters_from_folder(folder = nil)
-          folder.childEntity.map do |childE|
-            if childE.is_a? RbVmomi::VIM::Datacenter
-              childE
-            elsif childE.is_a? RbVmomi::VIM::Folder
-              get_raw_datacenters_from_folder childE
-            end
-          end.flatten
+          shared_request.raw_datacenters(folder)
         end
 
         def find_datacenters(name = nil)

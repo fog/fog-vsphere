@@ -723,27 +723,11 @@ module Fog
         end
 
         def list_container_view(datacenter_obj_or_name, type, container_object = nil)
-          dc = if datacenter_obj_or_name.is_a?(String)
-                 find_raw_datacenter(datacenter_obj_or_name)
-               else
-                 datacenter_obj_or_name
-               end
+          shared_request.send('list_container_view', datacenter_obj_or_name, type, container_object)
+        end
 
-          container = if container_object
-                        dc.public_send(container_object)
-                      else
-                        dc
-                      end
-
-          container_view = connection.serviceContent.viewManager.CreateContainerView(
-            container: dc,
-            type: [type],
-            recursive: true
-          )
-
-          result = container_view.view
-          container_view.DestroyView
-          result
+        def shared_request
+          @shared_request ||= Fog::Vsphere::Requests::Compute::Request.new(connection)
         end
       end
     end

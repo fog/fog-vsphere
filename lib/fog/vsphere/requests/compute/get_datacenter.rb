@@ -11,7 +11,7 @@ module Fog
         protected
 
         def find_raw_datacenter(name)
-          raw_datacenters.find { |d| d.name == name } || get_raw_datacenter(name)
+          shared_request.find_raw_datacenter(name)
         end
 
         # @note RbVmomi takes path instead of name as argument to find datacenter

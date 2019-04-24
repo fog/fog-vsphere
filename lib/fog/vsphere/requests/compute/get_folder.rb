@@ -13,40 +13,11 @@ module Fog
         protected
 
         def get_raw_folder(path, datacenter_name_or_obj, type)
-          # The required path syntax - 'topfolder/subfolder
-
-          # Clean up path to be relative since we're providing datacenter name
-          dc = if datacenter_name_or_obj.is_a?(String)
-                 find_raw_datacenter(datacenter_name_or_obj)
-               else
-                 datacenter_name_or_obj
-               end
-
-          valid_types = %w[vm network datastore host]
-          raise ArgumentError, "#{type} is unknown" if type.nil? || type.empty?
-          raise "Invalid type (#{type}). Must be one of #{valid_types.join(', ')} " unless valid_types.include?(type.to_s)
-          meth = "#{type}Folder"
-          dc_root_folder = dc.send(meth)
-
-          # Filter the root path for this datacenter not to be used."
-          dc_root_folder_path = dc_root_folder.path.map { |_, name| name }.join('/')
-          paths = path.sub(/^\/?#{Regexp.quote(dc_root_folder_path)}\/?/, '').split('/')
-
-          return dc_root_folder if paths.empty?
-          # Walk the tree resetting the folder pointer as we go
-          paths.reduce(dc_root_folder) do |last_returned_folder, sub_folder|
-            # JJM VIM::Folder#find appears to be quite efficient as it uses the
-            # searchIndex It certainly appears to be faster than
-            # VIM::Folder#inventory since that returns _all_ managed objects of
-            # a certain type _and_ their properties.
-            sub = last_returned_folder.find(sub_folder, RbVmomi::VIM::Folder)
-            raise Fog::Vsphere::Compute::NotFound, "Could not descend into #{sub_folder}.  Please check your path. #{path}" unless sub
-            sub
-          end
+          shared_request.get_raw_folder(path, datacenter_name_or_obj, type)
         end
 
         def get_raw_vmfolder(path, datacenter_name)
-          get_raw_folder(path, datacenter_name, 'vm')
+          shared_request.get_raw_folder(path, datacenter_name, 'vm')
         end
 
         def folder_attributes(folder, datacenter_name)
