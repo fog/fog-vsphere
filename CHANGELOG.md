@@ -1,3 +1,13 @@
+## v3.1.0
+
+* Adds vcr webmock testing basics (#208)
+* Allow changes for HotAdd memory and CPU (#207)
+* Fix NoMethodError `blank?` without Rails (#206)
+* Fix VM interfaces updates (#205)
+* Network lookup by ID (#204)
+* Allow add disk on storageClusters on VM clone (#202)
+* Make `boot_order` an attribute of VM (#194)
+
 ## v3.0.0
 
 * Change module namespace to Fog::Vsphere::Compute (#192)
