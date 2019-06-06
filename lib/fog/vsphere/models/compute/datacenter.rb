@@ -24,7 +24,7 @@ module Fog
         end
 
         def vm_folders(filters = {})
-          service.folders({ datacenter: path.join('/'), type: :vm }.merge(filters))
+          service.folders({ datacenter: name, type: :vm }.merge(filters))
         end
 
         def virtual_machines(filters = {})
