@@ -647,14 +647,16 @@ module Fog
           # Clone VM on a storage pod
           if options.key?('storage_pod') && !options['storage_pod'].nil?
             raise ArgumentError, 'need to use at least vsphere revision 5.0 or greater to use storage pods' unless @vsphere_rev.to_f >= 5
-            pod_spec = RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
-              storagePod: get_raw_storage_pod(options['storage_pod'], options['datacenter'])
-            )
+            vm_pod_name = options['storage_pod']
+            disks_per_pod = options['volumes'].group_by(&:storage_pod)
+            disks_per_pod[vm_pod_name] ||= []
+            disks_per_pod[vm_pod_name].concat(disks_per_pod.delete(nil)) if disks_per_pod.key?(nil)
+
             storage_spec = RbVmomi::VIM::StoragePlacementSpec.new(
               type: 'clone',
               folder: dest_folder,
               resourcePool: resource_pool,
-              podSelectionSpec: pod_spec,
+              podSelectionSpec: pod_selection_spec(vm_pod_name, disks_per_pod, options['datacenter']),
               cloneSpec: clone_spec,
               cloneName: options['name'],
               vm: vm_mob_ref
@@ -663,8 +665,11 @@ module Fog
             result = srm.RecommendDatastores(storageSpec: storage_spec)
 
             # if result array contains recommendation, we can apply it
-            if key = result.recommendations.first.key
-              task = srm.ApplyStorageDrsRecommendation_Task(key: [key])
+            # we need one recomendation for one storagePod
+            grouped_recoms = result.recommendations.group_by { |rec| rec.target._ref }
+            if grouped_recoms.keys.size == disks_per_pod.size
+              keys = grouped_recoms.map { |_ref, recoms| recoms.first.key }
+              task = srm.ApplyStorageDrsRecommendation_Task(key: keys)
               if options.fetch('wait', true)
                 result = task.wait_for_completion
                 new_vm = result.vm
