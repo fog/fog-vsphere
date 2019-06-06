@@ -33,7 +33,7 @@ module Fog
           # if any volume has a storage_pod set, we deploy the vm on a storage pod instead of the defined datastores
           pod = get_storage_pod_from_volumes(attributes)
           vm = if pod
-                 create_vm_on_storage_pod(pod, vm_cfg, vmFolder, resource_pool, attributes[:datacenter], host)
+                 create_vm_on_storage_pod(pod, attributes[:volumes], vm_cfg, vmFolder, resource_pool, attributes[:datacenter], host)
                else
                  create_vm_on_datastore(vm_cfg, vmFolder, resource_pool, host)
                end
@@ -46,15 +46,17 @@ module Fog
           vm = vmFolder.CreateVM_Task(config: vm_cfg, pool: resource_pool, host: host).wait_for_completion
         end
 
-        def create_vm_on_storage_pod(storage_pod, vm_cfg, vmFolder, resource_pool, datacenter, host = nil)
-          pod_spec = RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
-            storagePod: get_raw_storage_pod(storage_pod, datacenter)
-          )
+        # rubocop:disable Metrics/ParameterLists
+        def create_vm_on_storage_pod(vm_pod_name, volumes, vm_cfg, vmFolder, resource_pool, datacenter, host = nil)
+          disks_per_pod = volumes.group_by(&:storage_pod)
+          disks_per_pod[vm_pod_name] ||= []
+          disks_per_pod[vm_pod_name].concat(disks_per_pod.delete(nil)) if disks_per_pod.key?(nil)
+
           storage_spec = RbVmomi::VIM::StoragePlacementSpec.new(
             type: 'create',
             folder: vmFolder,
             resourcePool: resource_pool,
-            podSelectionSpec: pod_spec,
+            podSelectionSpec: pod_selection_spec(vm_pod_name, disks_per_pod, datacenter),
             configSpec: vm_cfg,
             host: host
           )
@@ -62,13 +64,31 @@ module Fog
           result = srm.RecommendDatastores(storageSpec: storage_spec)
 
           # if result array contains recommendation, we can apply it
-          if key = result.recommendations.first.key
-            result = srm.ApplyStorageDrsRecommendation_Task(key: [key]).wait_for_completion
+          # we need one recomendation for one storagePod
+          grouped_recoms = result.recommendations.group_by { |rec| rec.target._ref }
+          if grouped_recoms.keys.size == disks_per_pod.size
+            keys = grouped_recoms.map { |_ref, recoms| recoms.first.key }
+            result = srm.ApplyStorageDrsRecommendation_Task(key: keys).wait_for_completion
             vm = result.vm
           else
             raise 'Could not create vm on storage pod, did not get a storage recommendation'
           end
           vm
+        end
+
+        def pod_selection_spec(vm_pod_name, disks_per_pod, datacenter)
+          raw_pods = {}
+          disks_per_pod.each_key { |pod_name| raw_pods[pod_name] = get_raw_storage_pod(pod_name, datacenter) }
+
+          RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
+            storagePod: raw_pods[vm_pod_name],
+            initialVmConfig: disks_per_pod.map do |name, vols|
+              RbVmomi::VIM::VmPodConfigForPlacement.new(
+                disk: vols.collect { |vol| RbVmomi::VIM::PodDiskLocator.new(diskId: vol.key) },
+                storagePod: raw_pods[name]
+              )
+            end
+          )
         end
 
         # check if a storage pool is set on any of the volumes and return the first result found or nil
