@@ -1,3 +1,7 @@
+## v3.1.1
+
+* Fixes multiple storagePods deployment (#213)
+
 ## v3.1.0
 
 * Adds vcr webmock testing basics (#208)
