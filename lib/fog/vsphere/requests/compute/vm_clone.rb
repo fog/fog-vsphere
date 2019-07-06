@@ -164,7 +164,8 @@ module Fog
             device_change << modify_template_nics_simple_spec(options['network_label'], options['nic_type'], options['network_adapter_device_key'], options['datacenter'])
           end
           if disks = options['volumes']
-            device_change.concat(modify_template_volumes_specs(vm_mob_ref, options['volumes'], default_storage_pod: options['storage_pod']))
+            device_change.concat(modify_template_volumes_specs(vm_mob_ref, options['volumes']))
+            device_change.concat(add_new_volumes_specs(vm_mob_ref, options['volumes'])) unless options['storage_pod']
           end
           virtual_machine_config_spec.deviceChange = device_change if device_change.any?
           # Options['numCPUs'] or Options['memoryMB']
@@ -628,18 +629,16 @@ module Fog
                                                                       diskMoveType: :moveChildMostDiskBacking)
           else
             relocation_spec = RbVmomi::VIM.VirtualMachineRelocateSpec(pool: resource_pool,
-                                                                      host: host,
-                                                                      transform: options['transform'] || 'sparse')
-            unless options.key?('storage_pod') && datastore_obj.nil?
+                                                                      host: host)
+            unless options['storage_pod'] && datastore_obj.nil?
               relocation_spec[:datastore] = datastore_obj
             end
           end
           # relocate templates is not supported by fog-vsphere when vm is cloned on a storage pod
-          unless options.key?('storage_pod') || !options['volumes']
-            unless options['volumes'].empty?
-              relocation_spec[:disk] = relocate_template_volumes_specs(vm_mob_ref, options['volumes'], options['datacenter'])
-            end
+          if !options['storage_pod'] && options['volumes'] && !options['volumes'].empty?
+            relocation_spec[:disk] = relocate_template_volumes_specs(vm_mob_ref, options['volumes'], options['datacenter'])
           end
+
           # And the clone specification
           clone_spec = RbVmomi::VIM.VirtualMachineCloneSpec(location: relocation_spec,
                                                             config: virtual_machine_config_spec,
@@ -649,18 +648,16 @@ module Fog
 
           # Perform the actual Clone Task
           # Clone VM on a storage pod
-          if options.key?('storage_pod') && !options['storage_pod'].nil?
+          if options['storage_pod']
             raise ArgumentError, 'need to use at least vsphere revision 5.0 or greater to use storage pods' unless @vsphere_rev.to_f >= 5
             vm_pod_name = options['storage_pod']
-            disks_per_pod = options['volumes'].group_by(&:storage_pod)
-            disks_per_pod[vm_pod_name] ||= []
-            disks_per_pod[vm_pod_name].concat(disks_per_pod.delete(nil)) if disks_per_pod.key?(nil)
+            disks_per_pod = group_disks_by_storage_pod(modified_volumes(vm_mob_ref, options['volumes']), vm_pod_name: options['storage_pod'])
 
             storage_spec = RbVmomi::VIM::StoragePlacementSpec.new(
               type: 'clone',
               folder: dest_folder,
               resourcePool: resource_pool,
-              podSelectionSpec: pod_selection_spec(vm_pod_name, disks_per_pod, options['datacenter']),
+              podSelectionSpec: pod_selection_spec(vm_pod_name, disks_per_pod, options['datacenter'], with_relocation: true),
               cloneSpec: clone_spec,
               cloneName: options['name'],
               vm: vm_mob_ref
@@ -687,6 +684,26 @@ module Fog
                   end
                 end
                 raise Fog::Vsphere::Errors::NotFound unless new_vm
+              end
+            end
+
+            new_volumes = new_volumes(vm_mob_ref, options['volumes'])
+            if new_vm && !new_volumes.empty?
+              new_disks_per_pod = group_disks_by_storage_pod(new_volumes, vm_pod_name: options['storage_pod'])
+              add_vols_config_spec = {
+                deviceChange: add_new_volumes_specs(vm_mob_ref, options['volumes'], default_storage_pod: options['storage_pod'])
+              }
+              placement_spec = RbVmomi::VIM::StoragePlacementSpec.new(
+                type: 'reconfigure',
+                vm: new_vm,
+                configSpec: add_vols_config_spec,
+                podSelectionSpec: pod_selection_spec(vm_pod_name, new_disks_per_pod, options['datacenter'], only_volumes: true)
+              )
+              result = srm.RecommendDatastores(storageSpec: placement_spec)
+              grouped_recoms = result.recommendations.group_by { |rec| rec.target._ref }
+              if grouped_recoms.keys.size == new_disks_per_pod.size
+                keys = grouped_recoms.map { |_ref, recoms| recoms.first.key }
+                srm.ApplyStorageDrsRecommendation_Task(key: keys).wait_for_completion
               end
             end
           else
@@ -795,13 +812,21 @@ module Fog
           specs
         end
 
-        def modify_template_volumes_specs(vm_mob_ref, volumes, default_storage_pod: nil)
+        def modified_volumes(vm_mob_ref, volumes)
           template_volumes = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualDisk)
-          modified_volumes = volumes.take(template_volumes.size)
-          new_volumes      = volumes.drop(template_volumes.size)
+          volumes.take(template_volumes.size)
+        end
+
+        def new_volumes(vm_mob_ref, volumes)
+          template_volumes = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualDisk)
+          volumes.drop(template_volumes.size)
+        end
+
+        def modify_template_volumes_specs(vm_mob_ref, volumes)
+          template_volumes = vm_mob_ref.config.hardware.device.grep(RbVmomi::VIM::VirtualDisk)
 
           specs = []
-          template_volumes.zip(modified_volumes).each do |template_volume, new_volume|
+          template_volumes.zip(modified_volumes(vm_mob_ref, volumes)).each do |template_volume, new_volume|
             if new_volume
               # copy identifiers to fog device to mark them as used
               new_volume.unit_number = template_volume.unitNumber
@@ -820,8 +845,11 @@ module Fog
                          device: template_volume }
             end
           end
-          specs.concat(new_volumes.map { |volume| create_disk(volume, :add, storage_pod: default_storage_pod) })
           specs
+        end
+
+        def add_new_volumes_specs(vm_mob_ref, volumes, default_storage_pod: nil)
+          new_volumes(vm_mob_ref, volumes).map { |volume| create_disk(volume, :add, storage_pod: default_storage_pod) }
         end
 
         def relocate_template_volumes_specs(vm_mob_ref, volumes, datacenter)
@@ -830,11 +858,22 @@ module Fog
 
           specs = []
           template_volumes.zip(modified_volumes).each do |template_volume, new_volume|
-            if new_volume && new_volume.datastore && new_volume.datastore != template_volume.backing.datastore.name
-              specs << { diskId: template_volume.key, datastore: get_raw_datastore(new_volume.datastore, datacenter) }
-            end
+            next unless new_volume
+            specs << RbVmomi::VIM.VirtualMachineRelocateSpecDiskLocator(
+              diskId: template_volume.key,
+              datastore: get_raw_datastore(new_volume.datastore, datacenter),
+              diskBackingInfo: relocation_volume_backing(new_volume)
+            )
           end
           specs
+        end
+
+        def relocation_volume_backing(volume)
+          RbVmomi::VIM.VirtualDiskFlatVer2BackingInfo(
+            diskMode: volume.mode.to_sym,
+            fileName: '',
+            thinProvisioned: volume.thin
+          )
         end
       end
 
