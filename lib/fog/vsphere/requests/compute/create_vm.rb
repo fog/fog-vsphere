@@ -48,15 +48,11 @@ module Fog
 
         # rubocop:disable Metrics/ParameterLists
         def create_vm_on_storage_pod(vm_pod_name, volumes, vm_cfg, vmFolder, resource_pool, datacenter, host = nil)
-          disks_per_pod = volumes.group_by(&:storage_pod)
-          disks_per_pod[vm_pod_name] ||= []
-          disks_per_pod[vm_pod_name].concat(disks_per_pod.delete(nil)) if disks_per_pod.key?(nil)
-
           storage_spec = RbVmomi::VIM::StoragePlacementSpec.new(
             type: 'create',
             folder: vmFolder,
             resourcePool: resource_pool,
-            podSelectionSpec: pod_selection_spec(vm_pod_name, disks_per_pod, datacenter),
+            podSelectionSpec: pod_selection_spec(vm_pod_name, group_disks_by_storage_pod(volumes, vm_pod_name), datacenter),
             configSpec: vm_cfg,
             host: host
           )
@@ -76,19 +72,40 @@ module Fog
           vm
         end
 
-        def pod_selection_spec(vm_pod_name, disks_per_pod, datacenter)
-          raw_pods = {}
-          disks_per_pod.each_key { |pod_name| raw_pods[pod_name] = get_raw_storage_pod(pod_name, datacenter) }
+        def group_disks_by_storage_pod(volumes, vm_pod_name: nil)
+          vm_pod_name ||= volumes.detect { |v| !v.storage_pod.empty? }.storage_pod
+          disks_per_pod = volumes.group_by(&:storage_pod)
+          if disks_per_pod.key?(nil)
+            disks_per_pod[vm_pod_name] ||= []
+            disks_per_pod[vm_pod_name].concat(disks_per_pod.delete(nil))
+          end
+          disks_per_pod
+        end
 
-          RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
-            storagePod: raw_pods[vm_pod_name],
-            initialVmConfig: disks_per_pod.map do |name, vols|
-              RbVmomi::VIM::VmPodConfigForPlacement.new(
-                disk: vols.collect { |vol| RbVmomi::VIM::PodDiskLocator.new(diskId: vol.key) },
-                storagePod: raw_pods[name]
-              )
-            end
+        def pod_selection_spec(vm_pod_name, disks_per_pod, datacenter, with_relocation: false, only_volumes: false)
+          raw_pods = {}
+          raw_pods[vm_pod_name] = get_raw_storage_pod(vm_pod_name, datacenter)
+          disks_per_pod.each_key { |pod_name| raw_pods[pod_name] ||= get_raw_storage_pod(pod_name, datacenter) }
+
+          disk_placements = disks_per_pod.map do |name, vols|
+            RbVmomi::VIM::VmPodConfigForPlacement.new(
+              disk: vols.collect do |vol|
+                locator = RbVmomi::VIM::PodDiskLocator.new(diskId: vol.key)
+                locator[:diskBackingInfo] = relocation_volume_backing(vol) if with_relocation
+                locator
+              end,
+              storagePod: raw_pods[name]
+            )
+          end
+          vm_config_placements = []
+          vm_config_placements << RbVmomi::VIM::VmPodConfigForPlacement.new(storagePod: raw_pods[vm_pod_name], disk: []) unless only_volumes
+          vm_config_placements.concat(disk_placements)
+
+          spec = RbVmomi::VIM::StorageDrsPodSelectionSpec.new(
+            initialVmConfig: vm_config_placements
           )
+          spec[:storagePod] = raw_pods[vm_pod_name] unless only_volumes
+          spec
         end
 
         # check if a storage pool is set on any of the volumes and return the first result found or nil
