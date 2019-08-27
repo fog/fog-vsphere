@@ -48,11 +48,12 @@ module Fog
 
         # rubocop:disable Metrics/ParameterLists
         def create_vm_on_storage_pod(vm_pod_name, volumes, vm_cfg, vmFolder, resource_pool, datacenter, host = nil)
+          disks_per_pod = group_disks_by_storage_pod(volumes, vm_pod_name: vm_pod_name)
           storage_spec = RbVmomi::VIM::StoragePlacementSpec.new(
             type: 'create',
             folder: vmFolder,
             resourcePool: resource_pool,
-            podSelectionSpec: pod_selection_spec(vm_pod_name, group_disks_by_storage_pod(volumes, vm_pod_name), datacenter),
+            podSelectionSpec: pod_selection_spec(vm_pod_name, disks_per_pod, datacenter),
             configSpec: vm_cfg,
             host: host
           )
