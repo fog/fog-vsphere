@@ -1,9 +1,11 @@
+## v3.2.1
+
+* Fix VM creation on storagePod (#234)
+
 ## v3.2.0
 
 * Annotation Notes are not set in Image based builds (#218)
-
 * Cloning disks thin relocation and storagePod location (#216)
-
 * Grab DC if within a folder (#214)
 
 ## v3.1.1
