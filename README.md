@@ -8,7 +8,7 @@ The VMware vSphere® provider allows you to use the abstractions of the Fog clou
 
 ## Installation
 
-To use this gem in your application, add this line to your Gemfile:
+To use this gem in your application, add this line to your Gemfile
 
 ```ruby
 gem 'fog-vsphere'
