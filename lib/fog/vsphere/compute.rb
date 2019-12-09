@@ -276,7 +276,7 @@ module Fog
                     when :datacenter
                       RbVmomi::VIM::Datacenter
                     when :cluster
-                      RbVmomi::VIM::ClusterComputeResource
+                      RbVmomi::VIM::ComputeResource
                     when :host
                       RbVmomi::VIM::HostSystem
                     else
