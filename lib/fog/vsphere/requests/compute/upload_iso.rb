@@ -21,7 +21,7 @@ module Fog
           datastore = get_raw_datastore(options['datastore'], options['datacenter'])
           datacenter = get_raw_datacenter(options['datacenter'])
           filename = options['filename'] || File.basename(options['local_path'])
-          unless datastore.exists? options['upload_directory'] + '/'
+          unless datastore.exists?(options['upload_directory'])
             connection.serviceContent.fileManager.MakeDirectory name: "[#{options['datastore']}] #{options['upload_directory']}",
                                                                 datacenter: datacenter,
                                                                 createParentDirectories: false
