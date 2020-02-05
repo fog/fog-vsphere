@@ -1,3 +1,10 @@
+## v3.2.3
+* Check cluster existance (#239)
+
+## v3.2.2
+* Load simple clusters (#237)
+* ISO upload: correctly check if upload directory exists
+
 ## v3.2.1
 
 * Fix VM creation on storagePod (#234)
