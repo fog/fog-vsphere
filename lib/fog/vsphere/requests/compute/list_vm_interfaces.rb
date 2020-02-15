@@ -74,7 +74,7 @@ module Fog
                               end[:id]
           else 
 	    network = nil
-         end
+          end
           {
             name: nic.deviceInfo.label,
             mac: nic.macAddress,
