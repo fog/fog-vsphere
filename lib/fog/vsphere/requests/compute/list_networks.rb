@@ -29,6 +29,11 @@ module Fog
                 vlanid: raw_network_vlan(network['config.defaultPortConfig']),
                 virtualswitch: dvswitches[network['config.distributedVirtualSwitch']._ref]
               )
+            elsif network.obj.is_a?(RbVmomi::VIM::OpaqueNetwork)
+              map_attrs_to_hash(network, network_dvportgroup_attribute_mapping).merge(
+                id: network.obj._ref,
+                opaqueNetworkId: network.obj.summary.opaqueNetworkId
+              )
             else
               map_attrs_to_hash(network, network_attribute_mapping).merge(
                 id: network.obj._ref
