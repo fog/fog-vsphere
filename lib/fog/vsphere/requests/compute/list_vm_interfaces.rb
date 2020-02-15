@@ -69,7 +69,7 @@ module Fog
             network = nic.backing.port.portgroupKey
           elsif nic.backing.respond_to?(:opaqueNetworkId)
              opaquenetworks = list_networks({ :datacenter => datacenter }).select{|net| net.key?(:opaqueNetworkId)}
-  	     network = opaquenetworks.find {|opaquenetwork|  	    
+  	     network = opaquenetworks.find do |opaquenetwork|
                                 nic.backing.opaqueNetworkId == opaquenetwork[:opaqueNetworkId] }[:id]
           else 
 	    network = nil
