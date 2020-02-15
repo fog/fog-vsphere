@@ -34,7 +34,7 @@ module Fog
 
         def get_vm_interface(vm_id, options = {})
           raw = get_raw_interface(vm_id, options)
-          raw_to_hash(raw) if raw
+          raw_to_hash(raw, options[:datacenter]) if raw
         end
 
         def get_raw_interfaces(vm_id, datacenter = nil)
@@ -62,14 +62,18 @@ module Fog
         private
 
         # rubocop:disable Style/ConditionalAssignment
-        def raw_to_hash(nic)
+        def raw_to_hash(nic, datacenter = nil)
           if nic.backing.respond_to?(:network)
             network = nic.backing.network.name
           elsif nic.backing.respond_to?(:port)
             network = nic.backing.port.portgroupKey
-          else
-            network = nil
-          end
+          elsif nic.backing.respond_to?(:opaqueNetworkId)
+             opaquenetworks = list_networks({ :datacenter => datacenter }).select{|net| net.key?(:opaqueNetworkId)}
+  	     network = opaquenetworks.find {|opaquenetwork|  	    
+                                nic.backing.opaqueNetworkId == opaquenetwork[:opaqueNetworkId] }[:id]
+          else 
+	    network = nil
+         end
           {
             name: nic.deviceInfo.label,
             mac: nic.macAddress,
