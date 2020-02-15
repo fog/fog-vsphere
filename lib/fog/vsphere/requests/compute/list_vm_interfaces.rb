@@ -70,7 +70,8 @@ module Fog
           elsif nic.backing.respond_to?(:opaqueNetworkId)
              opaquenetworks = list_networks({ :datacenter => datacenter }).select{|net| net.key?(:opaqueNetworkId)}
   	     network = opaquenetworks.find do |opaquenetwork|
-                                nic.backing.opaqueNetworkId == opaquenetwork[:opaqueNetworkId] }[:id]
+                                nic.backing.opaqueNetworkId == opaquenetwork[:opaqueNetworkId]
+                              end[:id]
           else 
 	    network = nil
          end
