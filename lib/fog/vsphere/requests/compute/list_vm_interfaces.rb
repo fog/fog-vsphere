@@ -60,19 +60,18 @@ module Fog
         end
 
         private
-
-        # rubocop:disable Style/ConditionalAssignment
         def raw_to_hash(nic, datacenter = nil)
           if nic.backing.respond_to?(:network)
             network = nic.backing.network.name
           elsif nic.backing.respond_to?(:port)
             network = nic.backing.port.portgroupKey
           elsif nic.backing.respond_to?(:opaqueNetworkId)
-             opaquenetworks = list_networks({ :datacenter => datacenter }).select{|net| net.key?(:opaqueNetworkId)}
-  	     network = opaquenetworks.find {|opaquenetwork|  	    
-                                nic.backing.opaqueNetworkId == opaquenetwork[:opaqueNetworkId] }[:id]
-          else 
-	    network = nil
+            opaquenetworks = list_networks(:datacenter => datacenter).select { |net| net.key?(:opaqueNetworkId) }
+            network = opaquenetworks.find do |opaquenetwork|
+                        nic.backing.opaqueNetworkId == opaquenetwork[:opaqueNetworkId]
+                      end[:id]
+          else
+            network = nil
          end
           {
             name: nic.deviceInfo.label,
