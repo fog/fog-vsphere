@@ -60,6 +60,7 @@ module Fog
         end
 
         private
+
         def raw_to_hash(nic, datacenter = nil)
           if nic.backing.respond_to?(:network)
             network = nic.backing.network.name
@@ -72,7 +73,7 @@ module Fog
                       end[:id]
           else
             network = nil
-         end
+          end
           {
             name: nic.deviceInfo.label,
             mac: nic.macAddress,
