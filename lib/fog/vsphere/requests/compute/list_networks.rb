@@ -33,7 +33,7 @@ module Fog
                map_attrs_to_hash(network, network_dvportgroup_attribute_mapping).merge(
 		 id: network.obj._ref,
 		 opaqueNetworkId: network.obj.summary.opaqueNetworkId)
-           else
+            else
               map_attrs_to_hash(network, network_attribute_mapping).merge(
                 id: network.obj._ref
               )
