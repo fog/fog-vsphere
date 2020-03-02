@@ -4,7 +4,7 @@ module Fog
       class Real
         def create_vm(attributes = {})
           # build up vm configuration
-          cluster = get_raw_cluster(options[:cluster], attributes[:datacenter])
+          cluster = get_raw_cluster(attributes[:cluster], attributes[:datacenter])
           raise Fog::Vsphere::Compute::NotFound, "Cluster #{attributes[:cluster]} Doesn't Exist in the DC!" unless cluster
 
           vm_cfg = {
