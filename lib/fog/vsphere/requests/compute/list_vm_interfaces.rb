@@ -61,7 +61,7 @@ module Fog
 
         private
 
-        def raw_to_hash(nic, datacenter = nil)
+        def raw_to_hash(nic, datacenter)
           if nic.backing.respond_to?(:network)
             network = nic.backing.network.name
           elsif nic.backing.respond_to?(:port)
