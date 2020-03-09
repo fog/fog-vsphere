@@ -1,4 +1,7 @@
-## v3.2.3
+## v3.2.4
+* Check cluster existance properly (#239)
+
+## ~~v3.2.3~~
 * Check cluster existance (#239)
 
 ## v3.2.2
