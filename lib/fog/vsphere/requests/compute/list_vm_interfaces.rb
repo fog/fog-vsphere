@@ -29,7 +29,7 @@ module Fog
         # unitNumber: 7,
         #
         def list_vm_interfaces(vm_id, datacenter = nil)
-          get_raw_interfaces(vm_id, datacenter).map { |nic| raw_to_hash nic }
+          get_raw_interfaces(vm_id, datacenter).map { |nic| raw_to_hash(nic, datacenter) }
         end
 
         def get_vm_interface(vm_id, options = {})
@@ -61,7 +61,7 @@ module Fog
 
         private
 
-        def raw_to_hash(nic, datacenter = nil)
+        def raw_to_hash(nic, datacenter)
           if nic.backing.respond_to?(:network)
             network = nic.backing.network.name
           elsif nic.backing.respond_to?(:port)
