@@ -29,7 +29,7 @@ module Fog
         # unitNumber: 7,
         #
         def list_vm_interfaces(vm_id, datacenter = nil)
-          get_raw_interfaces(vm_id, datacenter).map { |nic| raw_to_hash nic }
+          get_raw_interfaces(vm_id, datacenter).map { |nic| raw_to_hash(nic, datacenter) }
         end
 
         def get_vm_interface(vm_id, options = {})
