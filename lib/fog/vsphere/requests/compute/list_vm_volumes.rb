@@ -37,6 +37,11 @@ module Fog
                         rescue
                           (nil)
                         end),
+              eager_zero: (begin
+                          vol.backing.eagerlyScrub
+                        rescue
+                          (nil)
+                        end),
               mode: vol.backing.diskMode,
               filename: vol.backing.fileName,
               datastore: (begin
