@@ -300,7 +300,7 @@ module Fog
           file_operation = options[:file_operation] || (:create if operation == :add)
           payload[:fileOperation] = file_operation if file_operation
 
-          if operation == :add && disk.thin == false && disk.eager_zero == true
+          if operation == :add && !disk.thin && disk.eager_zero
             payload[:device][:backing][:eagerlyScrub] = disk.eager_zero
           end
 
