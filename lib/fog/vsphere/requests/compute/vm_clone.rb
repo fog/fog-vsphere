@@ -838,7 +838,7 @@ module Fog
               end
               template_volume.backing.diskMode = new_volume.mode
               template_volume.backing.thinProvisioned = new_volume.thin
-              template_volume.backing.eagerlyScrub = new_volume.eager_zero
+              template_volume.backing.eagerlyScrub = !new_volume.thin && new_volume.eager_zero
               specs << { operation: :edit, device: template_volume }
             else
               specs << { operation: :remove,
