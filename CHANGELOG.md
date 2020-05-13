@@ -1,3 +1,9 @@
+## v3.3.1
+Fixes eager zero flag (#251, #252)
+
+## v3.3.0
+* Add support for nsx-t (#248)
+
 ## v3.2.5
 * Check cluster existance properly (#239)
 
