@@ -24,6 +24,9 @@ module Fog
           raise Fog::Vsphere::Compute::NotFound, "Template #{options['template_path']} Doesn't Exist!" unless get_virtual_machine(options['template_path'], options['datacenter'])
           raise Fog::Vsphere::Compute::NotFound, "Cluster #{options['resource_pool'][0]} Doesn't Exist in the DC!" unless get_raw_cluster(options["resource_pool"][0], options['datacenter'])
           raise ArgumentError, 'path option is required' unless options.fetch('dest_folder', '/')
+          if options.key?('datastore') && !options['datastore'].nil? && !get_raw_datastore(options['datastore'], options['datacenter'])
+            raise Fog::Vsphere::Compute::NotFound, "Datastore #{options['datastore']} Doesn't Exist!"
+          end
           if options.key?('storage_pod') && !options['storage_pod'].nil? && !get_raw_storage_pod(options['storage_pod'], options['datacenter'])
             raise Fog::Vsphere::Compute::NotFound, "Storage Pod #{options['storage_pod']} Doesn't Exist!"
           end
