@@ -71,6 +71,9 @@ module Fog
       request :get_cluster
       request :list_resource_pools
       request :get_resource_pool
+      request :create_resource_pool
+      request :update_resource_pool
+      request :destroy_resource_pool
       request :list_networks
       request :get_network
       request :list_datastores
