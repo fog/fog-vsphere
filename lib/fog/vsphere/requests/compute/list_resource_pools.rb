@@ -36,8 +36,8 @@ module Fog
         end
 
         def resource_pool_attributes(resource_pool, cluster, datacenter)
-          name = folder_path(resource_pool).gsub(/^.*Resources(\/|)/, '')
-          name = 'Resources' if name.empty?
+          folder_path(resource_pool) =~ /(?<=Resources\/)(.+)/
+          name = Regexp.last_match(1) || 'Resources'
           {
             id: managed_obj_id(resource_pool),
             name: name,
