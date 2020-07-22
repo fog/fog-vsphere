@@ -1,3 +1,8 @@
+## v3.4.0
+* list_resource_pools returns incorrect resource pool name (#256)
+* Add ability to create update and delete Resource Pools (#253)
+* Check datastore for existence prior vm_clone
+
 ## v3.3.1
 Fixes eager zero flag (#251, #252)
 

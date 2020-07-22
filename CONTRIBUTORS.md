@@ -56,9 +56,10 @@
 * Paul Thornthwaite <paul@brightbox.co.uk>
 * Paul Thornthwaite <tokengeek@gmail.com>
 * Paulo Henrique Lopes Ribeiro <plribeiro3000@gmail.com>
-* Rohan Arora <roarora@redhat.com>
 * Rich Daley <rdaley@williamhill.co.uk>
 * Rich Lane <rlane@club.cc.cmu.edu>
+* Rohan Arora <roarora@redhat.com>
+* Roman Lazoryshchak <lazoryshchak@gmail.com>
 * Samuel Keeley <samuel@dropbox.com>
 * Sergio Cambra <sergio@programatica.es>
 * Shlomi Zadok <shlomi@ben-hanna.com>
