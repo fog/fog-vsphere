@@ -10,7 +10,7 @@ module Fog
             config: get_resource_pool_spec(attributes)
           )
 
-          get_resource_pool(attributes[:name], attributes[:cluster], attributes[:datacenter])
+          resource_pool_attributes(raw_resource_pool, attributes[:cluster], attributes[:datacenter])
         end
 
         private

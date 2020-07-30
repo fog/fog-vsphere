@@ -6,17 +6,19 @@ module Fog
           cluster = get_raw_cluster(attributes[:cluster], attributes[:datacenter])
 
           root_resource_pool = if attributes[:root_resource_pool_name]
-                                 cluster.resourcePool.find attributes[:root_resource_pool_name]
+                                 cluster.resourcePool.find attributes[:root_resource_pool_name].gsub('/', '%2f')
                                else
                                  cluster.resourcePool
                                end
 
-          root_resource_pool.CreateResourcePool(
+          raise ArgumentError, 'Root resource pool could not be found' if root_resource_pool.nil?
+
+          resource_pool = root_resource_pool.CreateResourcePool(
             name: attributes[:name],
             spec: get_resource_pool_spec(attributes)
           )
 
-          get_resource_pool(attributes[:name], attributes[:cluster], attributes[:datacenter])
+          resource_pool_attributes(resource_pool, attributes[:cluster], attributes[:datacenter])
         end
 
         private
