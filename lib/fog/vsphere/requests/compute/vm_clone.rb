@@ -50,6 +50,9 @@ module Fog
         #     want to clone FROM. Relative to Datacenter (Example:
         #     "FolderNameHere/VMNameHere")
         #   * 'name'<~String> - *REQUIRED* The VMName of the Destination
+        #   * 'template_datacenter'<~String> - Datacenter name where template
+        #     is. Make sure this datacenter exists, should if you're using
+        #     the clone function in server.rb model.
         #   * 'dest_folder'<~String> - Destination Folder of where 'name' will
         #     be placed on your cluster. Relative Path to Datacenter E.G.
         #     "FolderPlaceHere/anotherSub Folder/onemore"
