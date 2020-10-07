@@ -157,7 +157,8 @@ module Fog
 
           # Give our path to the request
           req_options['template_path'] = "#{relative_path}/#{name}"
-          req_options['datacenter'] = datacenter.to_s
+          req_options['template_datacenter'] = datacenter.to_s
+          req_options['datacenter'] ||= datacenter.to_s
 
           # Perform the actual clone
           clone_results = service.vm_clone(req_options)

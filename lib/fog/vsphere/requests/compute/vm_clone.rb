@@ -21,7 +21,10 @@ module Fog
           end
           raise ArgumentError, 'cluster option is required' unless options['resource_pool'][0]
           raise Fog::Vsphere::Compute::NotFound, "Datacenter #{options['datacenter']} Doesn't Exist!" unless get_datacenter(options['datacenter'])
-          raise Fog::Vsphere::Compute::NotFound, "Template #{options['template_path']} Doesn't Exist!" unless get_virtual_machine(options['template_path'], options['datacenter'])
+          if options['template_datacenter'] && !get_datacenter(options['template_datacenter'])
+            raise Fog::Vsphere::Compute::NotFound, "Datacenter #{options['template_datacenter']} Doesn't Exist!"
+          end
+          raise Fog::Vsphere::Compute::NotFound, "Template #{options['template_path']} Doesn't Exist!" unless get_virtual_machine(options['template_path'], options['template_datacenter'] || options['datacenter'])
           raise Fog::Vsphere::Compute::NotFound, "Cluster #{options['resource_pool'][0]} Doesn't Exist in the DC!" unless get_raw_cluster(options["resource_pool"][0], options['datacenter'])
           raise ArgumentError, 'path option is required' unless options.fetch('dest_folder', '/')
           if options.key?('datastore') && !options['datastore'].nil? && !get_raw_datastore(options['datastore'], options['datacenter'])
@@ -50,6 +53,9 @@ module Fog
         #     want to clone FROM. Relative to Datacenter (Example:
         #     "FolderNameHere/VMNameHere")
         #   * 'name'<~String> - *REQUIRED* The VMName of the Destination
+        #   * 'template_datacenter'<~String> - Datacenter name where template
+        #     is. Make sure this datacenter exists, should if you're using
+        #     the clone function in server.rb model.
         #   * 'dest_folder'<~String> - Destination Folder of where 'name' will
         #     be placed on your cluster. Relative Path to Datacenter E.G.
         #     "FolderPlaceHere/anotherSub Folder/onemore"
@@ -104,14 +110,11 @@ module Fog
           # Option handling
           options = vm_clone_check_options(options)
 
-          # Added for people still using options['path']
-          template_path = options['path'] || options['template_path']
-
           # Options['template_path']<~String>
           # Added for people still using options['path']
           template_path = options['path'] || options['template_path']
           # Now find the template itself using the efficient find method
-          vm_mob_ref = get_vm_ref(template_path, options['datacenter'])
+          vm_mob_ref = get_vm_ref(template_path, options['template_datacenter'] || options['datacenter'])
 
           # Options['dest_folder']<~String>
           # Grab the destination folder object if it exists else use cloned mach
