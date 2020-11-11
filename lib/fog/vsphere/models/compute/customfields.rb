@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Customfields < Fog::Collection
-        autoload :Customfield, File.expand_path('../customfield', __FILE__)
-
         model Fog::Vsphere::Compute::Customfield
 
         attr_accessor :vm

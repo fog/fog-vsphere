@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Rules < Fog::Collection
-        autoload :Rule, File.expand_path('../rule', __FILE__)
-
         model Fog::Vsphere::Compute::Rule
         attribute :datacenter
         attribute :cluster

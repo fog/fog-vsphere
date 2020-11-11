@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Templates < Fog::Collection
-        autoload :Template, File.expand_path('../template', __FILE__)
-
         model Fog::Vsphere::Compute::Template
 
         def all(filters = {})

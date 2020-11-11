@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Tickets < Fog::Collection
-        autoload :Ticket, File.expand_path('../ticket', __FILE__)
-
         model Fog::Vsphere::Compute::Ticket
 
         attr_accessor :server

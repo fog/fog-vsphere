@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Interfaces < Fog::Collection
-        autoload :Interface, File.expand_path('../interface', __FILE__)
-
         model Fog::Vsphere::Compute::Interface
 
         attribute :server_id

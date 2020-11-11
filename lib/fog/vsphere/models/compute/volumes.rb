@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Volumes < Fog::Collection
-        autoload :Volume, File.expand_path('../volume', __FILE__)
-
         attribute :server_id
 
         model Fog::Vsphere::Compute::Volume
