@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Servertypes < Fog::Collection
-        autoload :Servertype, File.expand_path('../servertype', __FILE__)
-
         model Fog::Vsphere::Compute::Servertype
         attr_accessor :datacenter, :id, :fullname
 

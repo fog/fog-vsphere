@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Datacenters < Fog::Collection
-        autoload :Datacenter, File.expand_path('../datacenter', __FILE__)
-
         model Fog::Vsphere::Compute::Datacenter
 
         def all(filters = {})

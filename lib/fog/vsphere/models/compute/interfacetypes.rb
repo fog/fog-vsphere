@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Interfacetypes < Fog::Collection
-        autoload :Interfacetype, File.expand_path('../interfacetype', __FILE__)
-
         model Fog::Vsphere::Compute::Interfacetype
         attr_accessor :datacenter
         attr_accessor :servertype

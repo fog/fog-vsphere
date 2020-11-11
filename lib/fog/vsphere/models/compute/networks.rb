@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Networks < Fog::Collection
-        autoload :Network, File.expand_path('../network', __FILE__)
-
         model Fog::Vsphere::Compute::Network
         attr_accessor :datacenter, :cluster
 

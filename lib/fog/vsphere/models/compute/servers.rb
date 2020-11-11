@@ -2,8 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Servers < Fog::Collection
-        autoload :Server, File.expand_path('../server', __FILE__)
-
         model Fog::Vsphere::Compute::Server
         attr_accessor :datacenter
         attr_accessor :network
