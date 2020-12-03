@@ -168,7 +168,8 @@ module Fog
           memoryHotAddEnabled: 'config.memoryHotAddEnabled',
           firmware: 'config.firmware',
           boot_order: 'config.bootOptions.bootOrder',
-          annotation: 'config.annotation'
+          annotation: 'config.annotation',
+          extra_config: 'config.extraConfig'
         }.freeze
 
         def convert_vm_view_to_attr_hash(vms)
@@ -250,6 +251,8 @@ module Fog
                           nil
                         end
               }
+
+              attrs['extra_config'] = parse_extra_config(attrs['extra_config'])
             end
             # This inline rescue catches any standard error.  While a VM is
             # cloning, a call to the macs method will throw and NoMethodError
@@ -306,6 +309,12 @@ module Fog
               'floppy'
             end
           end.compact.uniq
+        end
+
+        # Flattens Array of RbVmomi::VIM::OptionValue to simple hash
+        def parse_extra_config(vm_extra_config)
+          return unless vm_extra_config.is_a?(Array)
+          vm_extra_config.map { |entry| [entry[:key], entry[:value]] }.to_h
         end
 
         # returns vmware managed obj id string
