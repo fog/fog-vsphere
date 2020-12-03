@@ -52,6 +52,7 @@ module Fog
         attribute :firmware
         attribute :boot_order
         attribute :annotation
+        attribute :extra_config
 
         def initialize(attributes = {})
           super defaults.merge(attributes)
