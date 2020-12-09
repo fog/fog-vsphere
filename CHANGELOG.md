@@ -1,3 +1,9 @@
+## v3.5.0
+* Clone vm from different datacenter (#263)
+* Fix autoload issues (#267)
+* Add extra_config attribute to server (#268)
+* Expose `_ref` from Compute::Network (#265)
+
 ## v3.4.0
 * list_resource_pools returns incorrect resource pool name (#256)
 * Add ability to create update and delete Resource Pools (#253)
