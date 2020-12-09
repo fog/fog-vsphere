@@ -38,7 +38,7 @@ module Fog
             # only the one will do
             proc do |n|
               n._ref == ref_or_name || (
-                n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && (n.name == ref_or_name || n.key == ref_or_name) &&
+                n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && (n.name == ref_or_name) &&
                 (n.config.distributedVirtualSwitch.name == distributedswitch)
               )
             end
@@ -46,12 +46,12 @@ module Fog
             # the first distributed virtual switch will do - selected by network - gives control to vsphere
             proc do |n|
               n._ref == ref_or_name || (
-                n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && (n.name == ref_or_name || n.key == ref_or_name)
+                n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && (n.name == ref_or_name)
               )
             end
           else
             # the first matching network will do, seems like the non-distributed networks come first
-            proc { |n| n._ref == ref_or_name || n.name == ref_or_name || (n.is_a?(RbVmomi::VIM::DistributedVirtualPortgroup) && n.key == ref_or_name) }
+            proc { |n| n._ref == ref_or_name || n.name == ref_or_name }
           end
         end
       end
