@@ -227,6 +227,9 @@ module Fog
             operation: operation,
             device: nic.type.new(
               key: index,
+              connectable: {
+                startConnected: true
+              },
               deviceInfo:                 {
                 label: nic.name,
                 summary: nic.summary
