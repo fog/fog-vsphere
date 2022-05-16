@@ -1,3 +1,6 @@
+## v3.5.1
+* Creating ESX compute resource on vcenter 7.x fails with InvalidArgument: A specified parameter was not correct: deviceChange[1].device.key (#272)
+
 ## v3.5.0
 * Clone vm from different datacenter (#263)
 * Fix autoload issues (#267)
