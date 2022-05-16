@@ -812,7 +812,7 @@ module Fog
           end
 
           new_nics.each do |interface|
-            specs << create_interface(interface, 0, :add, datacenter: datacenter)
+            specs << create_interface(interface, -rand(25000..29999), :add, datacenter: datacenter)
           end
 
           specs
