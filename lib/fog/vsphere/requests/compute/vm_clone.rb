@@ -811,8 +811,11 @@ module Fog
             end
           end
 
+          new_nic_baseid = -rand(25000..29999)
           new_nics.each do |interface|
-            specs << create_interface(interface, -rand(25000..29999), :add, datacenter: datacenter)
+            new_nic_id = new_nic_baseid
+            new_nic_baseid-=1
+            specs << create_interface(interface, new_nic_id, :add, datacenter: datacenter)
           end
 
           specs
