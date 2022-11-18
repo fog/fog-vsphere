@@ -1,13 +1,19 @@
 inherit_from:
   - .rubocop_todo.yml
 
+require:
+  - rubocop-minitest
+  - rubocop-performance
+  - rubocop-rake
+
 AllCops:
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.7
+  NewCops: enable
 
 Style/Documentation:
   Enabled: false
 
-HashSyntax:
+Style/HashSyntax:
   Enabled: false # don't force 1.9 hash syntax
 
 Style/StringLiterals:
@@ -29,9 +35,6 @@ Metrics/CyclomaticComplexity:
   Enabled : false
 
 Metrics/PerceivedComplexity:
-  Enabled: false
-
-Performance/Casecmp:
   Enabled: false
 
 Style/RescueModifier:
