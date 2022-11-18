@@ -1,6 +1,3 @@
-require 'simplecov'
-SimpleCov.start
-
 require 'mocha/api'
 Shindo::Tests.send(:include, Mocha::API)
 
