@@ -2,7 +2,7 @@
 
 > VMware vSphere® provider for the Fog cloud services library
 
-[![Gem Version][gemfury-image]][gemfury-url] [![Build Status][travis-image]][travis-url] [![Test Coverage][coverage-image]][coverage-url] [![Code Climate][climate-image]][climate-url]
+[![Gem Version][gemfury-image]][gemfury-url] [![Build Status][gha-image]][gha-url] [![Test Coverage][coverage-image]][coverage-url] [![Code Climate][climate-image]][climate-url]
 
 The VMware vSphere® provider allows you to use the abstractions of the Fog cloud services library to communicate with vSphere.
 
@@ -95,5 +95,5 @@ For more details see [CONTRIBUTING.md file](CONTRIBUTING.md)
 [coverage-url]: https://codeclimate.com/github/fog/fog-vsphere/coverage
 [gemfury-image]: https://badge.fury.io/rb/fog-vsphere.svg
 [gemfury-url]: http://badge.fury.io/rb/fog-vsphere
-[travis-image]: https://travis-ci.org/fog/fog-vsphere.svg?branch=master
-[travis-url]: https://travis-ci.org/fog/fog-vsphere
+[gha-image]: TODO
+[gha-url]: TODO
