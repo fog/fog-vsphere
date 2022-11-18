@@ -37,7 +37,7 @@ module Fog
         end
       end
 
-      # rubocop:disable ClassLength
+      # rubocop:disable Metrics/ClassLength
       class Real
         include Shared
 
@@ -887,7 +887,7 @@ module Fog
         end
       end
 
-      # rubocop:enable ClassLength
+      # rubocop:enable Metrics/ClassLength
       class Mock
         include Shared
         def vm_clone(options = {})
