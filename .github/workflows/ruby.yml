@@ -17,7 +17,7 @@ jobs:
         ruby-version: '3.1'
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
     - name: Run Rubocop
-      run: bundle exec rake style
+      run: bundle exec rubocop --format github
 
   test:
     runs-on: ubuntu-latest
@@ -25,11 +25,12 @@ jobs:
     strategy:
       matrix:
         ruby-version:
-          - '2.0'
-          - '2.1'
-          - '2.2'
-          - '2.3'
-          - '2.4'
+          - '2.7'
+          - '3.0'
+          - '3.1'
+          - 'head'
+    continue-on-error: ${{ matrix.ruby-version == 'head' }}
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Ruby
