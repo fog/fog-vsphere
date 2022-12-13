@@ -18,6 +18,7 @@
 * Francois Herbert <fherbert@oss.co.nz>
 * Francois Herbert <francois@herbert.org.nz>
 * Guido Günther <agx@sigxcpu.org>
+* Hao Chang Yu <hyu@redhat.com>
 * Ivan Nečas <inecas@redhat.com>
 * Ivo Reznicek <ireznice@googlemail.com>
 * J.R. Garcia <jr@garciaole.com>
