@@ -1,3 +1,17 @@
+## 3.6.0
+* Switch to rbvmomi2 (#281)
+* Raise the minimum Ruby version to 2.7 (#280)
+* Set server tests to pending
+* Remove simplecov setup
+* Update vcr to 6.x
+* Update Rubocop to 1.39.x
+* Raise the minimum Ruby version to 2.7
+* Convert to GitHub Actions
+
+## 3.5.2
+* Avoid unneeded "get_raw_datacenter" call (#277)
+* New NIC ID decrements from initial random int to avoid collisions (#275)
+
 ## v3.5.1
 * Creating ESX compute resource on vcenter 7.x fails with InvalidArgument: A specified parameter was not correct: deviceChange[1].device.key (#272)
 
