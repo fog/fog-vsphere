@@ -30,15 +30,17 @@ module Fog
                 virtualswitch: dvswitches[network['config.distributedVirtualSwitch']._ref]
               )
             elsif network.obj.is_a?(RbVmomi::VIM::OpaqueNetwork)
-              map_attrs_to_hash(network, network_attribute_mapping).merge(
+              map_attrs_to_hash(network, network_dvportgroup_attribute_mapping).merge(
+                id: network.obj._ref,
                 opaqueNetworkId: network.obj.summary.opaqueNetworkId
               )
             else
-              map_attrs_to_hash(network, network_attribute_mapping)
+              map_attrs_to_hash(network, network_attribute_mapping).merge(
+                id: network.obj._ref
+              )
             end.merge(
-              _ref: network.obj._ref,
-              id: managed_obj_id(network.obj),
-              datacenter: datacenter_name
+              datacenter: datacenter_name,
+              _ref: network.obj._ref
             )
           end.compact
         end
@@ -54,7 +56,7 @@ module Fog
 
         def network_dvportgroup_attribute_mapping
           network_attribute_mapping.merge(
-            dvp_uuid: 'config.key'
+            id: 'config.key'
           )
         end
 
