@@ -160,6 +160,8 @@ module Fog
           tools_version: 'guest.toolsVersionStatus',
           memory_mb: 'config.hardware.memoryMB',
           cpus: 'config.hardware.numCPU',
+          disks: 'config.hardware.device',
+          partitions:  'guest.disk',
           corespersocket: 'config.hardware.numCoresPerSocket',
           overall_status: 'overallStatus',
           guest_id: 'config.guestId',
@@ -252,6 +254,8 @@ module Fog
                         end
               }
 
+              attrs['disks'] = parse_disks(attrs['disks'])
+              attrs['partitions'] = parse_partitions(attrs['partitions'])
               attrs['extra_config'] = parse_extra_config(attrs['extra_config'])
             end
             # This inline rescue catches any standard error.  While a VM is
@@ -315,6 +319,20 @@ module Fog
         def parse_extra_config(vm_extra_config)
           return unless vm_extra_config.is_a?(Array)
           vm_extra_config.map { |entry| [entry[:key], entry[:value]] }.to_h
+        end
+
+        def parse_disks(vm_disks)
+          return unless vm_disks.is_a?(Array)
+          vm_disks.grep(RbVmomi::VIM::VirtualDisk).map do |d|
+            { :label => d.deviceInfo.label, :capacity => d.capacityInBytes }
+          end
+        end
+
+        def parse_partitions(vm_partitions)
+          return unless vm_partitions.is_a?(Array)
+          vm_partitions.grep(RbVmomi::VIM::GuestDiskInfo).map do |p|
+            { :path => p.diskPath, :free => p.freeSpace, :capacity => p.capacity }
+          end
         end
 
         # returns vmware managed obj id string
