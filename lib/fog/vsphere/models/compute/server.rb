@@ -35,6 +35,8 @@ module Fog
         attribute :path
         attribute :memory_mb
         attribute :cpus
+        attribute :disks
+        attribute :partitions
         attribute :corespersocket
         attribute :interfaces
         attribute :volumes
