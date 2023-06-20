@@ -1,3 +1,6 @@
+## 3.6.1
+* Revert Unify network ID attribute for Red Hat Satellite
+
 ## 3.6.0
 * Switch to rbvmomi2 (#281)
 * Raise the minimum Ruby version to 2.7 (#280)
