@@ -1,0 +1,215 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><Login xmlns="urn:vim25"><_this
+        type="SessionManager">ha-sessionmgr</_this><userName>root</userName><password>Rhino2000!</password></Login></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/8.0.2.0
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 Feb 2024 09:11:49 GMT
+      Set-Cookie:
+      - vmware_soap_session="8252b98ecf5ad3f2fbb322482dabc4c8b62eccb2"; Path=/; HttpOnly;
+        Secure;
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '794'
+      X-Envoy-Upstream-Service-Time:
+      - '51'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <LoginResponse xmlns="urn:vim25"><returnval><key>52ad783c-f3ef-286d-d457-763a4c54b859</key><userName>root</userName><fullName>Administrator</fullName><loginTime>2024-02-19T09:11:49.080853Z</loginTime><lastActiveTime>2024-02-19T09:11:49.080875Z</lastActiveTime><locale>en</locale><messageLocale>en</messageLocale><extensionSession>false</extensionSession><ipAddress>172.16.1.24</ipAddress><userAgent>Ruby</userAgent><callCount>0</callCount></returnval></LoginResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+  recorded_at: Mon, 19 Feb 2024 09:32:15 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">ha-property-collector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>SessionManager</type><pathSet>currentSession</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="SessionManager">ha-sessionmgr</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/8.0.2.0
+      Cookie:
+      - vmware_soap_session="8252b98ecf5ad3f2fbb322482dabc4c8b62eccb2"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 Feb 2024 09:11:49 GMT
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '946'
+      X-Envoy-Upstream-Service-Time:
+      - '2'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="SessionManager">ha-sessionmgr</obj><propSet><name>currentSession</name><val xsi:type="UserSession"><key>52ad783c-f3ef-286d-d457-763a4c54b859</key><userName>root</userName><fullName>Administrator</fullName><loginTime>2024-02-19T09:11:49.080853Z</loginTime><lastActiveTime>2024-02-19T09:11:49.399912Z</lastActiveTime><locale>en</locale><messageLocale>en</messageLocale><extensionSession>false</extensionSession><ipAddress>172.16.1.24</ipAddress><userAgent>Ruby</userAgent><callCount>0</callCount></val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+  recorded_at: Mon, 19 Feb 2024 09:32:16 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><FindByUuid
+        xmlns="urn:vim25"><_this type="SearchIndex">ha-searchindex</_this><uuid>5030c6ce-c0b1-59d9-34ff-d8438e2f0339</uuid><vmSearch>1</vmSearch><instanceUuid>1</instanceUuid></FindByUuid></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/8.0.2.0
+      Cookie:
+      - vmware_soap_session="8252b98ecf5ad3f2fbb322482dabc4c8b62eccb2"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 Feb 2024 09:11:49 GMT
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '433'
+      X-Envoy-Upstream-Service-Time:
+      - '6'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <FindByUuidResponse xmlns="urn:vim25"><returnval type="VirtualMachine">86</returnval></FindByUuidResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+  recorded_at: Mon, 19 Feb 2024 09:32:16 GMT
+- request:
+    method: post
+    uri: https://<%= vsphere_server %>/sdk
+    body:
+      encoding: UTF-8
+      string: <env:Envelope xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:env="http://schemas.xmlsoap.org/soap/envelope/"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><env:Body><RetrieveProperties
+        xmlns="urn:vim25"><_this type="PropertyCollector">ha-property-collector</_this><specSet
+        xsi:type="PropertyFilterSpec"><propSet xsi:type="PropertySpec"><type>VirtualMachine</type><pathSet>config</pathSet></propSet><objectSet
+        xsi:type="ObjectSpec"><obj type="VirtualMachine">86</obj></objectSet></specSet></RetrieveProperties></env:Body></env:Envelope>
+    headers:
+      Content-Type:
+      - text/xml; charset=utf-8
+      Soapaction:
+      - urn:vim25/8.0.2.0
+      Cookie:
+      - vmware_soap_session="8252b98ecf5ad3f2fbb322482dabc4c8b62eccb2"; Path=/; HttpOnly;
+        Secure;
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Mon, 19 Feb 2024 09:11:49 GMT
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - text/xml; charset=utf-8
+      X-Frame-Options:
+      - DENY
+      Content-Length:
+      - '17230'
+      X-Envoy-Upstream-Service-Time:
+      - '3'
+    body:
+      encoding: UTF-8
+      string: |-
+        <?xml version="1.0" encoding="UTF-8"?>
+        <soapenv:Envelope xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+         xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <soapenv:Body>
+        <RetrievePropertiesResponse xmlns="urn:vim25"><returnval><obj type="VirtualMachine">86</obj><propSet><name>config</name><val xsi:type="VirtualMachineConfigInfo"><changeVersion>2024-02-19T08:47:47.637624Z</changeVersion><modified>1970-01-01T00:00:00Z</modified><name>doyle-buseman.yesil.yt</name><guestFullName>Other (64-bit)</guestFullName><version>vmx-21</version><uuid>423035fa-8eed-a0b3-bc40-cae453cd678d</uuid><createDate>2024-02-19T08:36:46.200608Z</createDate><instanceUuid>5030c6ce-c0b1-59d9-34ff-d8438e2f0339</instanceUuid><npivTemporaryDisabled>true</npivTemporaryDisabled><locationId>564dd5b8-bd9e-5686-7ed7-77463770098c</locationId><template>false</template><guestId>otherGuest64</guestId><alternateGuestName></alternateGuestName><annotation></annotation><files><vmPathName>[datastore1] doyle-buseman.yesil.yt/doyle-buseman.yesil.yt.vmx</vmPathName><snapshotDirectory>[datastore1] doyle-buseman.yesil.yt</snapshotDirectory><suspendDirectory>[datastore1] doyle-buseman.yesil.yt</suspendDirectory><logDirectory>[datastore1] doyle-buseman.yesil.yt</logDirectory></files><tools><toolsVersion>0</toolsVersion><toolsInstallType>guestToolsTypeUnknown</toolsInstallType><afterPowerOn>true</afterPowerOn><afterResume>true</afterResume><beforeGuestStandby>true</beforeGuestStandby><beforeGuestShutdown>true</beforeGuestShutdown><toolsUpgradePolicy>manual</toolsUpgradePolicy><syncTimeWithHostAllowed>true</syncTimeWithHostAllowed><syncTimeWithHost>false</syncTimeWithHost><lastInstallInfo><counter>0</counter></lastInstallInfo></tools><flags><enableLogging>true</enableLogging><useToe>false</useToe><runWithDebugInfo>false</runWithDebugInfo><monitorType>release</monitorType><htSharing>any</htSharing><snapshotDisabled>false</snapshotDisabled><snapshotLocked>false</snapshotLocked><diskUuidEnabled>false</diskUuidEnabled><snapshotPowerOffBehavior>powerOff</snapshotPowerOffBehavior><recordReplayEnabled>false</recordReplayEnabled><faultToleranceType>unset</faultToleranceType><cbrcCacheEnabled>false</cbrcCacheEnabled><vvtdEnabled>false</vvtdEnabled><vbsEnabled>false</vbsEnabled></flags><defaultPowerOps><powerOffType>soft</powerOffType><suspendType>hard</suspendType><resetType>soft</resetType><defaultPowerOffType>soft</defaultPowerOffType><defaultSuspendType>hard</defaultSuspendType><defaultResetType>soft</defaultResetType><standbyAction>checkpoint</standbyAction></defaultPowerOps><rebootPowerOff>false</rebootPowerOff><hardware><numCPU>2</numCPU><numCoresPerSocket>2</numCoresPerSocket><autoCoresPerSocket>false</autoCoresPerSocket><memoryMB>2048</memoryMB><virtualICH7MPresent>false</virtualICH7MPresent><virtualSMCPresent>false</virtualSMCPresent><device xsi:type="VirtualIDEController"><key>200</key><deviceInfo><label>IDE 0</label><summary>IDE 0</summary></deviceInfo><busNumber>0</busNumber></device><device xsi:type="VirtualIDEController"><key>201</key><deviceInfo><label>IDE 1</label><summary>IDE 1</summary></deviceInfo><busNumber>1</busNumber></device><device xsi:type="VirtualPS2Controller"><key>300</key><deviceInfo><label>PS2 controller 0</label><summary>PS2 controller 0</summary></deviceInfo><busNumber>0</busNumber><device>600</device><device>700</device></device><device xsi:type="VirtualPCIController"><key>100</key><deviceInfo><label>PCI controller 0</label><summary>PCI controller 0</summary></deviceInfo><busNumber>0</busNumber><device>500</device><device>12000</device><device>1000</device><device>15000</device><device>4000</device></device><device xsi:type="VirtualSIOController"><key>400</key><deviceInfo><label>SIO controller 0</label><summary>SIO controller 0</summary></deviceInfo><busNumber>0</busNumber></device><device xsi:type="VirtualKeyboard"><key>600</key><deviceInfo><label>Keyboard </label><summary>Keyboard</summary></deviceInfo><controllerKey>300</controllerKey><unitNumber>0</unitNumber></device><device xsi:type="VirtualPointingDevice"><key>700</key><deviceInfo><label>Pointing device</label><summary>Pointing device; Device</summary></deviceInfo><backing xsi:type="VirtualPointingDeviceDeviceBackingInfo"><deviceName></deviceName><useAutoDetect>false</useAutoDetect><hostPointingDevice>autodetect</hostPointingDevice></backing><controllerKey>300</controllerKey><unitNumber>1</unitNumber></device><device xsi:type="VirtualMachineVideoCard"><key>500</key><deviceInfo><label>Video card </label><summary>Video card</summary></deviceInfo><controllerKey>100</controllerKey><unitNumber>0</unitNumber><videoRamSizeInKB>4096</videoRamSizeInKB><numDisplays>1</numDisplays><useAutoDetect>false</useAutoDetect><enable3DSupport>false</enable3DSupport><use3dRenderer>automatic</use3dRenderer><graphicsMemorySizeInKB>262144</graphicsMemorySizeInKB></device><device xsi:type="VirtualMachineVMCIDevice"><key>12000</key><deviceInfo><label>VMCI device</label><summary>Device on the virtual machine PCI bus that provides support for the virtual machine communication interface</summary></deviceInfo><controllerKey>100</controllerKey><unitNumber>17</unitNumber><id>1405970317</id><allowUnrestrictedCommunication>false</allowUnrestrictedCommunication><filterEnable>true</filterEnable></device><device xsi:type="VirtualLsiLogicController"><key>1000</key><deviceInfo><label>SCSI controller 0</label><summary>LSI Logic</summary></deviceInfo><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>16</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>3</unitNumber><busNumber>0</busNumber><device>2000</device><hotAddRemove>true</hotAddRemove><sharedBus>noSharing</sharedBus><scsiCtlrUnitNumber>7</scsiCtlrUnitNumber></device><device xsi:type="VirtualAHCIController"><key>15000</key><deviceInfo><label>SATA controller 0</label><summary>AHCI</summary></deviceInfo><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>32</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>24</unitNumber><busNumber>0</busNumber><device>16000</device></device><device xsi:type="VirtualCdrom"><key>16000</key><deviceInfo><label>CD/DVD drive 1</label><summary>Remote ATAPI</summary></deviceInfo><backing xsi:type="VirtualCdromRemoteAtapiBackingInfo"><deviceName></deviceName><useAutoDetect>false</useAutoDetect></backing><connectable><startConnected>false</startConnected><allowGuestControl>true</allowGuestControl><connected>false</connected><status>untried</status></connectable><controllerKey>15000</controllerKey><unitNumber>0</unitNumber></device><device xsi:type="VirtualDisk"><key>2000</key><deviceInfo><label>Hard disk 1</label><summary>15,728,640 KB</summary></deviceInfo><backing xsi:type="VirtualDiskFlatVer2BackingInfo"><fileName>[datastore1] doyle-buseman.yesil.yt/doyle-buseman.yesil.yt.vmdk</fileName><datastore type="Datastore">653fb736-5bb30961-2421-0050568cba3a</datastore><backingObjectId></backingObjectId><diskMode>persistent</diskMode><split>false</split><writeThrough>false</writeThrough><thinProvisioned>true</thinProvisioned><eagerlyScrub>false</eagerlyScrub><uuid>6000C290-1a08-53b6-7d7a-adb7426a0dbb</uuid><contentId>026ddf83fbb945a11eb393aafffffffe</contentId><digestEnabled>false</digestEnabled><sharing>sharingNone</sharing></backing><controllerKey>1000</controllerKey><unitNumber>0</unitNumber><capacityInKB>15728640</capacityInKB><capacityInBytes>16106127360</capacityInBytes><shares><shares>1000</shares><level>normal</level></shares><storageIOAllocation><limit>-1</limit><shares><shares>1000</shares><level>normal</level></shares><reservation>0</reservation></storageIOAllocation><diskObjectId>86-2000</diskObjectId><vDiskVersion>1</vDiskVersion><nativeUnmanagedLinkedClone>false</nativeUnmanagedLinkedClone><guestReadOnly>false</guestReadOnly></device><device xsi:type="VirtualVmxnet3"><key>4000</key><deviceInfo><label>Network adapter 1</label><summary>VM Network</summary></deviceInfo><backing xsi:type="VirtualEthernetCardNetworkBackingInfo"><deviceName>VM Network</deviceName><useAutoDetect>false</useAutoDetect><network type="Network">HaNetwork-VM Network</network></backing><connectable><migrateConnect>unset</migrateConnect><startConnected>true</startConnected><allowGuestControl>true</allowGuestControl><connected>true</connected><status>ok</status></connectable><slotInfo xsi:type="VirtualDevicePciBusSlotInfo"><pciSlotNumber>160</pciSlotNumber></slotInfo><controllerKey>100</controllerKey><unitNumber>7</unitNumber><addressType>assigned</addressType><macAddress>00:50:56:b0:0a:4f</macAddress><wakeOnLanEnabled>true</wakeOnLanEnabled><resourceAllocation><reservation>0</reservation><share><shares>50</shares><level>normal</level></share><limit>-1</limit></resourceAllocation><uptCompatibilityEnabled>true</uptCompatibilityEnabled><uptv2Enabled>false</uptv2Enabled></device><motherboardLayout>i440bxHostBridge</motherboardLayout><simultaneousThreads>1</simultaneousThreads></hardware><cpuAllocation><reservation>0</reservation><limit>-1</limit><shares><shares>2000</shares><level>normal</level></shares></cpuAllocation><memoryAllocation><reservation>0</reservation><limit>-1</limit><shares><shares>20480</shares><level>normal</level></shares></memoryAllocation><latencySensitivity><level>normal</level></latencySensitivity><memoryHotAddEnabled>false</memoryHotAddEnabled><cpuHotAddEnabled>false</cpuHotAddEnabled><cpuHotRemoveEnabled>false</cpuHotRemoveEnabled><hotPlugMemoryLimit>2048</hotPlugMemoryLimit><hotPlugMemoryIncrementSize>0</hotPlugMemoryIncrementSize><extraConfig><key>nvram</key><value xsi:type="xsd:string">doyle-buseman.yesil.yt.nvram</value></extraConfig><extraConfig><key>svga.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge0.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge4.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge4.virtualDev</key><value xsi:type="xsd:string">pcieRootPort</value></extraConfig><extraConfig><key>pciBridge4.functions</key><value xsi:type="xsd:string">8</value></extraConfig><extraConfig><key>pciBridge5.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge5.virtualDev</key><value xsi:type="xsd:string">pcieRootPort</value></extraConfig><extraConfig><key>pciBridge5.functions</key><value xsi:type="xsd:string">8</value></extraConfig><extraConfig><key>pciBridge6.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge6.virtualDev</key><value xsi:type="xsd:string">pcieRootPort</value></extraConfig><extraConfig><key>pciBridge6.functions</key><value xsi:type="xsd:string">8</value></extraConfig><extraConfig><key>pciBridge7.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>pciBridge7.virtualDev</key><value xsi:type="xsd:string">pcieRootPort</value></extraConfig><extraConfig><key>pciBridge7.functions</key><value xsi:type="xsd:string">8</value></extraConfig><extraConfig><key>hpet0.present</key><value xsi:type="xsd:string">TRUE</value></extraConfig><extraConfig><key>cpuid.coresPerSocket</key><value xsi:type="xsd:string">2</value></extraConfig><extraConfig><key>viv.moid</key><value xsi:type="xsd:string">4afc8e75-6359-4486-b3f9-873d25e096cd:vm-75:r0XnyAnBnOtSXhFJvRjUk1x9owPxsNPtYOmrnc9BTRc=</value></extraConfig><extraConfig><key>vmxstats.filename</key><value xsi:type="xsd:string">doyle-buseman.yesil.yt.scoreboard</value></extraConfig><extraConfig><key>numa.autosize.cookie</key><value xsi:type="xsd:string">20022</value></extraConfig><extraConfig><key>numa.autosize.vcpu.maxPerVirtualNode</key><value xsi:type="xsd:string">2</value></extraConfig><extraConfig><key>sched.swap.derivedName</key><value xsi:type="xsd:string">/vmfs/volumes/653fb736-5bb30961-2421-0050568cba3a/doyle-buseman.yesil.yt/doyle-buseman.yesil.yt-5f3f6e60.vswp</value></extraConfig><extraConfig><key>pciBridge0.pciSlotNumber</key><value xsi:type="xsd:string">17</value></extraConfig><extraConfig><key>pciBridge4.pciSlotNumber</key><value xsi:type="xsd:string">21</value></extraConfig><extraConfig><key>pciBridge5.pciSlotNumber</key><value xsi:type="xsd:string">22</value></extraConfig><extraConfig><key>pciBridge6.pciSlotNumber</key><value xsi:type="xsd:string">23</value></extraConfig><extraConfig><key>pciBridge7.pciSlotNumber</key><value xsi:type="xsd:string">24</value></extraConfig><extraConfig><key>scsi0.pciSlotNumber</key><value xsi:type="xsd:string">16</value></extraConfig><extraConfig><key>ethernet0.pciSlotNumber</key><value xsi:type="xsd:string">160</value></extraConfig><extraConfig><key>scsi0:0.redo</key><value xsi:type="xsd:string"></value></extraConfig><extraConfig><key>vmotion.checkpointFBSize</key><value xsi:type="xsd:string">4194304</value></extraConfig><extraConfig><key>vmotion.checkpointSVGAPrimarySize</key><value xsi:type="xsd:string">4194304</value></extraConfig><extraConfig><key>vmotion.svga.mobMaxSize</key><value xsi:type="xsd:string">4194304</value></extraConfig><extraConfig><key>vmotion.svga.graphicsMemoryKB</key><value xsi:type="xsd:string">4096</value></extraConfig><extraConfig><key>monitor.phys_bits_used</key><value xsi:type="xsd:string">45</value></extraConfig><extraConfig><key>softPowerOff</key><value xsi:type="xsd:string">FALSE</value></extraConfig><extraConfig><key>sata0.pciSlotNumber</key><value xsi:type="xsd:string">32</value></extraConfig><extraConfig><key>vmware.tools.internalversion</key><value xsi:type="xsd:string">0</value></extraConfig><extraConfig><key>vmware.tools.requiredversion</key><value xsi:type="xsd:string">12384</value></extraConfig><extraConfig><key>migrate.hostLogState</key><value xsi:type="xsd:string">none</value></extraConfig><extraConfig><key>migrate.migrationId</key><value xsi:type="xsd:string">0</value></extraConfig><extraConfig><key>migrate.hostLog</key><value xsi:type="xsd:string">doyle-buseman.yesil.yt-33b77d7e.hlog</value></extraConfig><cpuFeatureMask><level>0</level></cpuFeatureMask><cpuFeatureMask><level>0</level><vendor>amd</vendor></cpuFeatureMask><cpuFeatureMask><level>1</level></cpuFeatureMask><cpuFeatureMask><level>1</level><vendor>amd</vendor></cpuFeatureMask><cpuFeatureMask><level>-2147483648</level></cpuFeatureMask><cpuFeatureMask><level>-2147483648</level><vendor>amd</vendor></cpuFeatureMask><cpuFeatureMask><level>-2147483647</level></cpuFeatureMask><cpuFeatureMask><level>-2147483647</level><vendor>amd</vendor></cpuFeatureMask><cpuFeatureMask><level>-2147483640</level></cpuFeatureMask><cpuFeatureMask><level>-2147483640</level><vendor>amd</vendor></cpuFeatureMask><datastoreUrl><name>datastore1</name><url>/vmfs/volumes/653fb736-5bb30961-2421-0050568cba3a/</url></datastoreUrl><swapPlacement>inherit</swapPlacement><bootOptions><bootDelay>0</bootDelay><enterBIOSSetup>false</enterBIOSSetup><efiSecureBootEnabled>false</efiSecureBootEnabled><bootRetryEnabled>true</bootRetryEnabled><bootRetryDelay>10</bootRetryDelay><bootOrder xsi:type="VirtualMachineBootOptionsBootableCdromDevice"></bootOrder><bootOrder xsi:type="VirtualMachineBootOptionsBootableDiskDevice"><deviceKey>2000</deviceKey></bootOrder><networkBootProtocol>ipv4</networkBootProtocol></bootOptions><vAssertsEnabled>false</vAssertsEnabled><changeTrackingEnabled>false</changeTrackingEnabled><firmware>bios</firmware><maxMksConnections>40</maxMksConnections><guestAutoLockEnabled>true</guestAutoLockEnabled><memoryReservationLockedToMax>false</memoryReservationLockedToMax><initialOverhead><initialMemoryReservation>62484480</initialMemoryReservation><initialSwapReservation>252579840</initialSwapReservation></initialOverhead><nestedHVEnabled>false</nestedHVEnabled><vPMCEnabled>false</vPMCEnabled><scheduledHardwareUpgradeInfo><upgradePolicy>never</upgradePolicy><scheduledHardwareUpgradeStatus>none</scheduledHardwareUpgradeStatus></scheduledHardwareUpgradeInfo><vmxConfigChecksum>r67gdvB8s3pcnDQWGqTtGSsCqOsniOT3b221qn2ZGug=</vmxConfigChecksum><messageBusTunnelEnabled>false</messageBusTunnelEnabled><guestIntegrityInfo><enabled>false</enabled></guestIntegrityInfo><migrateEncryption>opportunistic</migrateEncryption><sgxInfo><epcSize>0</epcSize><flcMode>unlocked</flcMode><requireAttestation>false</requireAttestation></sgxInfo><ftEncryptionMode>ftEncryptionOpportunistic</ftEncryptionMode><guestMonitoringModeInfo></guestMonitoringModeInfo><sevEnabled>false</sevEnabled><numaInfo><coresPerNumaNode>2</coresPerNumaNode><autoCoresPerNumaNode>true</autoCoresPerNumaNode><vnumaOnCpuHotaddExposed>false</vnumaOnCpuHotaddExposed></numaInfo><pmemFailoverEnabled>false</pmemFailoverEnabled><vmxStatsCollectionEnabled>true</vmxStatsCollectionEnabled><vmOpNotificationToAppEnabled>false</vmOpNotificationToAppEnabled><vmOpNotificationTimeout>-1</vmOpNotificationTimeout><deviceSwap><lsiToPvscsi><enabled>true</enabled><applicable>false</applicable><status>none</status></lsiToPvscsi></deviceSwap><deviceGroups></deviceGroups><fixedPassthruHotPlugEnabled>false</fixedPassthruHotPlugEnabled></val></propSet></returnval></RetrievePropertiesResponse>
+        </soapenv:Body>
+        </soapenv:Envelope>
+  recorded_at: Mon, 19 Feb 2024 09:32:17 GMT
+recorded_with: VCR 6.2.0

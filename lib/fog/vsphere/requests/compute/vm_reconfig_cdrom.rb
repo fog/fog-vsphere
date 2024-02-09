@@ -20,7 +20,7 @@ module Fog
               device: RbVmomi::VIM::VirtualCdrom(
                 backing: backing,
                 key: cdrom_obj.key,
-                controllerKey: cdrom_obj.controllerKey,
+                controllerKey: options['controller_key'] || cdrom_obj.controllerKey,
                 connectable: RbVmomi::VIM::VirtualDeviceConnectInfo(
                   startConnected: options['start_connected'] || false,
                   connected: options['connected'] || false,

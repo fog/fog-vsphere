@@ -135,6 +135,7 @@ module Fog
       request :host_shutdown
       request :host_start_maintenance
       request :host_finish_maintenance
+      request :get_vm_first_sata_controller
 
       module Shared
         attr_reader :vsphere_is_vcenter
