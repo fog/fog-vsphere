@@ -252,7 +252,7 @@ module Fog
             operation: options[:operation],
             device: controller_class.new(key: options[:key] || (1000 + index),
                                          busNumber: options[:bus_id] || index,
-                                         sharedBus: controller_get_shared_from_options(options))
+                                         **(options[:type] == RbVmomi::VIM::VirtualAHCIController ? {} : {sharedBus: controller_get_shared_from_options(options)}))
           }
         end
 
