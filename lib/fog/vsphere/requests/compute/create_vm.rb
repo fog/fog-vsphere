@@ -125,8 +125,11 @@ module Fog
         def vm_path_name(attributes)
           return '' if get_storage_pod_from_volumes(attributes)
           datastore = attributes[:volumes].first.datastore unless attributes[:volumes].empty?
-          datastore ||= 'datastore1'
-          "[#{datastore}]"
+          if datastore
+            "[#{datastore}]"
+          else
+            raise ArgumentError, 'Please mention the storage pod or the datastore'
+          end
         end
 
         def device_change(attributes)
