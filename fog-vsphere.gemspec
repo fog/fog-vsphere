@@ -14,8 +14,9 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://github.com/fog/fog-vsphere'
   spec.license       = 'MIT'
 
-  spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(tests?|spec|features)/}) }
-  spec.test_files    = spec.files.grep(%r{^tests\/})
+  spec.files = Dir['lib/**/*'] +
+               ['LICENSE.md', 'Rakefile', 'README.md', 'CHANGELOG.md', 'CONTRIBUTORS.md']
+  spec.test_files = Dir['tests/**/*']
 
   spec.require_paths = ['lib']
 
