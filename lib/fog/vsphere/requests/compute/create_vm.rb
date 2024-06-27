@@ -138,8 +138,12 @@ module Fog
             devices << nics.map { |nic| create_interface(nic, nics.index(nic), :add, attributes) }
           end
 
-          if (scsi_controllers = (attributes[:scsi_controllers] || attributes['scsi_controller']))
+          if (scsi_controllers = attributes[:scsi_controllers] || attributes['scsi_controller'])
             devices << scsi_controllers.each_with_index.map { |controller, index| create_controller(controller, index) }
+          end
+
+          if (nvme_controllers = attributes[:nvme_controllers])
+            devices << nvme_controllers.each_with_index.map { |controller, index| create_controller(controller, index) }
           end
 
           if (disks = attributes[:volumes])
@@ -241,11 +245,15 @@ module Fog
         end
 
         def create_controller(controller = nil, index = 0)
+          device_options = {}
           options = if controller
                       controller_default_options.merge(controller.attributes)
                     else
                       controller_default_options
-                  end
+                    end
+          unless [RbVmomi::VIM::VirtualAHCIController, RbVmomi::VIM::VirtualNVMEController, "VirtualNVMEController"].include?(options[:type])
+            device_options[:sharedBus] = controller_get_shared_from_options(options)
+          end
           controller_class = if options[:type].is_a? String
                                Fog::Vsphere.class_from_string options[:type], 'RbVmomi::VIM'
                              else
@@ -254,8 +262,7 @@ module Fog
           {
             operation: options[:operation],
             device: controller_class.new(key: options[:key] || (1000 + index),
-                                         busNumber: options[:bus_id] || index,
-                                         **(options[:type] == RbVmomi::VIM::VirtualAHCIController ? {} : {sharedBus: controller_get_shared_from_options(options)}))
+                                         busNumber: options[:bus_id] || index, **device_options)
           }
         end
 
