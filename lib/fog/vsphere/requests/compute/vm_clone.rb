@@ -886,8 +886,8 @@ module Fog
           )
         end
       end
-
       # rubocop:enable Metrics/ClassLength
+
       class Mock
         include Shared
         def vm_clone(options = {})

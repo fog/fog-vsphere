@@ -1,15 +1,13 @@
 module Fog
   module Vsphere
     class Compute
-      class SCSIController < Fog::Model
-        attribute :shared_bus
+      class NVMEController < Fog::Model
         attribute :type
         attribute :unit_number
         attribute :key, type: :integer
         attribute :server_id
-
-        DEFAULT_KEY = 1000
-        DEFAULT_TYPE = "VirtualLsiLogicController".freeze
+        DEFAULT_KEY = 2000
+        DEFAULT_TYPE = "VirtualNVMEController".freeze
 
         def initialize(attributes = {})
           super
@@ -18,7 +16,7 @@ module Fog
         end
 
         def to_s
-          "#{type} ##{key}: shared: #{shared_bus}, unit_number: #{unit_number}"
+          "#{type} ##{key}:, unit_number: #{unit_number}"
         end
       end
     end

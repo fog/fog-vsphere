@@ -126,8 +126,7 @@ module Fog
           {
             thin: true,
             name: 'Hard disk',
-            mode: 'persistent',
-            controller_key: 1000
+            mode: 'persistent'
           }
         end
 
