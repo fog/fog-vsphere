@@ -53,6 +53,8 @@ module Fog
         attribute :cpuHotAddEnabled
         attribute :memoryHotAddEnabled
         attribute :firmware
+        attribute :secure_boot
+        attribute :virtual_tpm
         attribute :boot_order
         attribute :annotation
         attribute :extra_config
