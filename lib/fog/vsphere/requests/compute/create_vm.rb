@@ -153,6 +153,9 @@ module Fog
           if (cdroms = attributes[:cdroms])
             devices << cdroms.map { |cdrom| create_cdrom(cdrom, cdroms.index(cdrom)) }
           end
+
+          devices << create_virtual_tpm if attributes[:virtual_tpm]
+
           devices.flatten
         end
 
@@ -168,6 +171,10 @@ module Fog
           if attributes[:boot_retry]
             options[:bootRetryEnabled] = true
             options[:bootRetryDelay]   = attributes[:boot_retry]
+          end
+
+          if attributes[:secure_boot]
+            options[:efiSecureBootEnabled] = true
           end
 
           options.empty? ? nil : RbVmomi::VIM::VirtualMachineBootOptions.new(options)
@@ -330,6 +337,13 @@ module Fog
                 allowGuestControl: true
               )
             )
+          }
+        end
+
+        def create_virtual_tpm
+          {
+            operation: :add,
+            device: RbVmomi::VIM::VirtualTPM.new(key: -1)
           }
         end
 
