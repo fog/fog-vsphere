@@ -43,6 +43,7 @@ module Fog
       model :customfield
       collection :customfields
       model :scsicontroller
+      model :nvmecontroller
       model :process
       model :cdrom
       collection :cdroms
@@ -111,6 +112,7 @@ module Fog
       request :list_customfields
       request :get_vm_first_scsi_controller
       request :list_vm_scsi_controllers
+      request :list_vm_nvme_controllers
       request :set_vm_customvalue
       request :vm_take_snapshot
       request :list_vm_snapshots
@@ -136,6 +138,7 @@ module Fog
       request :host_start_maintenance
       request :host_finish_maintenance
       request :get_vm_first_sata_controller
+      request :get_vm_first_nvme_controller
 
       module Shared
         attr_reader :vsphere_is_vcenter
@@ -346,10 +349,12 @@ module Fog
         end
       end
 
+      # rubocop:disable Metrics/ClassLength
       class Mock
         include Shared
         # rubocop:disable Metrics/MethodLength
         def self.data
+          # rubocop:disable Metrics/BlockLength
           @data ||= Hash.new do |hash, key|
             hash[key] = {
               servers: {
@@ -380,6 +385,11 @@ module Fog
                        'type'        => 'VirtualLsiLogicController',
                        'unit_number' => 7,
                        'key'         => 1000 }],
+                  'nvme_controllers' =>
+                       [{
+                         'type'        => 'VirtualNVMEController',
+                          'key'         => 2000
+                       }],
                   'interfaces'       =>
                     [{ 'mac' => '00:50:56:a9:00:28',
                        'network' => 'dvportgroup-123456',
@@ -616,6 +626,7 @@ module Fog
               }
             }
           end
+          # rubocop:enable Metrics/BlockLength
         end
 
         # rubocop:enable Metrics/MethodLength
@@ -637,6 +648,7 @@ module Fog
           self.class.data.delete(@vsphere_username)
         end
       end
+      # rubocop:enable Metrics/ClassLength
 
       class Real
         include Shared
