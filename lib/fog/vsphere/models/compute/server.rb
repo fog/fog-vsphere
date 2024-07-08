@@ -3,7 +3,7 @@ require 'fog/compute/models/server'
 module Fog
   module Vsphere
     class Compute
-      class Server < Fog::Compute::Server
+      class Server < Fog::Compute::Server # rubocop:disable Metrics/ClassLength
         extend Fog::Deprecation
         deprecate(:ipaddress, :public_ip_address)
         deprecate(:scsi_controller, :scsi_controllers)
@@ -49,6 +49,7 @@ module Fog
         attribute :guest_id
         attribute :hardware_version
         attribute :scsi_controllers, type: :array
+        attribute :nvme_controllers, type: :array
         attribute :cpuHotAddEnabled
         attribute :memoryHotAddEnabled
         attribute :firmware
@@ -60,9 +61,10 @@ module Fog
           super defaults.merge(attributes)
           self.instance_uuid ||= id # TODO: remvoe instance_uuid as it can be replaced with simple id
           initialize_interfaces
-          initialize_volumes
           initialize_customvalues
           initialize_scsi_controllers
+          initialize_nvme_controllers
+          initialize_volumes
         end
 
         # Lazy Loaded Attributes
@@ -289,6 +291,10 @@ module Fog
           attributes[:scsi_controllers] ||= service.list_vm_scsi_controllers(id)
         end
 
+        def nvme_controllers
+          attributes[:nvme_controllers] ||= service.list_vm_nvme_controllers(id)
+        end
+
         def scsi_controller
           scsi_controllers.first
         end
@@ -348,16 +354,21 @@ module Fog
           end
         end
 
+        def unassigned_volumes?
+          attributes[:volumes]&.any? { |vol| !vol.key?(:controller_key) } || false
+        end
+
+        def update_controller_key(vol)
+          vol.controller_key ||= attributes[:scsi_controllers].first&.key || 1000
+        end
+
         def initialize_volumes
-          if attributes[:volumes] && attributes[:volumes].is_a?(Array)
-            attributes[:volumes].map! do |vol|
-              if vol.is_a?(Hash)
-                service.volumes.new({ server: self }.merge(vol))
-              else
-                vol.server = self
-                vol
-              end
-            end
+          return unless attributes[:volumes].is_a?(Array)
+          attributes[:volumes].map! do |vol|
+            vol = service.volumes.new({ server: self }.merge(vol)) if vol.is_a?(Hash)
+            vol.server = self
+            update_controller_key(vol)
+            vol
           end
         end
 
@@ -368,19 +379,23 @@ module Fog
         end
 
         def initialize_scsi_controllers
-          if attributes[:scsi_controllers] && attributes[:scsi_controllers].is_a?(Array)
+          if attributes[:scsi_controllers].is_a?(Array) && !attributes[:scsi_controllers].empty?
             attributes[:scsi_controllers].map! do |controller|
               controller.is_a?(Hash) ? Fog::Vsphere::Compute::SCSIController.new(controller) : controller
             end
-          elsif attributes[:scsi_controller] && attributes[:scsi_controller].is_a?(Hash)
+          elsif attributes[:scsi_controller].is_a?(Hash) && !attributes[:scsi_controller].empty?
             attributes[:scsi_controllers] = [
               Fog::Vsphere::Compute::SCSIController.new(attributes[:scsi_controller])
             ]
-          elsif attributes[:volumes] && attributes[:volumes].is_a?(Array) && !attributes[:volumes].empty?
-            # Create a default scsi controller if there are any disks but no controller defined
-            attributes[:scsi_controllers] = [
-              Fog::Vsphere::Compute::SCSIController.new
-            ]
+          end
+          attributes[:scsi_controllers] = [Fog::Vsphere::Compute::SCSIController.new] if !attributes[:scsi_controllers]&.any? && unassigned_volumes?
+        end
+
+        def initialize_nvme_controllers
+          if attributes[:nvme_controllers].is_a?(Array)
+            attributes[:nvme_controllers].map! do |controller|
+              controller.is_a?(Hash) ? Fog::Vsphere::Compute::NVMEController.new(controller) : controller
+            end
           end
         end
       end
