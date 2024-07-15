@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.license       = 'MIT'
 
   spec.files = Dir['lib/**/*'] +
-               ['LICENSE.md', 'Rakefile', 'README.md', 'CHANGELOG.md', 'CONTRIBUTORS.md']
+               ['LICENSE.md', 'Rakefile', 'README.md', 'CHANGELOG.md', 'CONTRIBUTORS.md', 'Gemfile', 'fog-vsphere.gemspec']
   spec.test_files = Dir['tests/**/*']
 
   spec.require_paths = ['lib']
