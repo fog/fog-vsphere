@@ -156,6 +156,7 @@ module Fog
           parent: 'parent',
           hostname: 'summary.guest.hostName',
           operatingsystem: 'summary.guest.guestFullName',
+          virtual_tpm: 'summary.config.tpmPresent',
           ipaddress: 'guest.ipAddress',
           power_state: 'runtime.powerState',
           connection_state: 'runtime.connectionState',
@@ -173,6 +174,7 @@ module Fog
           cpuHotAddEnabled: 'config.cpuHotAddEnabled',
           memoryHotAddEnabled: 'config.memoryHotAddEnabled',
           firmware: 'config.firmware',
+          secure_boot: 'config.bootOptions.efiSecureBootEnabled',
           boot_order: 'config.bootOptions.bootOrder',
           annotation: 'config.annotation',
           extra_config: 'config.extraConfig'
