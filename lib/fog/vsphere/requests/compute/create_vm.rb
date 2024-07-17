@@ -1,6 +1,7 @@
 module Fog
   module Vsphere
     class Compute
+      # rubocop:disable Metrics/ClassLength
       class Real
         def create_vm(attributes = {})
           # build up vm configuration
@@ -22,7 +23,7 @@ module Fog
           vm_cfg[:cpuHotAddEnabled] = attributes[:cpuHotAddEnabled] if attributes.key?(:cpuHotAddEnabled)
           vm_cfg[:memoryHotAddEnabled] = attributes[:memoryHotAddEnabled] if attributes.key?(:memoryHotAddEnabled)
           vm_cfg[:firmware] = attributes[:firmware] if attributes.key?(:firmware)
-          vm_cfg[:bootOptions] = boot_options(attributes, vm_cfg) if attributes.key?(:boot_order) || attributes.key?(:boot_retry)
+          vm_cfg[:bootOptions] = boot_options(attributes, vm_cfg)
           resource_pool = if attributes[:resource_pool] && attributes[:resource_pool] != 'Resources'
                             get_raw_resource_pool(attributes[:resource_pool], attributes[:cluster], attributes[:datacenter])
                           else
@@ -173,9 +174,7 @@ module Fog
             options[:bootRetryDelay]   = attributes[:boot_retry]
           end
 
-          if attributes[:secure_boot]
-            options[:efiSecureBootEnabled] = true
-          end
+          options[:efiSecureBootEnabled] = attributes[:secure_boot] if attributes.key?(:secure_boot)
 
           options.empty? ? nil : RbVmomi::VIM::VirtualMachineBootOptions.new(options)
         end
@@ -353,6 +352,7 @@ module Fog
         end
       end
 
+      # rubocop:enable Metrics/ClassLength
       class Mock
         def create_vm(attributes = {})
           id = SecureRandom.uuid
