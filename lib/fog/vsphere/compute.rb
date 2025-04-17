@@ -347,7 +347,7 @@ module Fog
         end
 
         def is_uuid?(id)
-          /[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/.match?(id)
+          id.is_a?(String) && /[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/.match?(id)
         end
       end
 
