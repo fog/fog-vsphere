@@ -173,6 +173,7 @@ module Fog
             device_change.concat(modify_template_volumes_specs(vm_mob_ref, options['volumes']))
             device_change.concat(add_new_volumes_specs(vm_mob_ref, options['volumes'])) unless options['storage_pod']
           end
+          device_change << create_virtual_tpm if options['virtual_tpm'].present?
           virtual_machine_config_spec.deviceChange = device_change if device_change.any?
           # Options['numCPUs'] or Options['memoryMB']
           # Build up the specification for Hardware, for more details see ____________
@@ -216,7 +217,7 @@ module Fog
                 RbVmomi::VIM::VirtualMachineBootOptionsBootableFloppyDevice.new
               end
             end
-            virtual_machine_config_spec.bootOptions = { bootOrder: boot_order }
+            virtual_machine_config_spec.bootOptions = { bootOrder: boot_order, efiSecureBootEnabled: options["secure_boot"] || false }
           end
           # Options['customization_spec']
           # OLD Options still supported
