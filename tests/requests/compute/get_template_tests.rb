@@ -11,8 +11,8 @@ describe Fog::Vsphere::Compute::Real do
   describe '#get_template' do
     it 'gets template by uuid' do
       with_webmock_cassette('get_template') do
-        vm = compute.get_template('500e2be9-4762-1f52-5e7c-f37444be5f6e', 'BRQ')
-        assert_equal(vm['name'], 'fedora29')
+        vm = compute.get_template('503cb26a-3423-2e69-04a0-24c6ff4cde8b', 'SatQE-Datacenter')
+        assert_equal(vm['name'], 'RHEL9')
       end
     end
   end
