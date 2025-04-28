@@ -30,7 +30,9 @@ module Fog
       # Records new cassette, but before writing removes the examples already in *shared* cassette.
       def recording_webmock_cassette(name, options = {}, &block)
         WebMock::Config.instance.net_http_connect_on_start = true
-        VCR.use_cassette(name, options, &block)
+        record_opts = { record: :all, erb: TestConfig.load.to_h }
+
+        VCR.use_cassette(name, record_opts.merge(options), &block)
       ensure
         WebMock::Config.instance.net_http_connect_on_start = false
       end
