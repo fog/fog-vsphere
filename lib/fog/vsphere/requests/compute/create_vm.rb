@@ -136,7 +136,7 @@ module Fog
         def device_change(attributes)
           devices = []
           if (nics = attributes[:interfaces])
-            devices << nics.map { |nic| create_interface(nic, nics.index(nic), :add, attributes) }
+            devices << nics.each_with_index.map { |nic, index| create_interface(nic, index, :add, attributes) }
           end
 
           if (scsi_controllers = attributes[:scsi_controllers] || attributes['scsi_controller'])
@@ -152,7 +152,7 @@ module Fog
           end
 
           if (cdroms = attributes[:cdroms])
-            devices << cdroms.map { |cdrom| create_cdrom(cdrom, cdroms.index(cdrom)) }
+            devices << cdroms.each_with_index.map { |cdrom, index| create_cdrom(cdrom, index) }
           end
 
           devices << create_virtual_tpm if attributes[:virtual_tpm]
@@ -189,9 +189,9 @@ module Fog
               if nics = attributes[:interfaces]
                 # key is based on 4000 + the interface index
                 # we allow booting from all network interfaces, the first interface has the highest priority
-                nics.each do |nic|
+                nics.each_with_index do |_nic, index|
                   boot_order << RbVmomi::VIM::VirtualMachineBootOptionsBootableEthernetDevice.new(
-                    deviceKey: 4000 + nics.index(nic)
+                    deviceKey: 4000 + index
                   )
                 end
               end
