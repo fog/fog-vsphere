@@ -1,3 +1,4 @@
+require 'minitest'
 require 'mocha/minitest'
 require 'vcr'
 require 'webmock/minitest'
