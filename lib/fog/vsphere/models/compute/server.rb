@@ -290,11 +290,11 @@ module Fog
         end
 
         def scsi_controllers
-          attributes[:scsi_controllers] ||= service.list_vm_scsi_controllers(id)
+          attributes[:scsi_controllers] ||= id.nil? ? [] : service.list_vm_scsi_controllers(id)
         end
 
         def nvme_controllers
-          attributes[:nvme_controllers] ||= service.list_vm_nvme_controllers(id)
+          attributes[:nvme_controllers] ||= id.nil? ? [] : service.list_vm_nvme_controllers(id)
         end
 
         def scsi_controller

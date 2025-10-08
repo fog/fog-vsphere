@@ -3,6 +3,8 @@ module Fog
     class Compute
       class Real
         def get_virtual_machine(id, datacenter_name = nil, folder = nil, recursive = false)
+          raise(Fog::Vsphere::Compute::NotFound, "The id of the virtual machine can't be nil") if id.nil?
+
           # The larger the VM list the longer it will take if not searching based on UUID.
           convert_vm_mob_ref_to_attr_hash(get_vm_ref(id, datacenter_name, folder, recursive))
         end
@@ -10,6 +12,8 @@ module Fog
         protected
 
         def get_vm_ref(id, dc = nil, folder = nil, recursive = false)
+          raise(Fog::Vsphere::Compute::NotFound, "The id of the virtual machine can't be nil") if id.nil?
+
           raw_datacenter = find_raw_datacenter(dc) if dc
           vm = case is_uuid?(id)
                  # UUID based
