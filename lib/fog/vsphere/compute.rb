@@ -120,6 +120,7 @@ module Fog
       request :revert_to_snapshot
       request :list_processes
       request :upload_iso
+      request :destroy_iso
       request :folder_destroy
       request :create_rule
       request :list_rules
