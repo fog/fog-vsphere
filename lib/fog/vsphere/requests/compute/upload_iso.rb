@@ -2,20 +2,6 @@ module Fog
   module Vsphere
     class Compute
       class Real
-        def upload_iso_check_options(options)
-          default_options = {
-            'upload_directory' => 'isos'
-          }
-          options = default_options.merge(options)
-          required_options = %w[datacenter datastore local_path]
-          required_options.each do |param|
-            raise ArgumentError, "#{required_options.join(', ')} are required" unless options.key? param
-          end
-          raise Fog::Vsphere::Compute::NotFound, "Datacenter #{options['datacenter']} Doesn't Exist!" unless get_datacenter(options['datacenter'])
-          raise Fog::Vsphere::Compute::NotFound, "Datastore #{options['datastore']} Doesn't Exist!" unless get_raw_datastore(options['datastore'], options['datacenter'])
-          options
-        end
-
         def upload_iso(options = {})
           options = upload_iso_check_options(options)
           datastore = get_raw_datastore(options['datastore'], options['datacenter'])
@@ -28,6 +14,43 @@ module Fog
           end
           datastore.upload options['upload_directory'] + '/' + filename, options['local_path']
           datastore.exists? options['upload_directory'] + '/' + filename
+        end
+
+        private
+
+        def upload_iso_check_options(options)
+          default_options = {
+            'upload_directory' => 'isos'
+          }
+          options = default_options.merge(options)
+          required_options = %w[datacenter datastore local_path]
+          required_options.each do |param|
+            raise ArgumentError, "#{required_options.join(', ')} are required" unless options.key? param
+          end
+          raise Fog::Vsphere::Compute::NotFound, "Datacenter #{options['datacenter']} doesn't exist!" unless get_datacenter(options['datacenter'])
+          raise Fog::Vsphere::Compute::NotFound, "Datastore #{options['datastore']} doesn't exist!" unless get_raw_datastore(options['datastore'], options['datacenter'])
+          options
+        end
+      end
+
+      class Mock
+        def upload_iso(options = {})
+          upload_iso_check_options(options)
+          true
+        end
+
+        private
+
+        def upload_iso_check_options(options)
+          default_options = {
+            'upload_directory' => 'isos'
+          }
+          options = default_options.merge(options)
+          required_options = %w[datacenter datastore local_path]
+          required_options.each do |param|
+            raise ArgumentError, "#{required_options.join(', ')} are required" unless options.key? param
+          end
+          options
         end
       end
     end
