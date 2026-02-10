@@ -1,5 +1,3 @@
-require 'ostruct'
-
 Shindo.tests('Fog::Compute[:vsphere] | update_vm request', 'vsphere') do
   compute = Fog::Compute[:vsphere]
   server = Fog::Vsphere::Compute::Server.new
