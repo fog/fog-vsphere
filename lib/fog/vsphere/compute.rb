@@ -385,7 +385,7 @@ module Fog
                     }],
                   'scsi_controllers' =>
                     [{ 'shared_bus' => 'noSharing',
-                       'type'        => 'VirtualLsiLogicController',
+                       'type'        => 'ParaVirtualSCSIController',
                        'unit_number' => 7,
                        'key'         => 1000 }],
                   'nvme_controllers' =>

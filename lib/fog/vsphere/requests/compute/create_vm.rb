@@ -273,7 +273,11 @@ module Fog
         end
 
         def controller_default_options
-          { operation: :add, type: RbVmomi::VIM.VirtualLsiLogicController.class, shared: false }
+          {
+            operation: :add,
+            type: Fog::Vsphere.class_from_string(Fog::Vsphere::Compute::SCSIController::DEFAULT_TYPE, 'RbVmomi::VIM'),
+            shared: false
+          }
         end
 
         def controller_get_shared_from_options(options)

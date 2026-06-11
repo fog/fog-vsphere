@@ -9,7 +9,7 @@ module Fog
         attribute :server_id
 
         DEFAULT_KEY = 1000
-        DEFAULT_TYPE = "VirtualLsiLogicController".freeze
+        DEFAULT_TYPE = "ParaVirtualSCSIController".freeze
 
         def initialize(attributes = {})
           super
